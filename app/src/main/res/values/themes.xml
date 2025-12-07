@@ -1,4 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- TODO: Modern UI implementation is pending. Previous attempt caused build errors. -->
     <!-- Base application theme. -->
     <style name="Base.Theme.Orderly" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
