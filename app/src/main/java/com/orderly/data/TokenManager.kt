@@ -62,8 +62,8 @@ class TokenManager @Inject constructor(private val prefs: SharedPreferences) {
                             
                             // Convert role ID to role name based on your system
                             val roleName = when (roleId) {
-                                4 -> "Admin"
-                                1 -> "Customer"
+                                2 -> "Admin"     // Your admin role ID is 2
+                                1 -> "Customer"  // Assuming customer role ID is 1
                                 else -> "Customer" // Default to customer
                             }
                             Log.d("TokenManager", "Converted role ID $roleId to: $roleName")
