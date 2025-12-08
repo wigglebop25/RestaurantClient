@@ -20,28 +20,6 @@ import org.mockito.kotlin.doNothing
 import org.mockito.kotlin.never
 import org.mockito.kotlin.doReturn
 
-package com.orderly.ui.auth
-
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.orderly.data.Result
-import com.orderly.data.TokenManager
-import com.orderly.data.dto.LoginDTO
-import com.orderly.data.dto.LoginResponse
-import com.orderly.data.repository.UserRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.advanceUntilIdle // Added import
-import kotlinx.coroutines.test.runTest
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
-import org.mockito.kotlin.doNothing
-import org.mockito.kotlin.never
-import org.mockito.kotlin.doReturn
-
 @ExperimentalCoroutinesApi
 class AuthViewModelTest {
 

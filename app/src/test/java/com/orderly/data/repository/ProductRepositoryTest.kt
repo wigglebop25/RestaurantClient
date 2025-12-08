@@ -20,28 +20,6 @@ import java.util.concurrent.TimeUnit
 
 import org.junit.Assert.fail // Added import
 
-package com.orderly.data.repository
-
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.gson.Gson
-import com.orderly.data.Result
-import com.orderly.data.dto.ProductResponse
-import com.orderly.data.network.ApiService
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import okhttp3.OkHttpClient
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
-
-import org.junit.Assert.fail // Added import
-
 @ExperimentalCoroutinesApi
 class ProductRepositoryTest {
 
