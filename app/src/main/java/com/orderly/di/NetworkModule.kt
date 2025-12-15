@@ -1,5 +1,6 @@
 package com.orderly.di
 
+import com.orderly.BuildConfig
 import com.orderly.data.network.ApiService
 import com.orderly.data.network.AuthInterceptor
 import dagger.Module
@@ -15,8 +16,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-
-    private const val BASE_URL = "https://arrow-server-v1.nicerock-8289607a.southeastasia.azurecontainerapps.io/"
 
     @Provides
     @Singleton
@@ -40,7 +39,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

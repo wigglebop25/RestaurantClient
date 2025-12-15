@@ -1,9 +1,24 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
 }
+
+val envProperties = Properties().apply {
+    val envFile = rootProject.file(".env/.env")
+    if (envFile.exists()) {
+        envFile.inputStream().use { load(it) }
+    }
+}
+
+val apiBaseUrl = envProperties.getProperty("API_BASE_URL")
+    ?: System.getenv("API_BASE_URL")
+    ?: error("API_BASE_URL is not configured. Add it to .env/.env or as an environment variable.")
+
+val buildConfigBaseUrl = apiBaseUrl.trim().replace("\"", "\\\"")
 
 android {
     namespace = "com.orderly"
@@ -17,6 +32,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "com.orderly.HiltTestRunner"
+        buildConfigField("String", "BASE_URL", "\"$buildConfigBaseUrl\"")
     }
 
     buildTypes {
@@ -37,6 +53,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 
 

@@ -33,11 +33,10 @@ Orderly is a comprehensive mobile application designed to streamline order manag
     ```
 2.  **Open in Android Studio:**
     Open the project in Android Studio.
-3.  **Configure Backend API (if applicable):**
-    Ensure your `local.properties` or `build.gradle` file points to your backend API endpoint.
+3.  **Configure Backend API:**
+    Create a `.env/.env` file (this folder is git-ignored) and add your backend URL so it stays out of the repository.
     ```properties
-    # Example for local.properties
-    API_BASE_URL="http://10.0.2.2:8080" # Or your actual backend URL
+    API_BASE_URL=https://your-api.example/
     ```
 4.  **Build and Run:**
     Sync Gradle files and run the application on an emulator or a physical device.
