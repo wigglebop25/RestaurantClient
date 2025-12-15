@@ -6,14 +6,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.restaurantclient.data.Result
 import com.restaurantclient.data.dto.UserDTO
+import com.restaurantclient.data.repository.OrderRepository
+import com.restaurantclient.data.repository.ProductRepository
 import com.restaurantclient.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
 class AdminDashboardViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val orderRepository: OrderRepository,
+    private val productRepository: ProductRepository
 ) : ViewModel() {
 
     private val _dashboardStats = MutableLiveData<DashboardStats>()
@@ -33,28 +38,50 @@ class AdminDashboardViewModel @Inject constructor(
             _loading.value = true
             
             try {
-                // Load users data (this will be used to calculate stats)
                 val usersResult = userRepository.getAllUsers()
-                
-                when (usersResult) {
-                    is Result.Success -> {
-                        val users = usersResult.data
-                        
-                        // Calculate dashboard statistics
-                        val stats = DashboardStats(
-                            totalUsers = users.size,
-                            totalOrders = 0, // TODO: Get from orders repository when available
-                            totalProducts = 0, // TODO: Get from products repository when available
-                            newUsersToday = calculateNewUsersToday(users)
-                        )
-                        
-                        _dashboardStats.value = stats
-                        _recentUsers.value = users.takeLast(5) // Show 5 most recent users
-                    }
+                val ordersResult = orderRepository.getAllOrders()
+                val productsResult = productRepository.getAllProducts()
+
+                val errors = mutableListOf<String>()
+
+                val users = when (usersResult) {
+                    is Result.Success -> usersResult.data
                     is Result.Error -> {
-                        _error.value = "Failed to load dashboard data: ${usersResult.exception.message}"
+                        errors += "Users: ${usersResult.exception.message}"
+                        emptyList()
                     }
                 }
+
+                val totalOrders = when (ordersResult) {
+                    is Result.Success -> ordersResult.data.size
+                    is Result.Error -> {
+                        errors += "Orders: ${ordersResult.exception.message}"
+                        0
+                    }
+                }
+
+                val totalProducts = when (productsResult) {
+                    is Result.Success -> productsResult.data.size
+                    is Result.Error -> {
+                        errors += "Products: ${productsResult.exception.message}"
+                        0
+                    }
+                }
+
+                val stats = DashboardStats(
+                    totalUsers = users.size,
+                    totalOrders = totalOrders,
+                    totalProducts = totalProducts,
+                    newUsersToday = calculateNewUsersToday(users)
+                )
+
+                _dashboardStats.value = stats
+                _recentUsers.value = users
+                    .sortedBy { it.createdAt }
+                    .takeLast(5)
+                    .reversed()
+
+                _error.value = if (errors.isNotEmpty()) errors.joinToString("\n") else null
             } catch (e: Exception) {
                 _error.value = "Unexpected error: ${e.message}"
             } finally {
@@ -64,9 +91,12 @@ class AdminDashboardViewModel @Inject constructor(
     }
 
     private fun calculateNewUsersToday(users: List<UserDTO>): Int {
-        // TODO: Implement actual date filtering when createdAt is properly formatted
-        // For now, return 0 as placeholder
-        return 0
+        val today = LocalDate.now()
+        return users.count { user ->
+            user.createdAt?.let { createdAt ->
+                runCatching { LocalDate.parse(createdAt.substring(0, 10)) }.getOrNull() == today
+            } ?: false
+        }
     }
 
     fun refreshData() {

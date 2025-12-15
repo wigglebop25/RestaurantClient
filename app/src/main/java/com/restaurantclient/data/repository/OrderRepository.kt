@@ -4,6 +4,7 @@ import android.util.Log
 import com.restaurantclient.data.Result
 import com.restaurantclient.data.dto.CreateOrderRequest
 import com.restaurantclient.data.dto.OrderResponse
+import com.restaurantclient.data.dto.UpdateOrderRequest
 import com.restaurantclient.data.network.ApiService
 import javax.inject.Inject
 
@@ -49,6 +50,32 @@ class OrderRepository @Inject constructor(private val apiService: ApiService) {
                 Result.Success(response.body()!!)
             } else {
                 Result.Error(Exception("Failed to get order by ID: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun getAllOrders(): Result<List<OrderResponse>> {
+        return try {
+            val response = apiService.getAllOrders()
+            if (response.isSuccessful) {
+                Result.Success(response.body() ?: emptyList())
+            } else {
+                Result.Error(Exception("Failed to fetch orders: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun updateOrderStatus(orderId: Int, status: String): Result<OrderResponse> {
+        return try {
+            val response = apiService.updateOrder(orderId, UpdateOrderRequest(status))
+            if (response.isSuccessful) {
+                Result.Success(response.body()!!)
+            } else {
+                Result.Error(Exception("Failed to update order: ${response.code()}"))
             }
         } catch (e: Exception) {
             Result.Error(e)

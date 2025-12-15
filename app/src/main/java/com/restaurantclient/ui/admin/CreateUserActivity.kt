@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import com.restaurantclient.R
 import com.restaurantclient.data.Result
 import com.restaurantclient.data.dto.RoleDTO
@@ -14,7 +13,7 @@ import com.restaurantclient.databinding.ActivityCreateUserBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class CreateUserActivity : AppCompatActivity() {
+class CreateUserActivity : BaseAdminActivity() {
 
     private lateinit var binding: ActivityCreateUserBinding
     private val createUserViewModel: CreateUserViewModel by viewModels()
@@ -31,9 +30,11 @@ class CreateUserActivity : AppCompatActivity() {
     }
 
     private fun setupToolbar() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.title = "Create New User"
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setupAdminToolbar(
+            binding.adminToolbar.toolbar,
+            getString(R.string.create_user_title),
+            showBackButton = true
+        )
     }
 
     private fun setupRoleSpinner() {

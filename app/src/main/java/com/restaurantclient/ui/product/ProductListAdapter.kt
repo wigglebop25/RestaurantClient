@@ -1,25 +1,32 @@
 package com.restaurantclient.ui.product
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.restaurantclient.data.dto.ProductResponse
 import com.restaurantclient.databinding.ItemProductBinding
 
-class ProductListAdapter(private val onClick: (ProductResponse) -> Unit) :
-    ListAdapter<ProductResponse, ProductListAdapter.ProductViewHolder>(ProductDiffCallback) {
+class ProductListAdapter(
+    private val onClick: (ProductResponse) -> Unit,
+    private val onAdminAction: ((View, ProductResponse) -> Unit)? = null,
+    private val isAdminMode: Boolean = false
+) : ListAdapter<ProductResponse, ProductListAdapter.ProductViewHolder>(ProductDiffCallback) {
 
-    class ProductViewHolder(private val binding: ItemProductBinding, val onClick: (ProductResponse) -> Unit) :
-        RecyclerView.ViewHolder(binding.root) {
+    class ProductViewHolder(
+        private val binding: ItemProductBinding,
+        private val onClick: (ProductResponse) -> Unit,
+        private val onAdminAction: ((View, ProductResponse) -> Unit)?,
+        private val isAdminMode: Boolean
+    ) : RecyclerView.ViewHolder(binding.root) {
         private var currentProduct: ProductResponse? = null
 
         init {
             itemView.setOnClickListener {
-                currentProduct?.let {
-                    onClick(it)
-                }
+                currentProduct?.let { onClick(it) }
             }
         }
 
@@ -28,17 +35,26 @@ class ProductListAdapter(private val onClick: (ProductResponse) -> Unit) :
             binding.productName.text = product.name
             binding.productDescription.text = product.description
             binding.productPrice.text = "$${product.price}"
+
+            binding.adminBadgeChip.isVisible = isAdminMode
+            binding.adminManageButton.isVisible = isAdminMode
+            if (isAdminMode) {
+                binding.adminManageButton.setOnClickListener { view ->
+                    currentProduct?.let { onAdminAction?.invoke(view, it) }
+                }
+            } else {
+                binding.adminManageButton.setOnClickListener(null)
+            }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val binding = ItemProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ProductViewHolder(binding, onClick)
+        return ProductViewHolder(binding, onClick, onAdminAction, isAdminMode)
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        val product = getItem(position)
-        holder.bind(product)
+        holder.bind(getItem(position))
     }
 }
 

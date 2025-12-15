@@ -2,6 +2,7 @@ package com.restaurantclient.data.repository
 
 import android.util.Log
 import com.restaurantclient.data.Result
+import com.restaurantclient.data.dto.ProductRequest
 import com.restaurantclient.data.dto.ProductResponse
 import com.restaurantclient.data.network.ApiService
 import javax.inject.Inject
@@ -35,6 +36,45 @@ class ProductRepository @Inject constructor(private val apiService: ApiService) 
                 Result.Success(response.body()!!)
             } else {
                 Result.Error(Exception("Failed to fetch product by ID: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun createProduct(request: ProductRequest): Result<ProductResponse> {
+        return try {
+            val response = apiService.createProduct(request)
+            if (response.isSuccessful) {
+                Result.Success(response.body()!!)
+            } else {
+                Result.Error(Exception("Failed to create product: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun updateProduct(productId: Int, request: ProductRequest): Result<ProductResponse> {
+        return try {
+            val response = apiService.updateProduct(productId, request)
+            if (response.isSuccessful) {
+                Result.Success(response.body()!!)
+            } else {
+                Result.Error(Exception("Failed to update product: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun deleteProduct(productId: Int): Result<Unit> {
+        return try {
+            val response = apiService.deleteProduct(productId)
+            if (response.isSuccessful) {
+                Result.Success(Unit)
+            } else {
+                Result.Error(Exception("Failed to delete product: ${response.code()}"))
             }
         } catch (e: Exception) {
             Result.Error(e)

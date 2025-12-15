@@ -1,6 +1,7 @@
 package com.restaurantclient.data.repository
 
 import com.restaurantclient.data.Result
+import com.restaurantclient.data.dto.AssignRoleRequest
 import com.restaurantclient.data.dto.CreateUserRequest
 import com.restaurantclient.data.dto.LoginDTO
 import com.restaurantclient.data.dto.LoginResponse
@@ -116,6 +117,23 @@ class UserRepository @Inject constructor(private val apiService: ApiService) {
                 Result.Success(Unit)
             } else {
                 Result.Error(Exception("Failed to delete user: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun assignRole(username: String, role: RoleDTO): Result<Unit> {
+        return try {
+            val roleName = when (role) {
+                RoleDTO.Admin -> "ADMIN"
+                RoleDTO.Customer -> "CUSTOMER"
+            }
+            val response = apiService.assignRole(AssignRoleRequest(username, roleName))
+            if (response.isSuccessful) {
+                Result.Success(Unit)
+            } else {
+                Result.Error(Exception("Failed to assign role: ${response.code()}"))
             }
         } catch (e: Exception) {
             Result.Error(e)

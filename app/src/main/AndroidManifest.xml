@@ -33,9 +33,18 @@
         <activity android:name=".ui.cart.ShoppingCartActivity" />
         <activity android:name=".ui.checkout.CheckoutActivity" />
         <activity android:name=".ui.order.OrderConfirmationActivity" />
-        <activity android:name=".ui.admin.AdminDashboardActivity" />
-        <activity android:name=".ui.admin.UserManagementActivity" />
-        <activity android:name=".ui.admin.CreateUserActivity" />
+        <activity
+            android:name=".ui.admin.AdminDashboardActivity"
+            android:theme="@style/Theme.RestaurantClient.Admin" />
+        <activity
+            android:name=".ui.admin.UserManagementActivity"
+            android:theme="@style/Theme.RestaurantClient.Admin" />
+        <activity
+            android:name=".ui.admin.CreateUserActivity"
+            android:theme="@style/Theme.RestaurantClient.Admin" />
+        <activity
+            android:name=".ui.admin.OrderManagementActivity"
+            android:theme="@style/Theme.RestaurantClient.Admin" />
 
     </application>
 

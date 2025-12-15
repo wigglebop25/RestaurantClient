@@ -6,19 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".ui.admin.AdminDashboardActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/primary_color"
-            app:titleTextColor="@android:color/white"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    </com.google.android.material.appbar.AppBarLayout>
+    <include
+        android:id="@+id/admin_toolbar"
+        layout="@layout/admin_toolbar" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -441,7 +431,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="24dp">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/add_user_button"
@@ -464,6 +454,34 @@
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
             </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recent Activity"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:layout_marginBottom="12dp" />
+
+            <LinearLayout
+                android:id="@+id/recent_users_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/recent_users_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No recent activity yet"
+                android:textAppearance="?attr/textAppearanceBody2"
+                android:textColor="@color/text_secondary"
+                android:gravity="center"
+                android:visibility="gone"
+                tools:visibility="gone"
+                android:layout_marginBottom="24dp" />
 
         </LinearLayout>
 

@@ -2,12 +2,15 @@ package com.restaurantclient.ui.user
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.restaurantclient.MainActivity
+import com.restaurantclient.R
+import com.restaurantclient.data.dto.RoleDTO
 import com.restaurantclient.databinding.ActivityUserProfileBinding
 import com.restaurantclient.ui.admin.AdminDashboardActivity
+import com.restaurantclient.ui.admin.OrderManagementActivity
 import com.restaurantclient.ui.admin.UserManagementActivity
 import com.restaurantclient.ui.auth.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,7 +19,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class UserProfileActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityUserProfileBinding
-    private val userViewModel: UserViewModel by viewModels()
     private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,38 +31,55 @@ class UserProfileActivity : AppCompatActivity() {
     }
 
     private fun setupUserInfo() {
-        // Load stored user info
         authViewModel.loadStoredUserInfo()
         
         val currentUser = authViewModel.getCurrentUser()
         val userRole = authViewModel.getUserRole()
 
-        // Display user information
-        binding.usernameText.text = currentUser?.username ?: "Unknown"
-        binding.roleText.text = when (userRole?.name) {
-            "Admin" -> "Administrator"
-            "Customer" -> "Customer"
-            else -> "Unknown Role"
+        binding.usernameText.text = currentUser?.username ?: getString(R.string.profile_unknown_username)
+        binding.roleChip.text = when (userRole) {
+            RoleDTO.Admin -> getString(R.string.role_admin_label)
+            RoleDTO.Customer -> getString(R.string.role_customer_label)
+            else -> getString(R.string.profile_unknown_role)
         }
-        binding.createdAtText.text = currentUser?.createdAt ?: "Unknown"
+        binding.roleChip.isVisible = userRole != null
+        binding.createdAtText.text = currentUser?.createdAt ?: getString(R.string.label_unknown_date)
 
-        // Show/hide admin features based on role
         if (authViewModel.isAdmin()) {
-            // Show admin-specific UI elements (implement in layout if needed)
-            setupAdminFeatures()
+            setupAdminShortcuts()
         } else {
-            // Hide admin features for customers
-            hideAdminFeatures()
+            setupCustomerShortcuts()
         }
     }
 
-    private fun setupAdminFeatures() {
-        // Add admin-specific buttons/features here if needed in future
-        // For now, admin features are accessible through dashboard
+    private fun setupAdminShortcuts() {
+        binding.adminActionsCard.isVisible = true
+        binding.customerActionsCard.isVisible = false
+
+        binding.adminDashboardButton.setOnClickListener {
+            startActivity(Intent(this, AdminDashboardActivity::class.java))
+        }
+        binding.adminUsersButton.setOnClickListener {
+            startActivity(Intent(this, UserManagementActivity::class.java))
+        }
+        binding.adminOrdersButton.setOnClickListener {
+            startActivity(Intent(this, OrderManagementActivity::class.java))
+        }
     }
 
-    private fun hideAdminFeatures() {
-        // Hide any admin-specific UI elements
+    private fun setupCustomerShortcuts() {
+        binding.adminActionsCard.isVisible = false
+        binding.customerActionsCard.isVisible = true
+
+        binding.customerOrdersButton.setOnClickListener {
+            startActivity(Intent(this, com.restaurantclient.ui.order.MyOrdersActivity::class.java))
+        }
+        binding.customerCartButton.setOnClickListener {
+            startActivity(Intent(this, com.restaurantclient.ui.cart.ShoppingCartActivity::class.java))
+        }
+        binding.customerCheckoutButton.setOnClickListener {
+            startActivity(Intent(this, com.restaurantclient.ui.checkout.CheckoutActivity::class.java))
+        }
     }
 
     private fun setupClickListeners() {

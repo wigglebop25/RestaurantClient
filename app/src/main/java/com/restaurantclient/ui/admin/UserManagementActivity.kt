@@ -9,21 +9,21 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.restaurantclient.MainActivity
 import com.restaurantclient.R
 import com.restaurantclient.data.Result
+import com.restaurantclient.data.dto.RoleDTO
+import com.restaurantclient.data.dto.UserDTO
 import com.restaurantclient.databinding.ActivityUserManagementBinding
-import com.restaurantclient.ui.auth.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class UserManagementActivity : AppCompatActivity() {
+class UserManagementActivity : BaseAdminActivity() {
 
     private lateinit var binding: ActivityUserManagementBinding
     private val userManagementViewModel: UserManagementViewModel by viewModels()
-    private val authViewModel: AuthViewModel by viewModels()
     private lateinit var userManagementAdapter: UserManagementAdapter
 
     private val createUserLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -48,16 +48,17 @@ class UserManagementActivity : AppCompatActivity() {
     }
 
     private fun setupToolbar() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.title = "User Management"
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setupAdminToolbar(
+            binding.adminToolbar.toolbar,
+            getString(R.string.user_management_title),
+            showBackButton = true
+        )
     }
 
     private fun setupRecyclerView() {
         userManagementAdapter = UserManagementAdapter(
             onEditUser = { user ->
-                // TODO: Implement edit user functionality
-                Toast.makeText(this, "Edit user: ${user.username}", Toast.LENGTH_SHORT).show()
+                showEditUserDialog(user)
             },
             onDeleteUser = { user ->
                 showDeleteConfirmationDialog(user.username) {
@@ -118,9 +119,39 @@ class UserManagementActivity : AppCompatActivity() {
             }
         }
 
+        userManagementViewModel.updateUserResult.observe(this) { result ->
+            when (result) {
+                is Result.Success -> {
+                    Toast.makeText(this, getString(R.string.edit_user_success), Toast.LENGTH_SHORT).show()
+                    userManagementViewModel.loadUsers()
+                }
+                is Result.Error -> {
+                    Toast.makeText(this, getString(R.string.edit_user_error, result.exception.message), Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
         userManagementViewModel.loading.observe(this) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
+    }
+
+    private fun showEditUserDialog(user: UserDTO) {
+        val roles = RoleDTO.values()
+        val labels = roles.map { it.name.uppercase() }.toTypedArray()
+        var selectedIndex = roles.indexOf(user.role ?: RoleDTO.Customer).takeIf { it >= 0 } ?: 0
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.edit_user_title, user.username))
+            .setSingleChoiceItems(labels, selectedIndex) { _, which ->
+                selectedIndex = which
+            }
+            .setPositiveButton(R.string.action_save) { _, _ ->
+                val selectedRole = roles[selectedIndex]
+                userManagementViewModel.updateUserRole(user.username, selectedRole)
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
     }
 
     private fun showDeleteConfirmationDialog(username: String, onConfirm: () -> Unit) {
