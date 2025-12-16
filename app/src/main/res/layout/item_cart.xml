@@ -18,7 +18,7 @@
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/backgrounds/scenic" />
+            tools:src="@drawable/salmon_sashimi" />
 
         <TextView
             android:id="@+id/product_name"

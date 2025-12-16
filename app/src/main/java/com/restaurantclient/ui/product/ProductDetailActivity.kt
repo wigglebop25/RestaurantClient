@@ -1,7 +1,6 @@
 package com.restaurantclient.ui.product
 
 import android.os.Bundle
-import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -25,7 +24,6 @@ class ProductDetailActivity : AppCompatActivity() {
     lateinit var cartManager: CartManager
 
     private var quantity: Int = 1
-    private var spicyLevel: Int = 50
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,22 +37,10 @@ class ProductDetailActivity : AppCompatActivity() {
             return
         }
 
-        setupSpicySlider()
         setupQuantityControls()
         setupObservers()
         setupClickListeners()
         productViewModel.fetchProductDetails(productId)
-    }
-
-    private fun setupSpicySlider() {
-        binding.spicySlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                spicyLevel = progress
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
     }
 
     private fun setupQuantityControls() {
