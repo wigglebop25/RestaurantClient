@@ -20,7 +20,29 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:windowBackground">@color/brand_background</item>
+        
+        <!-- Toolbar Style -->
+        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
+        <item name="appBarLayoutStyle">@style/Widget.App.AppBarLayout</item>
     </style>
 
     <style name="Theme.RestaurantClient" parent="Base.Theme.RestaurantClient" />
+    
+    <!-- AppBarLayout Style -->
+    <style name="Widget.App.AppBarLayout" parent="Widget.Material3.AppBarLayout">
+        <item name="android:background">?attr/colorSurfaceContainer</item>
+        <item name="elevation">4dp</item>
+    </style>
+    
+    <!-- Toolbar Style -->
+    <style name="Widget.App.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="android:background">?attr/colorSurfaceContainer</item>
+        <item name="titleTextColor">?attr/colorOnSurface</item>
+        <item name="subtitleTextColor">?attr/colorOnSurfaceVariant</item>
+        <item name="navigationIconTint">?attr/colorOnSurface</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+    
+    <!-- Surface Container colors for Material 3 -->
+    <color name="brand_surface_container">@color/brand_surface_variant</color>
 </resources>

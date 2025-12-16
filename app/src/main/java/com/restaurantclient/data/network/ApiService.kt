@@ -1,6 +1,9 @@
 package com.restaurantclient.data.network
 
 import com.restaurantclient.data.dto.AssignRoleRequest
+import com.restaurantclient.data.dto.CategoryDTO
+import com.restaurantclient.data.dto.CategoryProductRequest
+import com.restaurantclient.data.dto.CategoryRequest
 import com.restaurantclient.data.dto.CreateOrderRequest
 import com.restaurantclient.data.dto.CreateUserRequest
 import com.restaurantclient.data.dto.LoginDTO
@@ -112,4 +115,34 @@ interface ApiService {
 
     @POST("api/v1/roles/assign")
     suspend fun assignRole(@Body assignRoleRequest: AssignRoleRequest): Response<Unit>
+
+    // Categories
+    @GET("api/v1/categories")
+    suspend fun getAllCategories(): Response<List<CategoryDTO>>
+
+    @POST("api/v1/categories")
+    suspend fun createCategory(@Body categoryRequest: CategoryRequest): Response<CategoryDTO>
+
+    @PUT("api/v1/categories/{id}")
+    suspend fun updateCategory(@Path("id") categoryId: Int, @Body categoryRequest: CategoryRequest): Response<CategoryDTO>
+
+    @DELETE("api/v1/categories/{id}")
+    suspend fun deleteCategory(@Path("id") categoryId: Int): Response<Unit>
+
+    @POST("api/v1/categories/product")
+    suspend fun addProductToCategory(@Body request: CategoryProductRequest): Response<Unit>
+
+    @POST("api/v1/categories/product/remove")
+    suspend fun removeProductFromCategory(@Body request: CategoryProductRequest): Response<Unit>
+
+    @GET("api/v1/categories/{id}/products")
+    suspend fun getProductsByCategory(@Path("id") categoryId: Int): Response<List<ProductResponse>>
+
+    // Additional Order Endpoints
+    @GET("api/v1/orders/role/{role_name}")
+    suspend fun getOrdersByRole(@Path("role_name") roleName: String): Response<List<OrderResponse>>
+
+    // Health Check
+    @GET("api")
+    suspend fun healthCheck(): Response<String>
 }
