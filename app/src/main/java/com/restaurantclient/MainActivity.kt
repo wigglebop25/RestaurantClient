@@ -89,12 +89,12 @@ class MainActivity : AppCompatActivity() {
         val username = authViewModel.getCurrentUser()?.username ?: ""
         Log.d("MainActivity", "🔍 Determining role for username: '$username'")
         
-        // TODO: FOR DEBUGGING - Force admin role if you know you should be admin
-        // Uncomment the next 4 lines to force admin role for testing:
-        // Log.d("MainActivity", "🧪 DEBUG: Forcing admin role for testing")
-        // authViewModel.setUserRole(RoleDTO.Admin)
-        // goToAdminDashboard()
-        // return
+        if (shouldForceAdminRole(username)) {
+            Log.w("MainActivity", "🧪 Debug override enabled - forcing admin role")
+            authViewModel.setUserRole(RoleDTO.Admin)
+            goToAdminDashboard()
+            return
+        }
         
         // Smart admin detection based on username patterns
         val isLikelyAdmin = username.contains("admin", ignoreCase = true) || 
@@ -118,6 +118,26 @@ class MainActivity : AppCompatActivity() {
             authViewModel.setUserRole(RoleDTO.Customer)
             goToProductList()
         }
+    }
+    
+    private fun shouldForceAdminRole(username: String): Boolean {
+        if (!BuildConfig.DEBUG) return false
+        if (!BuildConfig.FORCE_ADMIN_ROLE) return false
+        
+        val overrideUsername = BuildConfig.FORCE_ADMIN_USERNAME.trim()
+        if (overrideUsername.isEmpty()) {
+            Log.w("MainActivity", "🧪 Debug override active with no username filter - granting admin access")
+            return true
+        }
+        
+        val matches = overrideUsername.equals(username, ignoreCase = true)
+        if (!matches) {
+            Log.w(
+                "MainActivity",
+                "🧪 Debug override enabled but username '$username' does not match override '$overrideUsername'"
+            )
+        }
+        return matches
     }
     
     private fun isLikelyFirstUser(username: String): Boolean {

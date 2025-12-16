@@ -1,5 +1,7 @@
 package com.restaurantclient.data.dto
 
+import java.io.Serializable
+
 data class OrderResponse(
     val order_id: Int,
     val user_id: Int,
@@ -9,4 +11,4 @@ data class OrderResponse(
     val status: String?,
     val created_at: String?,
     val updated_at: String?
-)
+) : Serializable

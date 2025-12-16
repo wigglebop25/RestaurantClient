@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- TODO: Modern UI implementation is pending. A modern color palette should be defined here. -->
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="brand_primary">#6750A4</color>
+    <color name="brand_on_primary">#FFFFFFFF</color>
+    <color name="brand_primary_container">#EADDFF</color>
+    <color name="brand_on_primary_container">#21005D</color>
+    <color name="brand_secondary">#625B71</color>
+    <color name="brand_on_secondary">#FFFFFFFF</color>
+    <color name="brand_secondary_container">#E8DEF8</color>
+    <color name="brand_on_secondary_container">#1D192B</color>
+    <color name="brand_background">#FEF7FF</color>
+    <color name="brand_on_background">#1D1B20</color>
+    <color name="brand_surface">#FFFBFF</color>
+    <color name="brand_on_surface">#1C1B1F</color>
+    <color name="brand_surface_variant">#E7E0EC</color>
+    <color name="brand_on_surface_variant">#49454F</color>
+    <color name="brand_outline">#79747E</color>
+    <color name="brand_outline_variant">#C7C5D0</color>
+
+    <color name="login_gradient_start">#6C63FF</color>
+    <color name="login_gradient_end">#2CB67D</color>
+
+    <color name="order_card_background">@color/brand_surface</color>
+    <color name="order_card_stroke">@color/brand_outline_variant</color>
+    <color name="chip_price_background">@color/brand_primary_container</color>
+    <color name="chip_price_text">@color/brand_on_primary_container</color>
 </resources>

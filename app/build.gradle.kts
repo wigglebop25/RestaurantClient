@@ -19,6 +19,9 @@ val apiBaseUrl = envProperties.getProperty("API_BASE_URL")
     ?: error("API_BASE_URL is not configured. Add it to .env/.env or as an environment variable.")
 
 val buildConfigBaseUrl = apiBaseUrl.trim().replace("\"", "\\\"")
+val debugForceAdminRole = (project.findProperty("forceAdminRole") as? String)?.equals("true", ignoreCase = true) ?: false
+val debugForceAdminUsernameRaw = (project.findProperty("forceAdminUsername") as? String)?.trim() ?: ""
+val debugForceAdminUsername = debugForceAdminUsernameRaw.replace("\"", "\\\"")
 
 android {
     namespace = "com.restaurantclient"
@@ -36,12 +39,18 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("boolean", "FORCE_ADMIN_ROLE", debugForceAdminRole.toString())
+            buildConfigField("String", "FORCE_ADMIN_USERNAME", "\"$debugForceAdminUsername\"")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("boolean", "FORCE_ADMIN_ROLE", "false")
+            buildConfigField("String", "FORCE_ADMIN_USERNAME", "\"\"")
         }
     }
     compileOptions {

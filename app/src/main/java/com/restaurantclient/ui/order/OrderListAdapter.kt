@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.restaurantclient.data.dto.OrderResponse
 import com.restaurantclient.databinding.ItemOrderBinding
+import java.math.BigDecimal
+import java.text.NumberFormat
 
 class OrderListAdapter(private val onClick: (OrderResponse) -> Unit) :
     ListAdapter<OrderResponse, OrderListAdapter.OrderViewHolder>(OrderDiffCallback) {
@@ -29,6 +31,16 @@ class OrderListAdapter(private val onClick: (OrderResponse) -> Unit) :
             binding.orderStatus.text = order.status ?: "Pending"
             binding.orderDate.text = order.created_at?.substringBefore("T") ?: ""
             binding.orderItemCount.text = "${order.quantity} items"
+            binding.orderTotal.text = formatTotal(order.total_amount)
+        }
+
+        private fun formatTotal(total: String): String {
+            return runCatching {
+                val amount = BigDecimal(total)
+                NumberFormat.getCurrencyInstance().format(amount)
+            }.getOrElse {
+                "\$${total}"
+            }
         }
     }
 

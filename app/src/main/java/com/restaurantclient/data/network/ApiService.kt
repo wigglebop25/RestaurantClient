@@ -14,6 +14,7 @@ import com.restaurantclient.data.dto.RoleDTO
 import com.restaurantclient.data.dto.RoleRequest
 import com.restaurantclient.data.dto.UpdateOrderRequest
 import com.restaurantclient.data.dto.UserDTO
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -78,7 +79,7 @@ interface ApiService {
     suspend fun searchUserByName(@Query("username") username: String): Response<List<UserDTO>>
 
     @POST("api/v1/users/create")
-    suspend fun createUser(@Body createUserRequest: CreateUserRequest): Response<UserDTO>
+    suspend fun createUser(@Body createUserRequest: CreateUserRequest): Response<okhttp3.ResponseBody>
 
     @POST("api/v1/users/{id}")
     suspend fun updateUser(@Path("id") userId: Int, @Body userDTO: UserDTO): Response<UserDTO>

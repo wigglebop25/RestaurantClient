@@ -43,4 +43,24 @@
     <string name="profile_unknown_role">Unknown role</string>
     <string name="role_admin_label">Administrator</string>
     <string name="role_customer_label">Customer</string>
+    <string name="action_login">Sign in</string>
+    <string name="action_register">Create account</string>
+    <string name="login_title">Welcome back</string>
+    <string name="login_subtitle">Sign in to track your orders and keep shopping.</string>
+    <string name="login_username_hint">Username</string>
+    <string name="login_password_hint">Password</string>
+    <string name="orders_screen_subtitle">Track your recent purchases</string>
+    <string name="orders_summary_title">Latest activity</string>
+    <string name="orders_summary_hint">Tap any order to open the detailed receipt.</string>
+    <string name="order_detail_title">Order details</string>
+    <string name="order_detail_overview_title">Order snapshot</string>
+    <string name="order_detail_overview_subtitle">Everything you need to know about this purchase.</string>
+    <string name="order_detail_number_label">Order</string>
+    <string name="order_detail_status_label">Status</string>
+    <string name="order_detail_quantity_label">Quantity</string>
+    <string name="order_detail_total_label">Total</string>
+    <string name="order_detail_created_label">Placed</string>
+    <string name="order_detail_updated_label">Last updated</string>
+    <string name="order_detail_unknown_value">Unknown</string>
+    <string name="order_detail_error_missing">Unable to load order details. Please try again.</string>
 </resources>

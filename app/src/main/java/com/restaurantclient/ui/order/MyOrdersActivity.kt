@@ -27,9 +27,10 @@ class MyOrdersActivity : AppCompatActivity() {
         binding = ActivityMyOrdersBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.ordersToolbar.setNavigationOnClickListener { finish() }
+
         orderListAdapter = OrderListAdapter { order ->
-            Toast.makeText(this, "Clicked on Order #${order.order_id}", Toast.LENGTH_SHORT).show()
-            // TODO: Navigate to OrderDetailActivity
+            startActivity(OrderDetailActivity.createIntent(this, order))
         }
         binding.ordersRecyclerView.adapter = orderListAdapter
 
