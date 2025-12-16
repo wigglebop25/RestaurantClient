@@ -122,7 +122,9 @@ class FoodDetailActivity : AppCompatActivity() {
             val totalPrice = basePrice * quantity
             binding.priceButton.text = String.format("$%.2f", totalPrice)
         } catch (e: Exception) {
-            binding.priceButton.text = productPrice
+            // Fallback with proper formatting
+            val basePrice = productPrice.toDoubleOrNull() ?: 0.0
+            binding.priceButton.text = String.format("$%.2f", basePrice)
         }
     }
 

@@ -31,7 +31,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:tint="@color/food_dark_text"
-                android:contentDescription="@string/action_delete" />
+                android:contentDescription="@string/navigate_back" />
 
             <ImageButton
                 android:id="@+id/search_button"
