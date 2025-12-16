@@ -100,6 +100,10 @@ class ProductDetailActivity : AppCompatActivity() {
                     binding.productName.text = product.name
                     binding.productDescription.text = product.description
                     binding.productPrice.text = "$${product.price}"
+                    
+                    // Load product image from local resources
+                    val imageResource = com.restaurantclient.utils.ImageMapper.getDrawableResourceOrPlaceholder(product.product_image_uri)
+                    binding.productImage.setImageResource(imageResource)
 
                     // Generate random rating and time for demo
                     val rating = String.format("%.1f", Random.nextDouble(MIN_RATING, MAX_RATING))

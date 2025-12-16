@@ -29,6 +29,10 @@ class CartAdapter(
                 productName.text = cartItem.product.name
                 productPrice.text = "$${cartItem.product.price}"
                 quantityText.text = cartItem.quantity.toString()
+                
+                // Load product image from local resources
+                val imageResource = com.restaurantclient.utils.ImageMapper.getDrawableResourceOrPlaceholder(cartItem.product.product_image_uri)
+                productImage.setImageResource(imageResource)
 
                 // Remove item
                 removeButton.setOnClickListener {

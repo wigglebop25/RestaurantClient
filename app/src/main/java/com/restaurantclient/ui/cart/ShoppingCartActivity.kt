@@ -49,6 +49,7 @@ class ShoppingCartActivity : AppCompatActivity() {
                 cartManager.removeFromCart(productId)
             }
         )
+        binding.cartRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         binding.cartRecyclerView.adapter = cartAdapter
     }
 

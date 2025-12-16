@@ -32,6 +32,7 @@ class MyOrdersActivity : AppCompatActivity() {
         orderListAdapter = OrderListAdapter { order ->
             startActivity(OrderDetailActivity.createIntent(this, order))
         }
+        binding.ordersRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         binding.ordersRecyclerView.adapter = orderListAdapter
 
         setupObservers()

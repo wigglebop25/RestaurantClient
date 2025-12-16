@@ -51,6 +51,7 @@ class CheckoutActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         // Read-only cart adapter for checkout
         cartAdapter = CheckoutCartAdapter()
+        binding.orderSummaryRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         binding.orderSummaryRecyclerView.adapter = cartAdapter
     }
 

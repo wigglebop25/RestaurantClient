@@ -28,6 +28,10 @@ class CheckoutCartAdapter : ListAdapter<CartItem, CheckoutCartAdapter.CartViewHo
                 productPrice.text = "$${cartItem.product.price} x ${cartItem.quantity}"
                 quantityText.text = cartItem.quantity.toString()
                 
+                // Load product image from local resources
+                val imageResource = com.restaurantclient.utils.ImageMapper.getDrawableResourceOrPlaceholder(cartItem.product.product_image_uri)
+                productImage.setImageResource(imageResource)
+                
                 // Hide controls in checkout mode
                 removeButton.visibility = View.GONE
                 decrementButton.visibility = View.GONE

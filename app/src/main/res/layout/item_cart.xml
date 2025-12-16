@@ -47,7 +47,9 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_menu_delete"
+            android:src="@drawable/ic_delete"
+            android:contentDescription="@string/remove_item"
+            app:tint="@color/food_primary_red"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -64,9 +66,17 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/decrement_button"
                 style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="48dp"
-                android:layout_height="wrap_content"
-                android:text="-" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                app:icon="@drawable/ic_remove"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="20dp"
+                app:strokeColor="@color/food_primary_red"
+                app:iconTint="@color/food_primary_red" />
 
             <TextView
                 android:id="@+id/quantity_text"
@@ -80,9 +90,17 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/increment_button"
                 style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="48dp"
-                android:layout_height="wrap_content"
-                android:text="+" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                app:icon="@drawable/ic_add"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="20dp"
+                app:strokeColor="@color/food_primary_red"
+                app:iconTint="@color/food_primary_red" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -42,6 +42,7 @@ class OrderManagementActivity : BaseAdminActivity() {
         adapter = OrderManagementAdapter { order, status ->
             viewModel.updateOrderStatus(order.order_id, status.uppercase())
         }
+        binding.ordersRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         binding.ordersRecyclerView.adapter = adapter
     }
 
