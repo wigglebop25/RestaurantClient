@@ -117,15 +117,9 @@ class FoodDetailActivity : AppCompatActivity() {
     }
 
     private fun updatePriceDisplay() {
-        try {
-            val basePrice = productPrice.toDoubleOrNull() ?: 0.0
-            val totalPrice = basePrice * quantity
-            binding.priceButton.text = String.format("$%.2f", totalPrice)
-        } catch (e: Exception) {
-            // Fallback with proper formatting
-            val basePrice = productPrice.toDoubleOrNull() ?: 0.0
-            binding.priceButton.text = String.format("$%.2f", basePrice)
-        }
+        val basePrice = productPrice.toDoubleOrNull() ?: 0.0
+        val totalPrice = basePrice * quantity
+        binding.priceButton.text = String.format("$%.2f", totalPrice)
     }
 
     private fun placeOrder() {
