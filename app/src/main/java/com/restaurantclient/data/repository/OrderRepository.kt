@@ -81,4 +81,17 @@ class OrderRepository @Inject constructor(private val apiService: ApiService) {
             Result.Error(e)
         }
     }
+
+    suspend fun getOrdersByRole(roleName: String): Result<List<OrderResponse>> {
+        return try {
+            val response = apiService.getOrdersByRole(roleName)
+            if (response.isSuccessful) {
+                Result.Success(response.body() ?: emptyList())
+            } else {
+                Result.Error(Exception("Failed to get orders by role: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
 }
