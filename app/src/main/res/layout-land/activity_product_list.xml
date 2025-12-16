@@ -303,8 +303,8 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:src="@drawable/ic_cart"
-        android:contentDescription="view_cart"
+        android:src="@drawable/ic_add"
+        android:contentDescription="@string/nav_add"
         app:backgroundTint="@color/food_primary_red"
         app:tint="@color/white"
         app:fabSize="normal" />

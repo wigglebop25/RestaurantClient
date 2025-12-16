@@ -85,9 +85,9 @@
     <string name="spicy_mild">Mild</string>
     <string name="spicy_hot">Hot</string>
     <string name="portion_label">Portion</string>
-    <string name="order_now_button">ORDER NOW</string>
-    <string name="success_title">Success !</string>
-    <string name="success_message">Your payment was successful. A receipt for this purchase has been sent to your email.</string>
+    <string name="order_now_button">ADD TO CART</string>
+    <string name="success_title">Added to cart</string>
+    <string name="success_message">The item was added to your cart.</string>
     <string name="go_back_button">Go Back</string>
     <string name="estimated_time">%1$d mins</string>
     <string name="navigate_back">Navigate back</string>
