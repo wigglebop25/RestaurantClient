@@ -174,7 +174,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun goToProductList() {
-        val intent = Intent(this, ProductListActivity::class.java)
+        // Navigate to the modern food delivery UI
+        val intent = Intent(this, com.restaurantclient.ui.food.FoodHomeActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
