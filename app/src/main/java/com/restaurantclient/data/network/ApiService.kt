@@ -57,7 +57,7 @@ interface ApiService {
 
     // Orders
     @POST("api/v1/orders")
-    suspend fun createOrder(@Body createOrderRequest: CreateOrderRequest): Response<OrderResponse>
+    suspend fun createOrder(@Body createOrderRequest: CreateOrderRequest): Response<ResponseBody>
 
     @GET("api/v1/orders/user/{username}")
     suspend fun getUserOrders(@Path("username") username: String): Response<List<OrderResponse>>

@@ -14,7 +14,18 @@ class OrderRepository @Inject constructor(private val apiService: ApiService) {
         return try {
             val response = apiService.createOrder(createOrderRequest)
             if (response.isSuccessful) {
-                Result.Success(response.body()!!)
+                // Server returns plain text "Orders created", create dummy response
+                val dummyResponse = OrderResponse(
+                    order_id = 0,
+                    user_id = 0,
+                    product_id = 0,
+                    quantity = 0,
+                    total_amount = "0",
+                    status = "pending",
+                    created_at = null,
+                    updated_at = null
+                )
+                Result.Success(dummyResponse)
             } else {
                 Result.Error(Exception("Failed to create order: ${response.code()}"))
             }
