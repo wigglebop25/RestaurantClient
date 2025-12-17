@@ -15,9 +15,15 @@ class ProductRepository @Inject constructor(private val apiService: ApiService) 
             val response = apiService.getAllProducts()
             Log.d("ProductRepository", "API Response code: ${response.code()}")
             if (response.isSuccessful) {
-                val products = response.body()!!
-                Log.d("ProductRepository", "Successfully fetched ${products.size} products")
-                Result.Success(products)
+                val products = response.body()
+                if (products != null) {
+                    Log.d("ProductRepository", "Successfully fetched ${products.size} products")
+                    Result.Success(products)
+                } else {
+                    val errorMsg = "Failed to fetch products: Response body is null"
+                    Log.e("ProductRepository", errorMsg)
+                    Result.Error(Exception(errorMsg))
+                }
             } else {
                 val errorMsg = "Failed to fetch products: HTTP ${response.code()}"
                 Log.e("ProductRepository", errorMsg)
@@ -33,7 +39,12 @@ class ProductRepository @Inject constructor(private val apiService: ApiService) 
         return try {
             val response = apiService.getProductById(productId)
             if (response.isSuccessful) {
-                Result.Success(response.body()!!)
+                val product = response.body()
+                if (product != null) {
+                    Result.Success(product)
+                } else {
+                    Result.Error(Exception("Failed to fetch product by ID: Response body is null"))
+                }
             } else {
                 Result.Error(Exception("Failed to fetch product by ID: ${response.code()}"))
             }
@@ -46,7 +57,12 @@ class ProductRepository @Inject constructor(private val apiService: ApiService) 
         return try {
             val response = apiService.createProduct(request)
             if (response.isSuccessful) {
-                Result.Success(response.body()!!)
+                val product = response.body()
+                if (product != null) {
+                    Result.Success(product)
+                } else {
+                    Result.Error(Exception("Failed to create product: Response body is null"))
+                }
             } else {
                 Result.Error(Exception("Failed to create product: ${response.code()}"))
             }
@@ -59,7 +75,12 @@ class ProductRepository @Inject constructor(private val apiService: ApiService) 
         return try {
             val response = apiService.updateProduct(productId, request)
             if (response.isSuccessful) {
-                Result.Success(response.body()!!)
+                val product = response.body()
+                if (product != null) {
+                    Result.Success(product)
+                } else {
+                    Result.Error(Exception("Failed to update product: Response body is null"))
+                }
             } else {
                 Result.Error(Exception("Failed to update product: ${response.code()}"))
             }
@@ -87,9 +108,15 @@ class ProductRepository @Inject constructor(private val apiService: ApiService) 
             val response = apiService.getProductsByCategory(categoryId)
             Log.d("ProductRepository", "API Response code: ${response.code()}")
             if (response.isSuccessful) {
-                val products = response.body()!!
-                Log.d("ProductRepository", "Successfully fetched ${products.size} products for category $categoryId")
-                Result.Success(products)
+                val products = response.body()
+                if (products != null) {
+                    Log.d("ProductRepository", "Successfully fetched ${products.size} products for category $categoryId")
+                    Result.Success(products)
+                } else {
+                    val errorMsg = "Failed to fetch products by category: Response body is null"
+                    Log.e("ProductRepository", errorMsg)
+                    Result.Error(Exception(errorMsg))
+                }
             } else {
                 val errorMsg = "Failed to fetch products by category: HTTP ${response.code()}"
                 Log.e("ProductRepository", errorMsg)
