@@ -15,92 +15,115 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!-- Product Image -->
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/product_image"
+            <!-- Blur Target for Product Image -->
+            <eightbitlab.com.blurview.BlurTarget
+                android:id="@+id/product_blur_target"
                 android:layout_width="0dp"
-                android:layout_height="280dp"
-                android:scaleType="centerCrop"
-                android:background="@color/food_light_gray"
+                android:layout_height="400dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/tonkotsu_ramen" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <!-- Product Title -->
-            <TextView
-                android:id="@+id/product_name"
+                <!-- Product Image -->
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/product_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:background="@color/food_light_gray"
+                    tools:src="@drawable/tonkotsu_ramen" />
+            </eightbitlab.com.blurview.BlurTarget>
+
+            <!-- Glass Info Card Overlay on Image -->
+            <eightbitlab.com.blurview.BlurView
+                android:id="@+id/product_info_glass"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:textColor="@color/food_dark_text"
-                android:textSize="24sp"
-                android:textStyle="bold"
+                android:layout_marginTop="300dp"
+                android:elevation="8dp"
+                app:blurOverlayColor="#00FFFFFF"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/product_image"
-                tools:text="@string/tonkotsu_ramen" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <!-- Rating and Time -->
-            <LinearLayout
-                android:id="@+id/rating_time_section"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/product_name">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_star"
-                    android:contentDescription="@string/rating_content_description"
-                    app:tint="@color/food_star_orange" />
-
-                <TextView
-                    android:id="@+id/rating_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:textColor="@color/food_dark_text"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    tools:text="4.5" />
-
+                <!-- Glass Border -->
                 <View
-                    android:layout_width="4dp"
-                    android:layout_height="4dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginEnd="12dp"
-                    android:background="@color/food_text_secondary" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/glass_card_border" />
 
-                <TextView
-                    android:id="@+id/time_text"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/food_text_secondary"
-                    android:textSize="14sp"
-                    tools:text="26 mins" />
-            </LinearLayout>
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
-            <!-- Price -->
-            <TextView
-                android:id="@+id/product_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="16dp"
-                android:textColor="@color/food_primary_red"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rating_time_section"
-                tools:text="$19.99" />
+                    <!-- Product Title -->
+                    <TextView
+                        android:id="@+id/product_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/food_dark_text"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        tools:text="@string/tonkotsu_ramen" />
+
+                    <!-- Rating and Time -->
+                    <LinearLayout
+                        android:id="@+id/rating_time_section"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_star"
+                            android:contentDescription="@string/rating_content_description"
+                            app:tint="@color/food_star_orange" />
+
+                        <TextView
+                            android:id="@+id/rating_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:textColor="@color/food_dark_text"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            tools:text="4.5" />
+
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="4dp"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginEnd="12dp"
+                            android:background="@color/food_text_secondary" />
+
+                        <TextView
+                            android:id="@+id/time_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/food_text_secondary"
+                            android:textSize="14sp"
+                            tools:text="26 mins" />
+                    </LinearLayout>
+
+                    <!-- Price -->
+                    <TextView
+                        android:id="@+id/product_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:textColor="@color/food_primary_red"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        tools:text="$19.99" />
+                </LinearLayout>
+            </eightbitlab.com.blurview.BlurView>
 
             <!-- Description -->
             <TextView
@@ -108,14 +131,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginEnd="16dp"
                 android:textColor="@color/food_text_secondary"
                 android:textSize="14sp"
                 android:lineSpacingExtra="4dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/product_price"
+                app:layout_constraintTop_toBottomOf="@id/product_info_glass"
                 tools:text="@string/rich_pork_bone_broth_chashu_pork_bamboo_shoots_and_a_soft_boiled_egg" />
 
             <!-- Portion Control Section -->

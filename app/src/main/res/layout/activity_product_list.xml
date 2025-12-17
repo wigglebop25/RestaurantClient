@@ -170,18 +170,65 @@
         android:layout_gravity="center"
         tools:visibility="gone" />
 
-    <!-- Customer FAB for Cart (Bottom Right) -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_cart"
+    <!-- Glass FAB Container with Badge -->
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:src="@drawable/ic_cart"
-        android:contentDescription="@string/view_cart"
-        app:backgroundTint="@color/food_primary_red"
-        app:tint="@color/white"
-        app:fabSize="normal" />
+        android:layout_marginBottom="16dp">
+
+        <!-- BlurView as FAB Background (Glass Effect) -->
+        <eightbitlab.com.blurview.BlurView
+            android:id="@+id/fab_blur_container"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:elevation="8dp"
+            app:blurOverlayColor="#00FFFFFF">
+
+            <!-- Glass Border Overlay -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/glass_fab_border" />
+
+            <!-- Icon Only (No FAB background) -->
+            <ImageView
+                android:id="@+id/fab_cart_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_cart"
+                android:contentDescription="@string/view_cart"
+                app:tint="@color/food_primary_red" />
+                
+            <!-- Invisible clickable overlay -->
+            <View
+                android:id="@+id/fab_cart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true" />
+        </eightbitlab.com.blurview.BlurView>
+
+        <!-- Cart Badge Counter -->
+        <TextView
+            android:id="@+id/cart_badge"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="2dp"
+            android:background="@drawable/badge_background"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:elevation="12dp"
+            android:visibility="gone"
+            tools:text="3"
+            tools:visibility="visible" />
+    </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

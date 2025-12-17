@@ -9,6 +9,7 @@ import com.restaurantclient.data.Result
 import com.restaurantclient.data.dto.LoginDTO
 import com.restaurantclient.data.dto.NewUserDTO
 import com.restaurantclient.databinding.ActivityLoginBinding
+import com.restaurantclient.ui.common.setupGlassEffect
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,6 +23,7 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupGlassUI()
         setupObservers()
 
         binding.loginButton.setOnClickListener {
@@ -49,6 +51,13 @@ class LoginActivity : AppCompatActivity() {
             binding.progressBar.visibility = View.VISIBLE
             authViewModel.register(NewUserDTO(username, password))
         }
+    }
+    
+    private fun setupGlassUI() {
+        // Setup glass effect for login card with 25f blur radius
+        binding.loginGlassCard.setupGlassEffect(25f)
+        binding.loginGlassCard.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND)
+        binding.loginGlassCard.clipToOutline = true
     }
 
     private fun setupObservers() {

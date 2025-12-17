@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.restaurantclient.data.Result
 import com.restaurantclient.data.TokenManager
 import com.restaurantclient.databinding.ActivityMyOrdersBinding
+import com.restaurantclient.ui.common.setupGlassEffect
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -29,6 +30,8 @@ class MyOrdersActivity : AppCompatActivity() {
 
         binding.ordersToolbar.setNavigationOnClickListener { finish() }
 
+        setupGlassUI()
+        
         orderListAdapter = OrderListAdapter { order ->
             startActivity(OrderDetailActivity.createIntent(this, order))
         }
@@ -55,6 +58,13 @@ class MyOrdersActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+    }
+    
+    private fun setupGlassUI() {
+        // Setup glass effect for orders summary card
+        binding.ordersSummaryGlass.setupGlassEffect(25f)
+        binding.ordersSummaryGlass.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND)
+        binding.ordersSummaryGlass.clipToOutline = true
     }
 
     private fun setupObservers() {

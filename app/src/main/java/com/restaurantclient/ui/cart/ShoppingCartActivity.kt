@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.restaurantclient.data.CartManager
 import com.restaurantclient.databinding.ActivityShoppingCartBinding
 import com.restaurantclient.ui.checkout.CheckoutActivity
+import com.restaurantclient.ui.common.setupGlassEffect
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -29,6 +30,7 @@ class ShoppingCartActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupToolbar()
+        setupGlassUI()
         setupRecyclerView()
         setupClickListeners()
         observeCartItems()
@@ -38,6 +40,13 @@ class ShoppingCartActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener {
             finish()
         }
+    }
+    
+    private fun setupGlassUI() {
+        // Setup glass effect for floating cart summary
+        binding.cartSummaryGlass.setupGlassEffect(25f)
+        binding.cartSummaryGlass.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND)
+        binding.cartSummaryGlass.clipToOutline = true
     }
 
     private fun setupRecyclerView() {

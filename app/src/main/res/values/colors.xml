@@ -42,4 +42,23 @@
     <color name="text_primary">#1C1B1F</color>
     <color name="text_secondary">#49454F</color>
     <color name="section_header_text">#1C1B1F</color>
+    
+    <!-- Glassmorphism Overlays -->
+    <color name="glass_overlay_light">#33FFFFFF</color>
+    <color name="glass_overlay_dark">#33000000</color>
+    <color name="glass_border_light">#44FFFFFF</color>
+    <color name="glass_border_dark">#44000000</color>
+    
+    <!-- Blur Tints -->
+    <color name="blur_tint_primary">#1A6750A4</color>
+    <color name="blur_tint_secondary">#1A625B71</color>
+    <color name="blur_tint_accent">#1AEF4444</color>
+    <color name="blur_tint_success">#1A10B981</color>
+    <color name="blur_tint_warning">#1AF59E0B</color>
+    <color name="blur_tint_info">#1A3B82F6</color>
+    <color name="blur_tint_error">#1AEF4444</color>
+    
+    <!-- Background Gradients -->
+    <color name="bg_gradient_start">#F0F3F9</color>
+    <color name="bg_gradient_end">#E8EDF5</color>
 </resources>

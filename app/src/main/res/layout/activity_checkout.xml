@@ -26,63 +26,118 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <TextView
-            android:id="@+id/summary_title"
-            android:layout_width="wrap_content"
+        <!-- Glass Order Summary Card -->
+        <eightbitlab.com.blurview.BlurView
+            android:id="@+id/checkout_summary_glass"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="Order Summary"
-            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:elevation="4dp"
+            app:blurOverlayColor="#00FFFFFF"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- Glass Border -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/glass_card_border" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:id="@+id/summary_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Order Summary"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="@color/food_dark_text"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Review your order before placing"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="@color/food_text_secondary" />
+            </LinearLayout>
+        </eightbitlab.com.blurview.BlurView>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/order_summary_recycler_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@id/total_container"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/summary_title"
-        tools:listitem="@layout/item_cart" />
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:clipToPadding="false"
+            android:paddingBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@id/checkout_total_glass"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/checkout_summary_glass"
+            tools:listitem="@layout/item_cart" />
 
-    <LinearLayout
-        android:id="@+id/total_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@id/place_order_button">
-
-        <TextView
+        <!-- Glass Total Card -->
+        <eightbitlab.com.blurview.BlurView
+            android:id="@+id/checkout_total_glass"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Total"
-            android:textAppearance="?attr/textAppearanceHeadline6" />
+            android:layout_marginBottom="16dp"
+            android:elevation="8dp"
+            app:blurOverlayColor="#00FFFFFF"
+            app:layout_constraintBottom_toTopOf="@id/place_order_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-        <TextView
-            android:id="@+id/total_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceHeadline5"
-            android:textColor="?attr/colorPrimary"
-            tools:text="$129.97" />
-    </LinearLayout>
+            <!-- Glass Border -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/glass_card_border" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/place_order_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:paddingVertical="12dp"
-        android:text="Place Order"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Total"
+                    android:textAppearance="?attr/textAppearanceTitleLarge"
+                    android:textColor="@color/food_dark_text"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/total_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceTitleLarge"
+                    android:textColor="@color/food_primary_red"
+                    android:textStyle="bold"
+                    tools:text="$129.97" />
+            </LinearLayout>
+        </eightbitlab.com.blurview.BlurView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/place_order_button"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:text="Place Order"
+            android:textSize="16sp"
+            app:cornerRadius="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

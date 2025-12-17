@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.eightbitlab.com.blurview.BlurView
 import com.eightbitlab.com.blurview.RenderScriptBlur
 import com.google.android.material.chip.Chip
@@ -34,6 +35,7 @@ import com.restaurantclient.ui.admin.OrderManagementActivity
 import com.restaurantclient.ui.admin.UserManagementActivity
 import com.restaurantclient.ui.auth.AuthViewModel
 import com.restaurantclient.ui.cart.ShoppingCartActivity
+import com.restaurantclient.ui.common.setupGlassEffect
 import com.restaurantclient.ui.user.UserProfileActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -93,7 +95,6 @@ class ProductListActivity : AppCompatActivity() {
     private fun getSearchInput() = (if (isAdminUser) adminBinding!!.searchInput else customerBinding!!.searchInput)!!
     private fun getFilterButton() = (if (isAdminUser) adminBinding!!.filterButton else customerBinding!!.filterButton)!!
     private fun getProfileImage() = (if (isAdminUser) adminBinding!!.profileImage else customerBinding!!.profileImage)!!
-    private fun getFabCart() = customerBinding!!.fabCart!! // Only customer has fab_cart
     private fun getProductsRecyclerView() = (if (isAdminUser) adminBinding!!.productsRecyclerView else customerBinding!!.productsRecyclerView)!!
     private fun getProgressBar() = (if (isAdminUser) adminBinding!!.progressBar else customerBinding!!.progressBar)!!
     private fun getCategoryChipGroup() = (if (isAdminUser) adminBinding!!.categoryChipGroup else customerBinding!!.categoryChipGroup)!!
@@ -120,10 +121,50 @@ class ProductListActivity : AppCompatActivity() {
 
         // Setup cart FAB for customer only
         if (!isAdminUser) {
-            getFabCart().setOnClickListener {
-                startActivity(Intent(this, ShoppingCartActivity::class.java))
-            }
+            setupGlassFAB()
         }
+    }
+    
+    private fun setupGlassFAB() {
+        val fabBlur = customerBinding?.fabBlurContainer
+        val fabClickable = customerBinding?.root?.findViewById<View>(R.id.fab_cart)
+        
+        // Setup blur effect for FAB glass background with stronger blur
+        fabBlur?.setupGlassEffect(25f)  // Increased from 20f to 25f for more dominant effect
+        fabBlur?.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND)
+        fabBlur?.clipToOutline = true
+        
+        // FAB click action
+        fabClickable?.setOnClickListener {
+            startActivity(Intent(this, ShoppingCartActivity::class.java))
+        }
+        
+        // Animate FAB on scroll
+        setupFABScrollAnimation(fabBlur)
+    }
+    
+    private fun setupFABScrollAnimation(fabContainer: View?) {
+        fabContainer ?: return
+        
+        getProductsRecyclerView().addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy > 0) {
+                    // Scrolling down - hide FAB with animation
+                    fabContainer.animate()
+                        .translationY(fabContainer.height.toFloat() + 100f)
+                        .alpha(0f)
+                        .setDuration(200)
+                        .start()
+                } else if (dy < 0) {
+                    // Scrolling up - show FAB with animation
+                    fabContainer.animate()
+                        .translationY(0f)
+                        .alpha(1f)
+                        .setDuration(200)
+                        .start()
+                }
+            }
+        })
     }
 
     private fun setupAdminUi() {
@@ -168,9 +209,25 @@ class ProductListActivity : AppCompatActivity() {
     }
 
     private fun observeCartChanges() {
-        lifecycleScope.launch {
-            cartManager.cartItems.collectLatest { items ->
-                updateCartBadge(cartManager.totalItems)
+        if (!isAdminUser) {
+            lifecycleScope.launch {
+                cartManager.cartItems.collectLatest { items ->
+                    val totalItems = cartManager.totalItems
+                    updateCartBadge(totalItems)
+                    updateFABBadge(totalItems)
+                }
+            }
+        }
+    }
+    
+    private fun updateFABBadge(itemCount: Int) {
+        if (!isAdminUser) {
+            val badge = customerBinding?.cartBadge
+            if (itemCount > 0) {
+                badge?.text = itemCount.toString()
+                badge?.visibility = View.VISIBLE
+            } else {
+                badge?.visibility = View.GONE
             }
         }
     }

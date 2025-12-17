@@ -10,6 +10,7 @@ import com.restaurantclient.data.CartManager
 import com.restaurantclient.data.Result
 import com.restaurantclient.databinding.ActivityProductDetailBinding
 import com.restaurantclient.databinding.DialogSuccessBinding
+import com.restaurantclient.ui.common.setupGlassEffect
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.random.Random
@@ -37,10 +38,18 @@ class ProductDetailActivity : AppCompatActivity() {
             return
         }
 
+        setupGlassUI()
         setupQuantityControls()
         setupObservers()
         setupClickListeners()
         productViewModel.fetchProductDetails(productId)
+    }
+    
+    private fun setupGlassUI() {
+        // Setup glass effect for product info card overlaying the image
+        binding.productInfoGlass.setupGlassEffect(25f)
+        binding.productInfoGlass.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND)
+        binding.productInfoGlass.clipToOutline = true
     }
 
     private fun setupQuantityControls() {

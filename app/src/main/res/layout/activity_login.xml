@@ -1,54 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_login_gradient"
-    android:padding="24dp"
     tools:context=".ui.auth.LoginActivity">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/login_card"
-        android:layout_width="0dp"
+    <!-- Background Gradient -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_login_gradient" />
+
+    <!-- Blur Target Content -->
+    <eightbitlab.com.blurview.BlurTarget
+        android:id="@+id/blur_target"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Decorative circles for depth -->
+        <View
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="top|start"
+            android:layout_marginStart="-40dp"
+            android:layout_marginTop="-40dp"
+            android:alpha="0.2"
+            android:background="@drawable/circle_accent" />
+
+        <View
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="-20dp"
+            android:layout_marginBottom="80dp"
+            android:alpha="0.15"
+            android:background="@drawable/circle_primary" />
+    </eightbitlab.com.blurview.BlurTarget>
+
+    <!-- Glass Login Form - Centered -->
+    <eightbitlab.com.blurview.BlurView
+        android:id="@+id/login_glass_card"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="32dp"
-        app:cardCornerRadius="28dp"
-        app:cardElevation="6dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_gravity="center"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:elevation="8dp"
+        app:blurOverlayColor="#00FFFFFF">
+
+        <!-- Glass Border -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:background="@drawable/glass_card_border" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="20dp">
 
             <TextView
                 android:id="@+id/login_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="@string/login_title"
-                android:textAppearance="@style/TextAppearance.Material3.TitleLarge" />
+                android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+                android:textColor="@color/brand_primary"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/login_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="2dp"
                 android:text="@string/login_subtitle"
-                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-                android:textColor="@color/brand_on_surface_variant" />
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                android:textColor="@color/text_secondary" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/username_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/GlassTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp">
+                android:layout_marginTop="16dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/username_edit_text"
@@ -60,10 +98,10 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/password_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/GlassTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 app:endIconMode="password_toggle">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -77,30 +115,33 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/login_button"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="@string/action_login" />
+                android:layout_height="52dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/action_login"
+                android:textSize="15sp"
+                app:cornerRadius="14dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/register_button"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/action_register" />
+                android:text="@string/action_register"
+                android:textSize="15sp"
+                app:cornerRadius="14dp"
+                app:strokeColor="@color/brand_primary"
+                app:strokeWidth="2dp" />
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+    </eightbitlab.com.blurview.BlurView>
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:visibility="gone"
         app:indicatorSize="48dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

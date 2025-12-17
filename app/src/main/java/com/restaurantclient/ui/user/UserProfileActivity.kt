@@ -13,6 +13,7 @@ import com.restaurantclient.ui.admin.AdminDashboardActivity
 import com.restaurantclient.ui.admin.OrderManagementActivity
 import com.restaurantclient.ui.admin.UserManagementActivity
 import com.restaurantclient.ui.auth.AuthViewModel
+import com.restaurantclient.ui.common.setupGlassEffect
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,8 +27,16 @@ class UserProfileActivity : AppCompatActivity() {
         binding = ActivityUserProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupGlassUI()
         setupUserInfo()
         setupClickListeners()
+    }
+    
+    private fun setupGlassUI() {
+        // Setup glass effect for profile card
+        binding.profileGlassCard.setupGlassEffect(25f)
+        binding.profileGlassCard.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND)
+        binding.profileGlassCard.clipToOutline = true
     }
 
     private fun setupUserInfo() {

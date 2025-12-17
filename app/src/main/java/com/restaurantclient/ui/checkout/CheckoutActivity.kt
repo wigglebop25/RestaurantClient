@@ -12,6 +12,7 @@ import com.restaurantclient.data.Result
 import com.restaurantclient.data.dto.CreateOrderRequest
 import com.restaurantclient.databinding.ActivityCheckoutBinding
 import com.restaurantclient.ui.cart.CheckoutCartAdapter
+import com.restaurantclient.ui.common.setupGlassEffect
 import com.restaurantclient.ui.order.MyOrdersActivity
 import com.restaurantclient.ui.order.OrderConfirmationActivity
 import com.restaurantclient.ui.order.OrderViewModel
@@ -37,6 +38,7 @@ class CheckoutActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupToolbar()
+        setupGlassUI()
         setupRecyclerView()
         setupClickListeners()
         setupObservers()
@@ -47,6 +49,18 @@ class CheckoutActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener {
             finish()
         }
+    }
+    
+    private fun setupGlassUI() {
+        // Setup glass effect for checkout summary
+        binding.checkoutSummaryGlass.setupGlassEffect(25f)
+        binding.checkoutSummaryGlass.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND)
+        binding.checkoutSummaryGlass.clipToOutline = true
+        
+        // Setup glass effect for total card
+        binding.checkoutTotalGlass.setupGlassEffect(25f)
+        binding.checkoutTotalGlass.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND)
+        binding.checkoutTotalGlass.clipToOutline = true
     }
 
     private fun setupRecyclerView() {
