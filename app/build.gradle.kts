@@ -104,6 +104,13 @@ dependencies {
     // BlurView for glassmorphism
     implementation(libs.blurview)
     
+    // Coil for image loading with GIF support
+    implementation(libs.coil.core)
+    implementation(libs.coil.gif)
+    
+    // Lottie for smooth animations
+    implementation(libs.lottie)
+    
     // SwipeRefreshLayout
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 

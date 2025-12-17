@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="itadaki_app_name">Itadaki</string>
+    <string name="itadaki_tagline">Authentic Taste, Delivered</string>
+    <string name="itadaki_get_started">Get Started</string>
+    <string name="itadaki_order_now">Order Now</string>
+</resources>

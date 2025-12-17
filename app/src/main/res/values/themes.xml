@@ -56,4 +56,18 @@
         <item name="android:paddingStart">16dp</item>
         <item name="android:paddingEnd">16dp</item>
     </style>
+    
+    <!-- Itadaki Introduction Screen Theme -->
+    <style name="Theme.Itadaki.Introduction" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/itadaki_red</item>
+        <item name="colorOnPrimary">@color/itadaki_white</item>
+        <item name="colorPrimaryContainer">@color/itadaki_crimson</item>
+        <item name="colorOnPrimaryContainer">@color/itadaki_white</item>
+        <item name="colorSecondary">@color/itadaki_charcoal</item>
+        <item name="colorOnSecondary">@color/itadaki_white</item>
+        <item name="android:statusBarColor">@color/itadaki_crimson</item>
+        <item name="android:navigationBarColor">@color/itadaki_charcoal</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowBackground">@color/itadaki_charcoal</item>
+    </style>
 </resources>

@@ -1,0 +1,15 @@
+# Raw Resources Folder
+
+This folder contains raw asset files that don't need processing:
+- GIF animations
+- Lottie JSON files
+- Audio files
+- Other binary assets
+
+## For Itadaki Project:
+
+Place your animation files here:
+- steam_animation.gif (recommended name)
+- Any other GIF or Lottie animations
+
+Note: Keep file sizes small (< 2MB for GIFs)

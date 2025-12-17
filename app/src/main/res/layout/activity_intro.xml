@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg_intro_gradient"
+    android:gravity="center">
+
+    <!-- Animated GIF background -->
+    <ImageView
+        android:id="@+id/steam_animation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@raw/steam_animation"
+        android:contentDescription="@string/itadaki_tagline" />
+
+    <!-- Scrim overlay for readability -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#B31D3557"
+        android:alpha="0.4" />
+
+    <!-- Branding -->
+    <ImageView
+        android:id="@+id/itadaki_logo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@drawable/itadaki_logo"
+        android:layout_gravity="center"
+        android:contentDescription="@string/itadaki_app_name" />
+
+    <TextView
+        android:id="@+id/itadaki_tagline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/itadaki_tagline"
+        android:textColor="#F1FAEE"
+        android:textSize="20sp"
+        android:fontFamily="@font/noto_sans_jp_regular"
+        android:layout_gravity="center"
+        android:paddingTop="8dp"
+        android:paddingBottom="32dp" />
+
+    <!-- Get Started Button -->
+    <Button
+        android:id="@+id/btn_get_started"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/itadaki_get_started"
+        android:background="@drawable/bg_button_red"
+        android:textColor="#F1FAEE"
+        android:fontFamily="@font/noto_sans_jp_regular"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:layout_gravity="center"
+        android:stateListAnimator="@null" />
+
+</LinearLayout>

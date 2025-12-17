@@ -1,0 +1,16 @@
+# Font Resources Folder
+
+This folder contains custom fonts for the app.
+
+## For Itadaki Project:
+
+Place these font files here:
+- noto_sans_jp_regular.ttf
+- noto_sans_jp_medium.ttf
+- noto_sans_jp_bold.ttf
+- shippori_mincho_b1_medium.ttf
+
+Remember:
+- Use lowercase filenames
+- Use underscores (not hyphens or spaces)
+- .ttf or .otf formats only
