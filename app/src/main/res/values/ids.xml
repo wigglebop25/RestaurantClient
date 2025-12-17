@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- View tags for glass animations -->
+    <item name="glass_animator_tag" type="id"/>
+    
+    <!-- View tags for accessibility -->
+    <item name="accessibility_role_tag" type="id"/>
+    
+    <!-- View tags for memory optimization -->
+    <item name="blur_cache_key_tag" type="id"/>
+</resources>
