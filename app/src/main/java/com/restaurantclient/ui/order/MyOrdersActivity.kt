@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.restaurantclient.data.Result
 import com.restaurantclient.data.TokenManager
 import com.restaurantclient.databinding.ActivityMyOrdersBinding
-import com.restaurantclient.ui.common.setupGlassEffect
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -61,8 +60,7 @@ class MyOrdersActivity : AppCompatActivity() {
     }
     
     private fun setupGlassUI() {
-        // Setup glass effect for orders summary card
-        binding.ordersSummaryGlass.setupGlassEffect(25f)
+        // Simplified - using MaterialCardView instead of BlurView for now
         binding.ordersSummaryGlass.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND)
         binding.ordersSummaryGlass.clipToOutline = true
     }
@@ -72,10 +70,21 @@ class MyOrdersActivity : AppCompatActivity() {
             when (result) {
                 is Result.Success -> {
                     binding.progressBar.visibility = View.GONE
-                    orderListAdapter.submitList(result.data)
+                    Log.d("MyOrdersActivity", "Received ${result.data.size} orders")
+                    // Create a new list to ensure DiffUtil triggers
+                    orderListAdapter.submitList(result.data.toList()) {
+                        Log.d("MyOrdersActivity", "submitList completed, adapter has ${orderListAdapter.itemCount} items")
+                        binding.ordersRecyclerView.post {
+                            Log.d("MyOrdersActivity", "RecyclerView dimensions: ${binding.ordersRecyclerView.width} x ${binding.ordersRecyclerView.height}")
+                            Log.d("MyOrdersActivity", "RecyclerView child count: ${binding.ordersRecyclerView.childCount}")
+                            Log.d("MyOrdersActivity", "LayoutManager: ${binding.ordersRecyclerView.layoutManager}")
+                        }
+                    }
+                    Log.d("MyOrdersActivity", "Orders submitted to adapter")
                 }
                 is Result.Error -> {
                     binding.progressBar.visibility = View.GONE
+                    Log.e("MyOrdersActivity", "Error fetching orders: ${result.exception.message}")
                     Toast.makeText(this, "Failed to fetch orders: ${result.exception.message}", Toast.LENGTH_LONG).show()
                 }
             }

@@ -1,5 +1,6 @@
 package com.restaurantclient.ui.order
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -51,7 +52,13 @@ class OrderListAdapter(private val onClick: (OrderResponse) -> Unit) :
 
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
         val order = getItem(position)
+        Log.d("OrderListAdapter", "Binding order at position $position: Order #${order.order_id}")
         holder.bind(order)
+    }
+    
+    override fun submitList(list: List<OrderResponse>?) {
+        Log.d("OrderListAdapter", "submitList called with ${list?.size ?: 0} items")
+        super.submitList(list?.toList()) // Create new list instance
     }
 }
 
