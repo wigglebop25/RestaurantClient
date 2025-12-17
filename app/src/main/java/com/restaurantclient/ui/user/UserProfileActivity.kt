@@ -43,7 +43,6 @@ class UserProfileActivity : AppCompatActivity() {
             else -> getString(R.string.profile_unknown_role)
         }
         binding.roleChip.isVisible = userRole != null
-        binding.createdAtText.text = currentUser?.createdAt ?: getString(R.string.label_unknown_date)
 
         if (authViewModel.isAdmin()) {
             setupAdminShortcuts()

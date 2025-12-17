@@ -4,85 +4,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:fillViewport="true"
     tools:context=".ui.user.UserProfileActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="24dp">
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp">
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="16dp">
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="32dp">
 
                 <ImageView
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:layout_marginBottom="16dp"
                     android:src="@drawable/ic_user_avatar"
                     app:tint="@color/admin_primary" />
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/username_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?attr/textAppearanceHeadline6"
-                        tools:text="customer" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/role_chip"
-                        style="@style/Widget.RestaurantClient.AdminBadge"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="ROLE"
-                        tools:text="CUSTOMER" />
-                </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
                 <TextView
+                    android:id="@+id/username_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Member since"
-                    android:textAppearance="?attr/textAppearanceCaption" />
+                    android:textAppearance="?attr/textAppearanceHeadline5"
+                    android:textStyle="bold"
+                    tools:text="customer" />
 
-                <TextView
-                    android:id="@+id/created_at_text"
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/role_chip"
+                    style="@style/Widget.RestaurantClient.AdminBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?attr/textAppearanceSubtitle1"
-                    tools:text="2025-12-07" />
+                    android:layout_marginTop="8dp"
+                    android:text="ROLE"
+                    tools:text="CUSTOMER" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -93,42 +62,47 @@
             android:layout_marginBottom="16dp"
             android:visibility="gone"
             app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
+            app:cardElevation="4dp"
             tools:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="20dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:text="Admin Shortcuts"
                     android:textAppearance="?attr/textAppearanceSubtitle1"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/admin_dashboard_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Dashboard" />
+                    android:text="Dashboard"
+                    app:cornerRadius="12dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/admin_users_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Manage Users" />
+                    android:text="Manage Users"
+                    app:cornerRadius="12dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/admin_orders_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Orders" />
+                    android:text="Orders"
+                    app:cornerRadius="12dp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -138,50 +112,60 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            tools:visibility="visible">
+            app:cardElevation="4dp"
+            tools:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="20dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Your shortcuts"
+                    android:gravity="center"
+                    android:text="Customer shortcuts"
                     android:textAppearance="?attr/textAppearanceSubtitle1"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/customer_orders_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="My Orders" />
+                    android:text="My Orders"
+                    app:cornerRadius="12dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/customer_cart_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Shopping Cart" />
+                    android:text="Shopping Cart"
+                    app:cornerRadius="12dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/customer_checkout_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Checkout" />
+                    android:text="Checkout"
+                    app:cornerRadius="12dp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/logout_button"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Logout" />
+            android:layout_marginTop="8dp"
+            android:text="Logout"
+            android:textColor="@color/food_primary_red"
+            app:cornerRadius="12dp"
+            app:strokeColor="@color/food_primary_red" />
 
     </LinearLayout>
 
