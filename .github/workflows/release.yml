@@ -40,14 +40,10 @@ jobs:
         run: |
           mv app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/RestaurantClient-${{ steps.version.outputs.VERSION }}-debug.apk
       
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Release and Upload APK
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Restaurant Client ${{ steps.version.outputs.VERSION }}
+          name: Restaurant Client ${{ steps.version.outputs.VERSION }}
           body: |
             ## Restaurant Client ${{ steps.version.outputs.VERSION }}
             
@@ -65,15 +61,6 @@ jobs:
             ### ⚙️ Requirements
             - Android 8.0 (API 26) or higher
             - Internet connection for API access
+          files: app/build/outputs/apk/debug/RestaurantClient-${{ steps.version.outputs.VERSION }}-debug.apk
           draft: false
           prerelease: false
-      
-      - name: Upload Debug APK
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: app/build/outputs/apk/debug/RestaurantClient-${{ steps.version.outputs.VERSION }}-debug.apk
-          asset_name: RestaurantClient-${{ steps.version.outputs.VERSION }}-debug.apk
-          asset_content_type: application/vnd.android.package-archive
