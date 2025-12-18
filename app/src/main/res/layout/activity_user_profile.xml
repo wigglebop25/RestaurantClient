@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_gradient_start"
+    android:background="@drawable/bg_category_unselected"
     tools:context=".ui.user.UserProfileActivity">
 
     <LinearLayout
@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:elevation="8dp"
-            app:blurOverlayColor="#00FFFFFF">
+            app:blurOverlayColor="@color/itadaki_transparent_red">
 
             <!-- Glass Border -->
             <View
@@ -81,7 +81,8 @@
                 <eightbitlab.com.blurview.BlurView
                     android:id="@+id/admin_actions_blur"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    app:blurOverlayColor="@color/itadaki_transparent_red" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -150,7 +151,8 @@
                 <eightbitlab.com.blurview.BlurView
                     android:id="@+id/customer_actions_blur"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    app:blurOverlayColor="@color/itadaki_transparent_red" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -202,15 +204,15 @@
         <!-- Logout Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/logout_button"
-            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="24dp"
             android:text="Logout"
-            android:textColor="@color/food_primary_red"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/food_primary_red"
             app:cornerRadius="12dp"
-            app:strokeColor="@color/food_primary_red" />
+            app:strokeWidth="0dp" />
 
     </LinearLayout>
 
