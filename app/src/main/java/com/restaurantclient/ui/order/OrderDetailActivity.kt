@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.appbar.MaterialToolbar
 import com.restaurantclient.R
 import com.restaurantclient.data.dto.OrderResponse
 import com.restaurantclient.databinding.ActivityOrderDetailBinding
@@ -23,8 +24,12 @@ class OrderDetailActivity : AppCompatActivity() {
         binding = ActivityOrderDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.orderDetailToolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
+        val toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+        toolbar?.apply {
+            title = getString(R.string.order_detail_title)
+            setNavigationOnClickListener {
+                onBackPressedDispatcher.onBackPressed()
+            }
         }
 
         val order = intent.getSerializableExtra(EXTRA_ORDER, OrderResponse::class.java)

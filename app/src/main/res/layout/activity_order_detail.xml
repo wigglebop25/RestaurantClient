@@ -7,25 +7,9 @@
     android:background="@color/itadaki_cream"
     tools:context=".ui.order.OrderDetailActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <include
         android:id="@+id/app_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="4dp"
-        app:elevation="4dp">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/order_detail_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/transparent"
-            android:elevation="4dp"
-            app:navigationIcon="?attr/homeAsUpIndicator"
-            app:navigationIconTint="@color/black"
-            app:title="@string/order_detail_title"
-            app:titleTextColor="@color/black" />
-
-    </com.google.android.material.appbar.AppBarLayout>
+        layout="@layout/customer_toolbar" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
