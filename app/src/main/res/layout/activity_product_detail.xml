@@ -19,7 +19,7 @@
             <eightbitlab.com.blurview.BlurTarget
                 android:id="@+id/product_blur_target"
                 android:layout_width="0dp"
-                android:layout_height="400dp"
+                android:layout_height="440dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -39,8 +39,6 @@
                 android:id="@+id/product_info_glass"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="300dp"
                 android:elevation="8dp"
                 app:blurOverlayColor="#00FFFFFF"
@@ -225,7 +223,7 @@
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:backgroundTint="@color/food_button_dark"
+        app:backgroundTint="@color/food_primary_red"
         app:cornerRadius="16dp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
