@@ -1,4 +1,4 @@
-# Restaurant Client Android App
+# Itadaki - Restaurant Client Android App
 
 ![Android](https://img.shields.io/badge/Android-33--36-green?logo=android)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.1.0-blue?logo=kotlin)
@@ -6,24 +6,34 @@
 ![Build](https://img.shields.io/badge/Build-Passing-success)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
-**A modern Android restaurant ordering system with glassmorphism UI, performance optimization, and full accessibility support**
+**A modern Android restaurant ordering system featuring Itadaki brand identity, animated backgrounds, glassmorphism UI, and visual consistency**
 
-🌟 **Featured:** Modern glassmorphism design • Automatic performance optimization • WCAG AA accessibility • 60 FPS animations
+🌟 **Featured:** Itadaki brand theme • Animated GIF backgrounds • Visual consistency • Auto-scrolling carousel • 60 FPS animations
 
 ---
 
 ## 📱 Description
 
-Restaurant Client is a comprehensive mobile application designed to streamline restaurant order management. Built with cutting-edge Android development practices, it provides an efficient and intuitive platform for both administrators and customers to handle orders, products, and user accounts with a stunning glassmorphism UI.
+**Itadaki** (頂 - "to receive") - an expression of gratitude for the food we eat. Our restaurant was founded on the philosophy that great food should be both an art form and an accessible joy.
 
-### ✨ What's New in v2.0
-- 🎨 **Complete UI modernization** with glassmorphism design
-- ⚡ **Automatic performance optimization** based on device capabilities
-- ♿ **Full WCAG AA accessibility** compliance
-- 🎭 **10+ smooth animations** with glass effects
-- 💾 **Memory-efficient** with zero leaks
-- 🌙 **Dark mode** fully supported
-- 📊 **Performance monitoring** and testing utilities
+Restaurant Client is a comprehensive mobile application designed to streamline restaurant order management. Built with cutting-edge Android development practices, it provides an efficient and intuitive platform for both administrators and customers to handle orders, products, and user accounts with a stunning Itadaki-branded UI.
+
+### ✨ What's New in v2.5
+- 🎨 **Itadaki Brand Identity** - Warm cream backgrounds with deep red accents
+- 🎬 **Animated GIF Backgrounds** - Steam animation on login screen with smart caching
+- 🎠 **Introduction Carousel** - Auto-scrolling product showcase with 15 menu items
+- 🎯 **Visual Consistency** - Unified color palette across all customer screens
+- 💎 **Enhanced Glassmorphism** - Non-rounded glass borders and frosted effects
+- ⚡ **Optimized Performance** - Preloaded GIF caching for instant loading
+- 🎨 **Color Psychology** - High arousal red UI balanced with warm cream tones
+- 🔄 **Reusable Components** - Customer and admin toolbars for consistency
+
+### Color Palette (Itadaki Theme)
+- **Cream Background:** `#FFF8E1` - Warm, inviting base color
+- **Deep Red:** `#D32F2F` - Primary brand color for CTAs and prices
+- **Charcoal:** `#1D3557` - Dark text for readability
+- **Gold Accent:** `#FFD700` - Premium highlighting
+- **Glass White:** `#75FFFFFF` - 30% opacity for glassmorphism
 
 ### Backend Server
 **ARROW (Asynchronous Rust Restaurant Order Workflow)** - A high-performance backend server built with Rust, leveraging the language's safety and concurrency features to deliver robust and efficient restaurant operations management.
@@ -32,21 +42,43 @@ Restaurant Client is a comprehensive mobile application designed to streamline r
 
 ## ✨ Features
 
+### 🎨 Itadaki Brand Experience
+- **🎬 Animated Welcome** - Steam animation GIF on login screen
+  - Smart preloading and caching for instant playback
+  - No flickering or white flash on load
+  - Singleton ImageLoader for optimal performance
+- **🎠 Product Showcase** - Auto-scrolling carousel featuring 15 authentic dishes
+  - Coroutine-based auto-slide every 3 seconds
+  - ViewPager2 with page indicators
+  - Categories: Zensai, Sushi & Sashimi, Menrui, Donburi, Kanmi
+- **🎯 Visual Consistency** - Unified Itadaki color palette
+  - Cream backgrounds (#FFF8E1) across all screens
+  - Deep red (#D32F2F) for CTAs and prices
+  - Charcoal (#1D3557) for readable text
+  - Glassmorphism with frosted effects
+
 ### 👤 Customer Features
-- **🔐 Secure Authentication** - Role-based access control with encrypted credential storage
-- **🍽️ Product Browsing** - Browse restaurant menu with categories and detailed product information
-  - Glass product cards with blur effects
+- **🔐 Secure Authentication** - Role-based access control with animated login
+- **📖 Introduction Screen** - Beautiful product carousel with brand story
+  - "Authentic Taste, Delivered" tagline
+  - 15 featured products with descriptions and prices
+  - About button linking to intro/philosophy
+- **🍽️ Product Browsing** - Browse restaurant menu with Itadaki styling
+  - Glass product cards with frosted effects
   - Smooth animations and transitions
   - Real-time search and filtering
   - Glass FAB for shopping cart
-- **🛒 Shopping Cart** - Real-time cart management with glassmorphism UI
+- **🛒 Shopping Cart** - Real-time cart management with Itadaki colors
   - Add/remove items with glass animations
-  - Adjust quantities with smooth transitions
+  - Adjust quantities with deep red buttons
   - Live price calculations
-  - Glass blur effects throughout
-- **💳 Checkout Process** - Streamlined order placement with glass order summary
-- **📦 Order History** - View past orders with glass cards and status indicators
-- **👥 User Profile** - Manage account information with glass profile card
+  - Combined glass total & checkout card
+- **💳 Checkout Process** - Streamlined order placement
+  - Glass order summary with cream background
+  - Combined total and button in single glass card
+  - Navigation bar spacing optimized
+- **📦 Order History** - View past orders with consistent styling
+- **👥 User Profile** - Manage account with Itadaki theme
 
 ### 🔧 Administrator Features
 - **📊 Admin Dashboard** - Comprehensive overview with glass stat cards
@@ -72,24 +104,35 @@ Restaurant Client is a comprehensive mobile application designed to streamline r
 - **🎨 Modern Admin UI** - Professional blue theme with glassmorphism effects
 
 ### 🎨 UI/UX Features
-- **Glassmorphism Design** - Modern blur effects throughout the app
+- **Itadaki Brand Identity** - Cohesive visual language
+  - Warm cream (#FFF8E1) backgrounds for appetizing feel
+  - Deep red (#D32F2F) for high arousal CTAs
+  - Charcoal (#1D3557) text for optimal readability
+  - Cursive fonts for "Authentic Taste, Delivered"
+- **Animated Backgrounds** - GIF integration with Coil
+  - Steam animation on login screen
+  - Application-level preloading for zero delay
+  - Memory and disk caching for performance
+- **Glassmorphism Design** - Modern blur effects with Itadaki colors
   - 25+ glass styles and components
-  - Automatic performance optimization
+  - Non-rounded glass borders for product overlays
+  - Frosted white glass (#75FFFFFF) throughout
   - Memory-efficient blur rendering
 - **Material Design 3** - Latest Material Design guidelines
-  - Dynamic color system
+  - Itadaki color system integration
   - Adaptive layouts
-  - Modern typography
+  - Modern typography with cursive accents
 - **Responsive Layouts** - Optimized for various screen sizes
 - **Glass Components** - Comprehensive library of reusable components
-  - Glass buttons (9 variants)
-  - Glass cards (3 variants)
-  - Glass dialogs (confirm, input, info)
+  - Glass buttons (9 variants) with deep red tint
+  - Glass cards (3 variants) with cream compatibility
+  - Glass dialogs with Itadaki branding
   - Glass snackbars (5 types)
   - Glass FABs with blur
   - Glass text inputs
   - Glass chips and switches
 - **Smooth Animations** - 10+ performance-optimized animations
+  - Auto-scrolling carousel with coroutines
   - Fade in/out with glass effect
   - Scale in/out with overshoot
   - Slide animations
@@ -143,15 +186,25 @@ Restaurant Client is a comprehensive mobile application designed to streamline r
 - **Lifecycle & ViewModel:** 2.7.0
 - **Material Design 3:** 1.13.0
 - **BlurView:** 3.2.0 (Glassmorphism Effects)
+- **Coil:** 2.x (Image Loading with GIF support)
+  - GifDecoder for animated backgrounds
+  - ImageDecoderDecoder for Android 9+
+  - Memory and disk caching
 - **Security Crypto:** 1.1.0-alpha06 (Encrypted Storage)
 - **AndroidX Core:** 1.15.0
+- **ViewPager2:** Latest (Product Carousel)
+- **Lottie:** 6.x (Success Animations)
 
 ### Glassmorphism & UI
 - **BlurView:** Modern blur effects and glassmorphism
-- **Material Components:** Latest MD3 components
+- **Coil:** GIF animation support with caching
+  - Application-level preloading
+  - Singleton ImageLoader for consistency
+- **Material Components:** Latest MD3 components with Itadaki colors
 - **Custom Glass Library:** 25+ reusable glass components
 - **Animation Framework:** 10+ performance-optimized animations
 - **Accessibility Tools:** WCAG AA compliance utilities
+- **Itadaki Color System:** Consistent palette management
 
 ### Performance & Testing
 - **Performance Manager:** Automatic device tier detection
