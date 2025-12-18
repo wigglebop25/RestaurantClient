@@ -18,13 +18,14 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/about_button"
         style="@style/Widget.Material3.Button.IconButton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_gravity="top|start"
         android:layout_margin="16dp"
         app:icon="@android:drawable/ic_dialog_info"
         app:iconTint="@color/white"
         app:iconGravity="textStart"
+        app:iconSize="32dp"
         android:backgroundTint="@android:color/transparent" />
 
 

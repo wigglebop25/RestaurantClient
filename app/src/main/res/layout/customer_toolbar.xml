@@ -5,16 +5,17 @@
     android:layout_height="wrap_content"
     android:elevation="4dp"
     android:layout_marginTop="40dp"
+    android:background="@drawable/glass_card_border_not_rounded_corners"
     app:elevation="4dp">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:elevation="4dp"
+        android:elevation="0dp"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:navigationIconTint="@color/black"
         app:titleTextColor="@color/black"
-        android:background="@drawable/glass_card_border_not_rounded_corners"/>
+        android:background="@android:color/transparent"/>
 
 </com.google.android.material.appbar.AppBarLayout>

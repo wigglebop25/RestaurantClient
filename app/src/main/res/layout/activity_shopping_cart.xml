@@ -63,8 +63,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Total"
-                        android:textAppearance="?attr/textAppearanceTitleMedium"
-                        android:textColor="@color/food_dark_text"
+                        android:textAppearance="?attr/textAppearanceTitleLarge"
+                        android:textColor="@color/itadaki_charcoal"
                         android:textStyle="bold" />
 
                     <TextView

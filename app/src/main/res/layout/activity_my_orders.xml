@@ -22,32 +22,40 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:elevation="4dp"
-            app:cardBackgroundColor="@color/itadaki_white"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="6dp"
-            app:strokeColor="@color/itadaki_transparent_red"
-            app:strokeWidth="1dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <!-- Glass Border -->
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/orders_summary_subtitle"
-                    android:layout_width="wrap_content"
+                <eightbitlab.com.blurview.BlurView
+                    android:id="@+id/orders_summary_blur"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/orders_summary_hint"
-                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-                    android:textColor="@color/food_text_secondary" />
-            </LinearLayout>
+                    android:orientation="vertical"
+                    android:background="@drawable/glass_card_border"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:id="@+id/orders_summary_subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/orders_summary_hint"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        android:textColor="@color/food_text_secondary" />
+                </LinearLayout>
+            </FrameLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <androidx.recyclerview.widget.RecyclerView

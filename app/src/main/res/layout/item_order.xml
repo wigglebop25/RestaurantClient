@@ -5,16 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="12dp"
-    app:cardBackgroundColor="@color/order_card_background"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="2dp"
-    app:strokeColor="@color/order_card_stroke"
-    app:strokeWidth="1dp">
+    android:background="@drawable/glass_card_border"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:background="@drawable/glass_card_border">
 
         <TextView
             android:id="@+id/order_id"
@@ -67,7 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-            android:textColor="@color/brand_primary"
+            android:textColor="@color/itadaki_charcoal"
             app:layout_constraintBaseline_toBaselineOf="@id/order_item_count"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text=".00" />

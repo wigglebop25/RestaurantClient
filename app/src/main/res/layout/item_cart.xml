@@ -5,18 +5,32 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:background="@drawable/glass_card_border">
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_height="wrap_content">
 
-        <ImageView
+        <eightbitlab.com.blurview.BlurView
+            android:id="@+id/cart_item_blur"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/glass_card_border"
+            android:padding="16dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/product_image"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/RoundedImageView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/salmon_sashimi" />
@@ -38,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="@color/itadaki_charcoal"
             app:layout_constraintStart_toStartOf="@id/product_name"
             app:layout_constraintTop_toBottomOf="@id/product_name"
             tools:text="$19.99" />
@@ -85,7 +99,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="1"
+                android:text="@string/_1"
                 android:textAppearance="?attr/textAppearanceBodyLarge" />
 
             <com.google.android.material.button.MaterialButton
@@ -104,5 +118,6 @@
                 app:iconTint="@color/itadaki_deep_red" />
         </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 </com.google.android.material.card.MaterialCardView>
