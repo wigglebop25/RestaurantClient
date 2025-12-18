@@ -74,7 +74,8 @@ android {
     // Always rename APK to RestaurantClient.apk for all build types
     applicationVariants.all {
         outputs.all {
-            outputFileName = "RestaurantClient.apk"
+            val outputImpl = this as? com.android.build.gradle.internal.api.BaseVariantOutputImpl
+            outputImpl?.outputFileName = "RestaurantClient-${name}.apk"
         }
     }
 }
