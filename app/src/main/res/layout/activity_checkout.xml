@@ -14,12 +14,11 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -72,88 +71,90 @@
                 android:id="@+id/order_summary_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:paddingBottom="200dp"
+                android:clipToPadding="false"
                 android:nestedScrollingEnabled="false"
                 tools:itemCount="3"
                 tools:listitem="@layout/item_cart" />
 
-            <!-- Spacer to push content to bottom -->
-
-            <!-- Combined Total & Button Glass Card -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="@android:color/transparent"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="0dp">
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <eightbitlab.com.blurview.BlurView
-                        android:id="@+id/checkout_total_blur"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:background="@drawable/glass_card_border"
-                        android:padding="20dp"
-                        android:layout_marginBottom="24dp">
-
-                        <!-- Total -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginBottom="16dp">
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Total"
-                                android:textAppearance="?attr/textAppearanceTitleLarge"
-                                android:textColor="@color/itadaki_charcoal"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/total_price"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?attr/textAppearanceTitleLarge"
-                                android:textColor="@color/itadaki_deep_red"
-                                android:textStyle="bold"
-                                tools:text="$129.97" />
-                        </LinearLayout>
-
-                        <!-- Place Order Button -->
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/place_order_button"
-                            android:layout_width="match_parent"
-                            android:layout_height="56dp"
-                            android:text="Place Order"
-                            android:textColor="@android:color/white"
-                            android:textSize="16sp"
-                            app:backgroundTint="@color/itadaki_deep_red"
-                            app:cornerRadius="16dp" />
-
-                    </LinearLayout>
-                </FrameLayout>
-            </com.google.android.material.card.MaterialCardView>
-
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+    <!-- Glass Cart Summary (Fixed at Bottom) -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="0dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Blur Background -->
+
+            <!-- Content -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:background="@drawable/bg_category_unselected" >
+
+                <!-- Total Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/total"
+                        android:textAppearance="?attr/textAppearanceTitleLarge"
+                        android:textColor="@color/itadaki_charcoal"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/total_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?attr/textAppearanceTitleLarge"
+                        android:textColor="@color/itadaki_deep_red"
+                        android:textStyle="bold"
+                        tools:text="$129.97" />
+                </LinearLayout>
+
+                <!-- Place Order Button -->
+                <eightbitlab.com.blurview.BlurView
+                    android:id="@+id/checkout_total_blur"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/place_order_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="@string/place_order"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    app:backgroundTint="@color/itadaki_deep_red"
+                    app:cornerRadius="16dp" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

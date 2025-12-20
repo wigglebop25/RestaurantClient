@@ -18,24 +18,25 @@ import com.restaurantclient.ui.common.setupGlassEffect
 import com.restaurantclient.ui.order.MyOrdersActivity
 import com.restaurantclient.ui.order.OrderConfirmationActivity
 import com.restaurantclient.ui.order.OrderViewModel
+import com.restaurantclient.data.TokenManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-import com.restaurantclient.ui.auth.AuthViewModel // Import AuthViewModel
 
 @AndroidEntryPoint
 class CheckoutActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCheckoutBinding
     private val orderViewModel: OrderViewModel by viewModels()
-    private val authViewModel: AuthViewModel by viewModels() // Inject AuthViewModel
     private lateinit var cartAdapter: CheckoutCartAdapter
     private var isOrderBeingPlaced = false
     
     @Inject
     lateinit var cartManager: CartManager
+    
+    @Inject
+    lateinit var tokenManager: TokenManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +54,10 @@ class CheckoutActivity : AppCompatActivity() {
     private fun setupToolbar() {
         binding.root.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar).apply {
             title = "Checkout"
-            navigationIcon = getDrawable(android.R.drawable.ic_menu_close_clear_cancel)
+            navigationIcon = androidx.appcompat.content.res.AppCompatResources.getDrawable(
+                this@CheckoutActivity,
+                android.R.drawable.ic_menu_close_clear_cancel
+            )
             setNavigationOnClickListener {
                 finish()
             }
@@ -62,15 +66,15 @@ class CheckoutActivity : AppCompatActivity() {
     
     private fun setupGlassUI() {
         // Setup glass effect for checkout summary
-        binding.checkoutSummaryBlur?.let { blurView ->
-            val whiteOverlay = androidx.core.content.ContextCompat.getColor(this, R.color.white_glass_overlay)
+        binding.checkoutSummaryBlur.let { blurView ->
+            val whiteOverlay = ContextCompat.getColor(this, R.color.white_glass_overlay)
             blurView.setOverlayColor(whiteOverlay)
             blurView.setupGlassEffect(20f)
         }
         
         // Setup glass effect for total card
-        binding.checkoutTotalBlur?.let { blurView ->
-            val whiteOverlay = androidx.core.content.ContextCompat.getColor(this, R.color.white_glass_overlay)
+        binding.checkoutTotalBlur.let { blurView ->
+            val whiteOverlay = ContextCompat.getColor(this, R.color.white_glass_overlay)
             blurView.setOverlayColor(whiteOverlay)
             blurView.setupGlassEffect(20f)
         }
@@ -106,7 +110,7 @@ class CheckoutActivity : AppCompatActivity() {
             when (result) {
                 is Result.Success -> {
                     Toast.makeText(this, "Order placed successfully!", Toast.LENGTH_SHORT).show()
-                    val orderTotal = "$${String.format("%.2f", cartManager.totalAmount)}"
+                    val orderTotal = "$${String.format(java.util.Locale.US, "%.2f", cartManager.totalAmount)}"
                     cartManager.clearCart() // Clear cart after successful order
                     
                     // Navigate to order confirmation
@@ -153,11 +157,11 @@ class CheckoutActivity : AppCompatActivity() {
             products = cartManager.toOrderRequest()
         )
         
-        val currentUser = authViewModel.getCurrentUser()
-        if (currentUser?.username != null) {
-            orderViewModel.createOrder(orderRequest, currentUser.username)
+        val username = tokenManager.getUsername()
+        if (username != null) {
+            orderViewModel.createOrder(orderRequest, username)
         } else {
-            Toast.makeText(this, "User not logged in. Please log in to place an order.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "User not logged in, please login to place and order", Toast.LENGTH_LONG).show()
             isOrderBeingPlaced = false
             binding.placeOrderButton.isEnabled = true
         }
