@@ -105,5 +105,6 @@
     <string name="itadaki_order_now">Order Now</string>
     <string name="itadaki_description">Itadaki (頂) means \'to receive\'—an expression of gratitude for the food we eat. Our restaurant was founded on the philosophy that great food should be both an art form and an accessible joy.</string>
     <string name="login">Login</string>
+    <string name="action_refresh">Refresh</string>
     <string name="_1">1</string>
 </resources>

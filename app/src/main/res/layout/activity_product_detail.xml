@@ -50,7 +50,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/glass_card_border" />
+                    android:background="@drawable/glass_card_border_not_rounded_corners" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

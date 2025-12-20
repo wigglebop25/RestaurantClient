@@ -3,6 +3,7 @@ package com.restaurantclient.ui.order
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -28,10 +29,24 @@ class MyOrdersActivity : AppCompatActivity() {
         binding = ActivityMyOrdersBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.root.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar).apply {
+        val toolbar = binding.root.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.apply {
             title = getString(R.string.action_my_orders)
             subtitle = getString(R.string.orders_screen_subtitle)
-            setNavigationOnClickListener { finish() }
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+        }
+        toolbar.setNavigationOnClickListener { finish() }
+
+        val refreshIcon = binding.root.findViewById<ImageView>(R.id.refresh_icon)
+        refreshIcon.visibility = View.VISIBLE
+        refreshIcon.setOnClickListener {
+            val username = tokenManager.getUsername()
+            if (username != null) {
+                orderViewModel.fetchUserOrders(username)
+                Toast.makeText(this, "Refreshing orders...", Toast.LENGTH_SHORT).show()
+            }
         }
 
         setupGlassUI()
@@ -46,14 +61,11 @@ class MyOrdersActivity : AppCompatActivity() {
         
         // Get username from token manager
         val username = tokenManager.getUsername()
-        Log.d("MyOrdersActivity", "Current username: $username")
         
         if (username != null) {
-            Log.d("MyOrdersActivity", "Fetching orders for username: $username")
             orderViewModel.fetchUserOrders(username)
         } else {
             Log.e("MyOrdersActivity", "No username found, user not logged in properly")
-            Log.d("MyOrdersActivity", "Redirecting to login...")
             Toast.makeText(this, "Please login again", Toast.LENGTH_SHORT).show()
             
             // Redirect to MainActivity which will handle login
@@ -75,21 +87,11 @@ class MyOrdersActivity : AppCompatActivity() {
             when (result) {
                 is Result.Success -> {
                     binding.progressBar.visibility = View.GONE
-                    Log.d("MyOrdersActivity", "Received ${result.data.size} orders")
                     // Create a new list to ensure DiffUtil triggers
-                    orderListAdapter.submitList(result.data.toList()) {
-                        Log.d("MyOrdersActivity", "submitList completed, adapter has ${orderListAdapter.itemCount} items")
-                        binding.ordersRecyclerView.post {
-                            Log.d("MyOrdersActivity", "RecyclerView dimensions: ${binding.ordersRecyclerView.width} x ${binding.ordersRecyclerView.height}")
-                            Log.d("MyOrdersActivity", "RecyclerView child count: ${binding.ordersRecyclerView.childCount}")
-                            Log.d("MyOrdersActivity", "LayoutManager: ${binding.ordersRecyclerView.layoutManager}")
-                        }
-                    }
-                    Log.d("MyOrdersActivity", "Orders submitted to adapter")
+                    orderListAdapter.submitList(result.data.toList())
                 }
                 is Result.Error -> {
                     binding.progressBar.visibility = View.GONE
-                    Log.e("MyOrdersActivity", "Error fetching orders: ${result.exception.message}")
                     Toast.makeText(this, "Failed to fetch orders: ${result.exception.message}", Toast.LENGTH_LONG).show()
                 }
             }

@@ -46,7 +46,7 @@
             app:layout_constraintEnd_toStartOf="@id/role_badge"
             app:layout_constraintStart_toEndOf="@id/user_avatar"
             app:layout_constraintTop_toTopOf="@id/user_avatar"
-            tools:text="john_doe" />
+            tools:text="jasper" />
 
         <!-- Created Date -->
         <TextView

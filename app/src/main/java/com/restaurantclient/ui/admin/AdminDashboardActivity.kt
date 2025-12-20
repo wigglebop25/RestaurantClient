@@ -154,58 +154,52 @@ class AdminDashboardActivity : BaseAdminActivity() {
         val rootView = decorView.findViewById<ViewGroup>(android.R.id.content)
         val windowBackground = decorView.background
         
-        // Admin badge blur with white overlay
-        binding.adminBadgeBlurView.setupWith(rootView)
-            .setFrameClearDrawable(windowBackground)
-            .setBlurAlgorithm(RenderScriptBlur(this))
-            .setBlurRadius(radius)
-        val adminOverlay = ContextCompat.getColor(this, R.color.admin_glass_overlay)
-        binding.adminBadgeBlurView.setOverlayColor(adminOverlay)
+
         
         // White glassmorphism overlay for statistics cards
-        val whiteOverlay = ContextCompat.getColor(this, R.color.white_glass_overlay)
+
         
         binding.totalUsersBlur.setupWith(rootView)
             .setFrameClearDrawable(windowBackground)
             .setBlurAlgorithm(RenderScriptBlur(this))
             .setBlurRadius(20f)
-        binding.totalUsersBlur.setOverlayColor(whiteOverlay)
+        binding.totalUsersBlur.setOverlayColor(ContextCompat.getColor(this, R.color.white_glass_overlay))
         
         binding.totalOrdersBlur.setupWith(rootView)
             .setFrameClearDrawable(windowBackground)
             .setBlurAlgorithm(RenderScriptBlur(this))
             .setBlurRadius(20f)
-        binding.totalOrdersBlur.setOverlayColor(whiteOverlay)
+        binding.totalOrdersBlur.setOverlayColor(ContextCompat.getColor(this, R.color.white_glass_overlay))
         
         binding.totalProductsBlur.setupWith(rootView)
             .setFrameClearDrawable(windowBackground)
             .setBlurAlgorithm(RenderScriptBlur(this))
             .setBlurRadius(20f)
-        binding.totalProductsBlur.setOverlayColor(whiteOverlay)
+        binding.totalProductsBlur.setOverlayColor(ContextCompat.getColor(this, R.color.white_glass_overlay))
         
         binding.newUsersBlur.setupWith(rootView)
             .setFrameClearDrawable(windowBackground)
             .setBlurAlgorithm(RenderScriptBlur(this))
             .setBlurRadius(20f)
-        binding.newUsersBlur.setOverlayColor(whiteOverlay)
+        binding.newUsersBlur.setOverlayColor(ContextCompat.getColor(this, R.color.white_glass_overlay))
         
         // Management cards
         binding.userManagementBlur.setupWith(rootView)
             .setFrameClearDrawable(windowBackground)
             .setBlurAlgorithm(RenderScriptBlur(this))
             .setBlurRadius(20f)
-        binding.userManagementBlur.setOverlayColor(whiteOverlay)
+        binding.userManagementBlur.setOverlayColor(ContextCompat.getColor(this, R.color.white_glass_overlay))
         
         binding.productManagementBlur.setupWith(rootView)
             .setFrameClearDrawable(windowBackground)
             .setBlurAlgorithm(RenderScriptBlur(this))
             .setBlurRadius(20f)
-        binding.productManagementBlur.setOverlayColor(whiteOverlay)
+        binding.productManagementBlur.setOverlayColor(ContextCompat.getColor(this, R.color.white_glass_overlay))
         
         binding.orderManagementBlur.setupWith(rootView)
             .setFrameClearDrawable(windowBackground)
             .setBlurAlgorithm(RenderScriptBlur(this))
             .setBlurRadius(20f)
-        binding.orderManagementBlur.setOverlayColor(whiteOverlay)
+        binding.orderManagementBlur.setOverlayColor(ContextCompat.getColor(this, R.color.white_glass_overlay))
     }
 }

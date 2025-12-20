@@ -12,6 +12,7 @@
         style="@style/Widget.RestaurantClient.AdminToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:background="@color/admin_primary"
         app:titleTextColor="@android:color/white" />
 
 </com.google.android.material.appbar.AppBarLayout>
