@@ -11,7 +11,7 @@
 
 ## 📥 Download
 
-[![Download APK](https://img.shields.io/badge/Download-Latest%20APK-red?style=for-the-badge&logo=android)](https://github.com/JTaguiamdev/RestaurantClient/releases/latest/download/RestaurantClient-debug.apk)
+[![Download APK](https://img.shields.io/badge/Download-Latest%20APK-red?style=for-the-badge&logo=android)](https://github.com/JTaguiamdev/RestaurantClient/releases/download/v1.0.0-initial-release/RestaurantClient-debug.apk)
 
 *Note: This is a debug build. You may need to allow "Install from Unknown Sources" on your device.*
 
