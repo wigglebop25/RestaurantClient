@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.eightbitlab.com.blurview.BlurView
+            android:id="@+id/order_card_blur"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/glass_card_border"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/order_id_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="?attr/textAppearanceSubtitle1"
+                android:textStyle="bold"
+                tools:text="Order #1024" />
+
+            <TextView
+                android:id="@+id/order_amount_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceSubtitle1"
+                android:textColor="@color/itadaki_crimson"
+                android:textStyle="bold"
+                tools:text="$54.00" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/order_meta_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:textColor="@color/admin_text_secondary"
+            tools:text="User #12 • Placed Mar 18" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Order Status"
+                android:textAppearance="?attr/textAppearanceCaption"
+                android:textColor="@color/admin_text_secondary"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/current_status_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceCaption"
+                android:textColor="@color/itadaki_crimson"
+                android:textStyle="bold"
+                tools:text="PENDING" />
+        </LinearLayout>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/status_chip_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:singleLine="false"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_pending"
+                style="@style/Widget.RestaurantClient.CasherChoiceChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pending"
+                android:tag="Pending" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_accepted"
+                style="@style/Widget.RestaurantClient.CasherChoiceChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Accepted"
+                android:tag="Accepted" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_ready"
+                style="@style/Widget.RestaurantClient.CasherChoiceChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ready"
+                android:tag="Ready" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_completed"
+                style="@style/Widget.RestaurantClient.CasherChoiceChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Completed"
+                android:tag="Completed" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_cancelled"
+                style="@style/Widget.RestaurantClient.CasherChoiceChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancelled"
+                android:tag="Cancelled" />
+        </com.google.android.material.chip.ChipGroup>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</com.google.android.material.card.MaterialCardView>
+
+

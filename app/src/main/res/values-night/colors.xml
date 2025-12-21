@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FFFFFFFF</color> <!-- In dark mode, 'black' usually refers to text which should be white -->
+    <color name="white">#FF121212</color> <!-- In dark mode, 'white' usually refers to background which should be dark -->
+    <color name="brand_primary">#D0BCFF</color>
+    <color name="brand_on_primary">#381E72</color>
+    <color name="brand_primary_container">#4F378B</color>
+    <color name="brand_on_primary_container">#EADDFF</color>
+    <color name="brand_secondary">#CCC2DC</color>
+    <color name="brand_on_secondary">#332D41</color>
+    <color name="brand_secondary_container">#4A4458</color>
+    <color name="brand_on_secondary_container">#E8DEF8</color>
+    <color name="brand_background">#1C1B1F</color>
+    <color name="brand_on_background">#E6E1E5</color>
+    <color name="brand_surface">#1C1B1F</color>
+    <color name="brand_on_surface">#E6E1E5</color>
+    <color name="brand_surface_variant">#49454F</color>
+    <color name="brand_on_surface_variant">#CAC4D0</color>
+    <color name="brand_outline">#938F99</color>
+    <color name="brand_outline_variant">#49454F</color>
+
+    <color name="login_gradient_start">#2CB67D</color>
+    <color name="login_gradient_end">#6C63FF</color>
+
+    <color name="order_card_background">@color/brand_surface</color>
+    <color name="order_card_stroke">@color/brand_outline_variant</color>
+    <color name="chip_price_background">@color/brand_primary_container</color>
+    <color name="chip_price_text">@color/brand_on_primary_container</color>
+
+    <!-- Food Delivery App Colors (Dark Mode) -->
+    <color name="food_primary_red">#EF4444</color>
+    <color name="food_dark_text">#F3F4F6</color> <!-- Light text for dark bg -->
+    <color name="food_light_gray">#374151</color> <!-- Dark gray for backgrounds -->
+    <color name="food_medium_gray">#4B5563</color>
+    <color name="food_star_orange">#F59E0B</color>
+    <color name="food_background">#111827</color> <!-- Very dark blue/gray -->
+    <color name="food_card_shadow">#80000000</color>
+    <color name="food_text_secondary">#9CA3AF</color>
+    <color name="food_button_dark">#F9FAFB</color> <!-- Light button for contrast -->
+    
+    <!-- Text colors for dark mode -->
+    <color name="text_primary">#E6E1E5</color>
+    <color name="text_secondary">#CAC4D0</color>
+    <color name="section_header_text">#E6E1E5</color>
+    
+    <!-- Glassmorphism Overlays (Adjusted for Dark Mode) -->
+    <color name="glass_overlay_light">#1AFFFFFF</color> 
+    <color name="glass_overlay_dark">#4D000000</color>
+    <color name="glass_border_light">#1AFFFFFF</color>
+    <color name="glass_border_dark">#1A000000</color>
+    
+    <!-- Blur Tints (Usually lighter/more transparent in dark mode) -->
+    <color name="blur_tint_primary">#33D0BCFF</color>
+    <color name="blur_tint_secondary">#33CCC2DC</color>
+    <color name="blur_tint_accent">#33EF4444</color>
+    <color name="blur_tint_success">#3310B981</color>
+    <color name="blur_tint_warning">#33F59E0B</color>
+    <color name="blur_tint_info">#333B82F6</color>
+    <color name="blur_tint_error">#33EF4444</color>
+    
+    <!-- Background Gradients -->
+    <color name="bg_gradient_start">#121212</color>
+    <color name="bg_gradient_end">#1E1E1E</color>
+    
+    <!-- Itadaki Brand Colors (Dark Mode Adaptation) -->
+    <color name="itadaki_red">#FF8A80</color> <!-- Lighter red for dark bg -->
+    <color name="itadaki_crimson">#E57373</color> <!-- Lighter crimson -->
+    <color name="itadaki_white">#121212</color> <!-- Dark background (inverted) -->
+    <color name="itadaki_charcoal">#E0E0E0</color> <!-- Light text (inverted) -->
+    <color name="itadaki_overlay">#CC000000</color>
+    <color name="itadaki_transparent_red">#40FF8A80</color>
+    <color name="itadaki_cream">#1E1E1E</color> <!-- Dark grey instead of cream -->
+    <color name="itadaki_deep_red">#FFCDD2</color> <!-- Very light red for accents -->
+
+    <!-- Itadaki Gradients -->
+    <color name="itadaki_gradient_start">#B71C1C</color> <!-- Darker red -->
+    <color name="itadaki_gradient_center">#C62828</color>
+    <color name="itadaki_gradient_end">#D32F2F</color>
+
+    <!-- Permissions Badge -->
+    <color name="permissions_badge_bg">#33D0BCFF</color>
+</resources>
