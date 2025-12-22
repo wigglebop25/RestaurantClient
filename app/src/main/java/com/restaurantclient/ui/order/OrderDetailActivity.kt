@@ -10,12 +10,11 @@ import com.restaurantclient.R
 import com.restaurantclient.data.Result
 import com.restaurantclient.data.dto.OrderResponse
 import com.restaurantclient.databinding.ActivityOrderDetailBinding
+import com.restaurantclient.util.DateTimeUtils
 import com.restaurantclient.util.ErrorUtils
 import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 import java.text.NumberFormat
-import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @AndroidEntryPoint
@@ -88,8 +87,8 @@ class OrderDetailActivity : AppCompatActivity() {
         binding.orderStatusChip.text = order.status ?: getString(R.string.order_detail_unknown_value)
         binding.orderQuantityValue.text = order.quantity.toString()
         binding.orderTotalValue.text = formatCurrency(order.total_amount)
-        binding.orderPlacedValue.text = formatTimestamp(order.created_at)
-        binding.orderUpdatedValue.text = formatTimestamp(order.updated_at)
+        binding.orderPlacedValue.text = DateTimeUtils.formatIsoDate(order.created_at)
+        binding.orderUpdatedValue.text = DateTimeUtils.formatIsoDate(order.updated_at)
         
         // Update chip style based on status if needed
         updateStatusChipStyle(order.status)
@@ -112,22 +111,10 @@ class OrderDetailActivity : AppCompatActivity() {
     }
 
     private fun formatTimestamp(value: String?): String {
-        if (value.isNullOrBlank()) {
-            return getString(R.string.order_detail_unknown_value)
-        }
-        return runCatching {
-            val date = OffsetDateTime.parse(value)
-            date.format(timestampFormatter())
-        }.getOrElse {
-            value.replace("T", " ")
-                .replace("Z", "")
-                .substringBefore("+", value)
-                .trim()
+        return DateTimeUtils.formatIsoDate(value).ifBlank {
+            getString(R.string.order_detail_unknown_value)
         }
     }
-
-    private fun timestampFormatter(): DateTimeFormatter =
-        DateTimeFormatter.ofPattern("MMM d, yyyy • h:mm a", Locale.getDefault())
 
     companion object {
         private const val EXTRA_ORDER = "extra_order"
