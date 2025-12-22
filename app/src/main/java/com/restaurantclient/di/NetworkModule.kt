@@ -38,9 +38,17 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-        val baseUrl = BuildConfig.BASE_URL.let {
-            if (it.endsWith("/")) it else "$it/"
+        val rawUrl = BuildConfig.BASE_URL.trim()
+        
+        // Clean the URL: Remove trailing api/v1 if the user included it in the secret
+        // because ApiService already defines endpoints starting with api/v1/
+        val cleanedUrl = when {
+            rawUrl.endsWith("/api/v1/") -> rawUrl.removeSuffix("api/v1/")
+            rawUrl.endsWith("/api/v1") -> rawUrl.removeSuffix("api/v1")
+            else -> rawUrl
         }
+        
+        val baseUrl = if (cleanedUrl.endsWith("/")) cleanedUrl else "$cleanedUrl/"
         
         return Retrofit.Builder()
             .baseUrl(baseUrl)
