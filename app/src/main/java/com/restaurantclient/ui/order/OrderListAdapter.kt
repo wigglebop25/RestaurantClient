@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.restaurantclient.data.dto.OrderResponse
 import com.restaurantclient.databinding.ItemOrderBinding
+import com.restaurantclient.util.DateTimeUtils
 import java.math.BigDecimal
 import java.text.NumberFormat
 
@@ -30,7 +31,7 @@ class OrderListAdapter(private val onClick: (OrderResponse) -> Unit) :
             currentOrder = order
             binding.orderId.text = "Order #${order.order_id}"
             binding.orderStatus.text = order.status ?: "Pending"
-            binding.orderDate.text = com.restaurantclient.util.DateTimeUtils.formatIsoDate(order.created_at)
+            binding.orderDate.text = DateTimeUtils.formatIsoDate(order.created_at)
             binding.orderItemCount.text = "${order.quantity} items"
             binding.orderTotal.text = formatTotal(order.total_amount)
         }

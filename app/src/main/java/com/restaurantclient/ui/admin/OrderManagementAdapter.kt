@@ -11,6 +11,7 @@ import com.restaurantclient.R
 import com.restaurantclient.data.dto.OrderResponse
 import com.restaurantclient.databinding.ItemAdminOrderBinding
 import com.restaurantclient.ui.common.setupGlassEffect
+import com.restaurantclient.util.DateTimeUtils
 
 class OrderManagementAdapter(
     private val onStatusChange: (OrderResponse, String) -> Unit
@@ -75,7 +76,7 @@ class OrderManagementAdapter(
         }
 
         private fun buildMetaText(uiModel: AdminOrderUIModel): String {
-            val date = com.restaurantclient.util.DateTimeUtils.formatIsoDate(uiModel.order.created_at)
+            val date = DateTimeUtils.formatIsoDate(uiModel.order.created_at)
             return "${uiModel.username} • Placed $date"
         }
     }

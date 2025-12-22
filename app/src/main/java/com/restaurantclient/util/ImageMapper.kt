@@ -1,4 +1,5 @@
-package com.restaurantclient.utils
+package com.restaurantclient.util
+
 import com.restaurantclient.R
 object ImageMapper {
     

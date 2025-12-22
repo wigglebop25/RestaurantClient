@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.restaurantclient.R
 import com.restaurantclient.data.dto.ProductResponse
 import com.restaurantclient.databinding.ItemProductBinding
-import com.restaurantclient.utils.ImageMapper
+import com.restaurantclient.util.ImageMapper
 import kotlin.random.Random
 
 class ProductListAdapter(

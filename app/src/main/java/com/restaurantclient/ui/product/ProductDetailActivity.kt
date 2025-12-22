@@ -11,6 +11,9 @@ import com.restaurantclient.data.Result
 import com.restaurantclient.databinding.ActivityProductDetailBinding
 import com.restaurantclient.databinding.DialogSuccessBinding
 import com.restaurantclient.ui.common.setupGlassEffect
+import com.restaurantclient.util.DateTimeUtils
+import com.restaurantclient.util.ErrorUtils
+import com.restaurantclient.util.ImageMapper
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.random.Random
@@ -111,7 +114,7 @@ class ProductDetailActivity : AppCompatActivity() {
                     binding.productPrice.text = "$${product.price}"
                     
                     // Load product image from local resources
-                    val imageResource = com.restaurantclient.utils.ImageMapper.getDrawableResourceOrPlaceholder(product.product_image_uri)
+                    val imageResource = ImageMapper.getDrawableResourceOrPlaceholder(product.product_image_uri)
                     binding.productImage.setImageResource(imageResource)
 
                     // Generate random rating and time for demo
@@ -121,7 +124,7 @@ class ProductDetailActivity : AppCompatActivity() {
                     binding.timeText.text = getString(R.string.estimated_time, time)
                 }
                 is Result.Error -> {
-                    val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
+                    val message = ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
                     Toast.makeText(this, "Failed to fetch product details: $message", Toast.LENGTH_LONG).show()
                 }
             }

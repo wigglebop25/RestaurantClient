@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.restaurantclient.data.CartItem
 import com.restaurantclient.databinding.ItemCartBinding
+import com.restaurantclient.util.ImageMapper
 
 class CheckoutCartAdapter : ListAdapter<CartItem, CheckoutCartAdapter.CartViewHolder>(CartDiffCallback()) {
 
@@ -29,7 +30,7 @@ class CheckoutCartAdapter : ListAdapter<CartItem, CheckoutCartAdapter.CartViewHo
                 quantityText.text = cartItem.quantity.toString()
                 
                 // Load product image from local resources
-                val imageResource = com.restaurantclient.utils.ImageMapper.getDrawableResourceOrPlaceholder(cartItem.product.product_image_uri)
+                val imageResource = ImageMapper.getDrawableResourceOrPlaceholder(cartItem.product.product_image_uri)
                 productImage.setImageResource(imageResource)
                 
                 // Hide controls in checkout mode
