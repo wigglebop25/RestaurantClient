@@ -82,7 +82,7 @@ class CasherOrderAdapter(
         }
 
         private fun buildMetaText(uiModel: CasherOrderUIModel): String {
-            val date = uiModel.order.created_at?.substringBefore("T") ?: ""
+            val date = com.restaurantclient.util.DateTimeUtils.formatIsoDate(uiModel.order.created_at)
             return "${uiModel.username} • Placed $date"
         }
     }

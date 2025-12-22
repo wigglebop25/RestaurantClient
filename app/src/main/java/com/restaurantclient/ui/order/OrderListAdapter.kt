@@ -30,7 +30,7 @@ class OrderListAdapter(private val onClick: (OrderResponse) -> Unit) :
             currentOrder = order
             binding.orderId.text = "Order #${order.order_id}"
             binding.orderStatus.text = order.status ?: "Pending"
-            binding.orderDate.text = order.created_at?.substringBefore("T") ?: ""
+            binding.orderDate.text = com.restaurantclient.util.DateTimeUtils.formatIsoDate(order.created_at)
             binding.orderItemCount.text = "${order.quantity} items"
             binding.orderTotal.text = formatTotal(order.total_amount)
         }
