@@ -81,8 +81,8 @@ class CasherDashboardViewModel @Inject constructor(
 
     private suspend fun loadFallbackStats() {
         try {
-            val ordersDeferred = viewModelScope.async { orderRepository.getAllOrders() }
-            val productsDeferred = viewModelScope.async { productRepository.getAllProducts() }
+            val ordersDeferred = viewModelScope.async { orderRepository.getAllOrders(forceRefresh = true) }
+            val productsDeferred = viewModelScope.async { productRepository.getAllProducts(forceRefresh = true) }
 
             val ordersResult = ordersDeferred.await()
             val productsResult = productsDeferred.await()
