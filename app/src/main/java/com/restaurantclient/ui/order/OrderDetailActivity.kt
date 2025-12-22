@@ -68,9 +68,9 @@ class OrderDetailActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-        viewModel.order.observe(this) { result ->
+        viewModel.order.observe(this) { result: Result<OrderResponse> ->
             when (result) {
-                is Result.Success -> {
+                is Result.Success<OrderResponse> -> {
                     renderOrder(result.data)
                 }
                 is Result.Error -> {
