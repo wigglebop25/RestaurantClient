@@ -11,7 +11,7 @@
 
 ## 📥 Download
 
-[![Download APK](https://img.shields.io/badge/Download-Latest%20APK-red?style=for-the-badge&logo=android)](https://github.com/JTaguiamdev/RestaurantClient/releases/download/v1.0.0-initial-release/RestaurantClient-debug.apk)
+[![Download APK](https://img.shields.io/badge/Download-Latest%20APK-red?style=for-the-badge&logo=android)](https://github.com/JTaguiamdev/RestaurantClient/releases/download/latest/RestaurantClient-debug.apk)
 
 *Note: This is a debug build. You may need to allow "Install from Unknown Sources" on your device.*
 
@@ -24,9 +24,15 @@
 ### 📸 Screenshots
 
 <p align="center">
-  <img src="screenshots/login.png" width="30%" alt="Login Screen" />
-  <img src="screenshots/dashboard.png" width="30%" alt="Admin Dashboard" />
-  <img src="screenshots/menu.png" width="30%" alt="Menu Screen" />
+  <img src="screenshots/Screenshot_20251222_100529.png" width="30%" alt="App Screenshot 1" />
+  <img src="screenshots/Screenshot_20251222_100647.png" width="30%" alt="App Screenshot 2" />
+  <img src="screenshots/Screenshot_20251222_100928.png" width="30%" alt="App Screenshot 3" />
+</p>
+
+<p align="center">
+  <img src="screenshots/Screenshot_20251222_100955.png" width="30%" alt="App Screenshot 4" />
+  <img src="screenshots/Screenshot_20251222_101007.png" width="30%" alt="App Screenshot 5" />
+  <img src="screenshots/Screenshot_20251222_101021.png" width="30%" alt="App Screenshot 6" />
 </p>
 
 ---
@@ -121,7 +127,7 @@ API_BASE_URL=http://your-backend-server.com/api/
 
 ## 📚 Documentation
 
-Comprehensive guides available in the `docs/` folder:
+Comprehensive guides available in the project root:
 - **UI_MODERNIZATION_PLAN.md** - Complete UI roadmap
 - **GLASS_COMPONENTS.md** - Glass component library (25+ components)
 - **PHASE_5_POLISH_OPTIMIZATION.md** - Performance & optimization

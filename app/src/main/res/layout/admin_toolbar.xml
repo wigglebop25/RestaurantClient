@@ -7,4 +7,6 @@
     android:layout_height="?attr/actionBarSize"
     android:background="@color/itadaki_crimson"
     android:elevation="4dp"
-    app:titleTextColor="@android:color/white" />
+    app:titleTextColor="@android:color/white"
+    app:navigationIconTint="@color/white"
+    app:collapseIcon="@color/white"/>

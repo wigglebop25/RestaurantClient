@@ -37,7 +37,7 @@
                 android:layout_height="match_parent"
                 android:padding="8dp"
                 tools:listitem="@layout/item_user"
-                android:layout_marginBottom="70dp"/>
+                android:layout_marginBottom="50dp"/>
 
             <!-- Empty State -->
             <LinearLayout

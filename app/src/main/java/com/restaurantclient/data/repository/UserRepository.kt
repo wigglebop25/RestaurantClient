@@ -33,7 +33,7 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 Result.Success(response.body()!!)
             } else {
-                Result.Error(Exception("Failed to login: ${response.code()}"))
+                Result.Error(retrofit2.HttpException(response))
             }
         } catch (e: Exception) {
             Result.Error(e)
@@ -46,7 +46,7 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 Result.Success(response.body()!!)
             } else {
-                Result.Error(Exception("Failed to register: ${response.code()}"))
+                Result.Error(retrofit2.HttpException(response))
             }
         } catch (e: Exception) {
             Result.Error(e)
@@ -59,7 +59,7 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 Result.Success(response.body()!!)
             } else {
-                Result.Error(Exception("Failed to refresh token: ${response.code()}"))
+                Result.Error(retrofit2.HttpException(response))
             }
         } catch (e: Exception) {
             Result.Error(e)

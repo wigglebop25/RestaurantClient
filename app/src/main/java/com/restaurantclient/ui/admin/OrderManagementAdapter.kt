@@ -51,7 +51,10 @@ class OrderManagementAdapter(
         fun bind(uiModel: AdminOrderUIModel) {
             val order = uiModel.order
             binding.orderIdText.text = "Order #${order.order_id}"
-            binding.orderAmountText.text = "${order.total_amount}"
+            
+            val amount = order.total_amount.toDoubleOrNull() ?: 0.0
+            binding.orderAmountText.text = java.text.NumberFormat.getCurrencyInstance().format(amount)
+            
             binding.orderMetaText.text = buildMetaText(uiModel)
             binding.currentStatusLabel.text = order.status?.uppercase() ?: "PENDING"
 
