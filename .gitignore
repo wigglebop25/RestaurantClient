@@ -16,3 +16,7 @@ local.properties
 android_backend_plan.md
 /docs
 /.env/
+
+# Generated Security Files
+app/src/main/res/raw/server_cert.crt
+app/src/main/res/xml/network_security_config.xml
