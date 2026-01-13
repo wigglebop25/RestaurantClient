@@ -45,6 +45,51 @@
                 android:textColor="@color/admin_background"
                 android:layout_marginBottom="12dp" />
 
+            <!-- Revenue Analytics Chart -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginBottom="24dp"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardCornerRadius="28dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0.5dp"
+                app:strokeColor="#25FFFFFF">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.eightbitlab.com.blurview.BlurView
+                        android:id="@+id/revenue_chart_blur"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/glass_card_border" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Revenue Analytics (Daily)"
+                            android:textAppearance="?attr/textAppearanceSubtitle1"
+                            android:textColor="@color/white"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="16dp"/>
+
+                        <com.github.mikephil.charting.charts.BarChart
+                            android:id="@+id/revenue_bar_chart"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </LinearLayout>
+                </FrameLayout>
+            </com.google.android.material.card.MaterialCardView>
+
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -286,6 +331,128 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Total Roles"
+                                android:textSize="12sp"
+                                android:textColor="@color/white"
+                                android:alpha="0.7" />
+
+                        </LinearLayout>
+
+                    </FrameLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Total Revenue Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="8dp"
+                    app:cardBackgroundColor="@android:color/transparent"
+                    app:cardCornerRadius="28dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0.5dp"
+                    app:strokeColor="#25FFFFFF">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <!-- LAYER 1: Blur Background -->
+                        <com.eightbitlab.com.blurview.BlurView
+                            android:id="@+id/total_revenue_blur"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/glass_card_border" />
+
+                        <!-- LAYER 2: Sharp Content -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="16dp"
+                            android:gravity="center"
+                            android:background="@android:color/transparent">
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_receipt"
+                                app:tint="@color/admin_accent"
+                                android:layout_marginBottom="8dp" />
+
+                            <TextView
+                                android:id="@+id/total_revenue_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="$0.00"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/admin_accent" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Total Revenue"
+                                android:textSize="12sp"
+                                android:textColor="@color/white"
+                                android:alpha="0.7" />
+
+                        </LinearLayout>
+
+                    </FrameLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Avg Order Value Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="8dp"
+                    app:cardBackgroundColor="@android:color/transparent"
+                    app:cardCornerRadius="28dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0.5dp"
+                    app:strokeColor="#25FFFFFF">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <!-- LAYER 1: Blur Background -->
+                        <com.eightbitlab.com.blurview.BlurView
+                            android:id="@+id/avg_order_blur"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/glass_card_border" />
+
+                        <!-- LAYER 2: Sharp Content -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="16dp"
+                            android:gravity="center"
+                            android:background="@android:color/transparent">
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_cart"
+                                app:tint="@color/admin_primary"
+                                android:layout_marginBottom="8dp" />
+
+                            <TextView
+                                android:id="@+id/avg_order_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="$0.00"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/admin_primary" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Avg. Order Value"
                                 android:textSize="12sp"
                                 android:textColor="@color/white"
                                 android:alpha="0.7" />
