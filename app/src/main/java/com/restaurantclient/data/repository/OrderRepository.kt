@@ -2,13 +2,17 @@ package com.restaurantclient.data.repository
 
 import android.util.Log
 import com.restaurantclient.data.Result
+import com.restaurantclient.data.TokenManager
 import com.restaurantclient.data.dto.CreateOrderRequest
 import com.restaurantclient.data.dto.OrderResponse
 import com.restaurantclient.data.dto.UpdateOrderRequest
 import com.restaurantclient.data.network.ApiService
 import javax.inject.Inject
 
-class OrderRepository @Inject constructor(private val apiService: ApiService) {
+class OrderRepository @Inject constructor(
+    private val apiService: ApiService,
+    private val tokenManager: TokenManager
+) {
 
     private var cachedAllOrders: List<OrderResponse>? = null
     private val cachedUserOrders: MutableMap<String, List<OrderResponse>> = mutableMapOf()
@@ -24,18 +28,7 @@ class OrderRepository @Inject constructor(private val apiService: ApiService) {
             val response = apiService.createOrder(createOrderRequest)
             if (response.isSuccessful) {
                 clearCache() // Invalidate cache after creating new order
-                // Server returns plain text "Orders created", create dummy response
-                val dummyResponse = OrderResponse(
-                    order_id = 0,
-                    user_id = 0,
-                    product_id = 0,
-                    quantity = 0,
-                    total_amount = "0",
-                    status = "pending",
-                    created_at = null,
-                    updated_at = null
-                )
-                Result.Success(dummyResponse)
+                Result.Success(response.body()!!)
             } else {
                 Result.Error(Exception("Failed to create order: ${response.code()}"))
             }
@@ -52,22 +45,46 @@ class OrderRepository @Inject constructor(private val apiService: ApiService) {
 
         return try {
             Log.d("OrderRepository", "Fetching orders for username: $username (forceRefresh: $forceRefresh)")
-            val response = apiService.getUserOrders(username)
-            Log.d("OrderRepository", "API Response code: ${response.code()}")
-            if (response.isSuccessful) {
-                val newOrders = response.body()!!
-                if (newOrders != cachedUserOrders[username]) {
-                    cachedUserOrders[username] = newOrders
-                    Log.d("OrderRepository", "Successfully fetched and updated ${newOrders.size} orders for user $username in cache")
+            
+            // Helper to parse ResponseBody
+            fun parseBody(responseBody: okhttp3.ResponseBody?): List<OrderResponse> {
+                val json = responseBody?.string()
+                if (json.isNullOrEmpty()) return emptyList()
+                val trimmed = json.trim()
+                return if (trimmed.startsWith("[")) {
+                    val type = object : com.google.gson.reflect.TypeToken<List<OrderResponse>>() {}.type
+                    com.google.gson.Gson().fromJson(json, type)
                 } else {
-                    Log.d("OrderRepository", "Successfully fetched orders for user $username, but data is same as cache. Not updating cache.")
+                    Log.w("OrderRepository", "Received object instead of array: $trimmed")
+                    emptyList()
                 }
-                Result.Success(cachedUserOrders[username]!!)
-            } else {
-                val errorMsg = "Failed to get user orders: HTTP ${response.code()}"
-                Log.e("OrderRepository", errorMsg)
-                Result.Error(Exception(errorMsg))
             }
+
+            // 1. Try standard getMyOrders() (uses JWT)
+            var response = apiService.getMyOrders()
+            
+            // 2. Fallback to username if getMyOrders fails or returns nothing relevant
+            if (!response.isSuccessful || response.code() == 403 || response.code() == 404) {
+                Log.w("OrderRepository", "getMyOrders failed, falling back to username-based endpoint")
+                val userResponse = apiService.getUserOrders(username)
+                if (userResponse.isSuccessful) {
+                    val newOrders = parseBody(userResponse.body())
+                    cachedUserOrders[username] = newOrders
+                    return Result.Success(newOrders)
+                }
+            }
+
+            if (response.isSuccessful) {
+                val newOrders = parseBody(response.body())
+                cachedUserOrders[username] = newOrders
+                Log.d("OrderRepository", "Successfully fetched and updated ${newOrders.size} orders")
+                return Result.Success(newOrders)
+            }
+
+            val errorMsg = "Failed to get user orders: HTTP ${response.code()}"
+            Log.e("OrderRepository", errorMsg)
+            Result.Error(Exception(errorMsg))
+
         } catch (e: Exception) {
             Log.e("OrderRepository", "Exception fetching user orders", e)
             Result.Error(e)
@@ -121,10 +138,10 @@ class OrderRepository @Inject constructor(private val apiService: ApiService) {
                 val dummyResponse = OrderResponse(
                     order_id = orderId,
                     user_id = 0,
-                    product_id = 0,
-                    quantity = 0,
-                    total_amount = "0",
+                    user = null,
+                    total_amount = 0.0,
                     status = status,
+                    products = emptyList(),
                     created_at = null,
                     updated_at = null
                 )
