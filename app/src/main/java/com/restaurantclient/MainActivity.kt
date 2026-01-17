@@ -33,13 +33,24 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
+        // Observe refresh result to navigate with FRESH role data from backend
+        authViewModel.refreshResult.observe(this) { result ->
+            if (result is com.restaurantclient.data.Result.Success) {
+                Log.d("MainActivity", "Token refreshed, role updated. Navigating...")
+                authViewModel.loadStoredUserInfo() // Reload updated info from TokenManager
+                navigateBasedOnRole()
+            } else {
+                Log.w("MainActivity", "Token refresh failed. Using cached role if available.")
+                // If refresh failed (e.g. network error), fall back to stored role
+                determineUserRoleAndNavigate() 
+            }
+        }
+
         Log.d("MainActivity", "Checking authentication status...")
-        val isLoggedIn = authViewModel.isLoggedIn()
-        Log.d("MainActivity", "User logged in: $isLoggedIn")
-        
-        if (isLoggedIn) {
-            Log.d("MainActivity", "User is logged in, determining user role...")
-            determineUserRoleAndNavigate()
+        if (authViewModel.isLoggedIn()) {
+            Log.d("MainActivity", "User is logged in, refreshing token to sync role...")
+            // Force a refresh to ensure we have the correct role from server
+            authViewModel.refreshToken()
         } else {
             Log.d("MainActivity", "User not logged in, launching LoginActivity")
             loginLauncher.launch(Intent(this, LoginActivity::class.java))
@@ -88,6 +99,12 @@ class MainActivity : AppCompatActivity() {
     private fun determineRoleByAdminAccess() {
         val username = authViewModel.getCurrentUser()?.username ?: ""
         Log.d("MainActivity", "🔍 Determining role for username: '$username'")
+        
+        if (username.isBlank()) {
+            Log.w("MainActivity", "⚠️ Empty username, cannot determine role. Redirecting to Login.")
+            loginLauncher.launch(Intent(this, LoginActivity::class.java))
+            return
+        }
         
         if (shouldForceAdminRole(username)) {
             Log.w("MainActivity", "🧪 Debug override enabled - forcing admin role")
