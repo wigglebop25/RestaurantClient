@@ -113,7 +113,7 @@ class UserRepository @Inject constructor(
                 RoleDTO.Customer -> "Customer"
                 RoleDTO.Casher -> "Casher"
             }
-            val createUserRequest = CreateUserRequest(username, password, roleString)
+            val createUserRequest = CreateUserRequest(username, password, roleName = roleString)
             val response = apiService.createUser(createUserRequest)
             if (response.isSuccessful) {
                 Result.Success(Unit)
