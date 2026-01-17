@@ -1,6 +1,7 @@
 package com.restaurantclient.data.dto
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class CategoryDTO(
     @SerializedName("id")
@@ -11,7 +12,7 @@ data class CategoryDTO(
     val description: String? = null,
     val created_at: String? = null,
     val updated_at: String? = null
-) {
+) : Serializable {
     val resolvedId: Int?
         get() = id ?: categoryId
 }
