@@ -19,6 +19,13 @@ import com.restaurantclient.ui.product.ProductListActivity
 import com.restaurantclient.ui.user.UserProfileActivity
 import dagger.hilt.android.AndroidEntryPoint
 
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.components.XAxis
+import android.graphics.Color
+
 @AndroidEntryPoint
 class AdminDashboardActivity : BaseAdminActivity() {
 
@@ -85,6 +92,14 @@ class AdminDashboardActivity : BaseAdminActivity() {
             binding.totalOrdersText.text = stats.totalOrders.toString()
             binding.totalProductsText.text = stats.totalProducts.toString()
             binding.totalRolesText.text = stats.totalRoles.toString()
+            
+            // Format currency
+            val currencyFormat = java.text.NumberFormat.getCurrencyInstance(java.util.Locale.US)
+            binding.totalRevenueText.text = currencyFormat.format(stats.totalRevenue)
+            binding.avgOrderText.text = currencyFormat.format(stats.averageOrderValue)
+            
+            // Update Bar Chart
+            updateRevenueChart(stats.dailyRevenue)
         }
         
         adminViewModel.dashboardSummary.observe(this) { summary ->
@@ -94,6 +109,65 @@ class AdminDashboardActivity : BaseAdminActivity() {
             binding.totalProductsText.text = summary.productCount.toString()
             // Can add more detailed stats if UI supports it
         }
+    }
+
+    private fun updateRevenueChart(dailyRevenue: Map<String, Double>) {
+        android.util.Log.d("AdminDashboard", "Updating revenue chart with ${dailyRevenue.size} entries: $dailyRevenue")
+        
+        if (dailyRevenue.isEmpty()) {
+            binding.revenueBarChart.setNoDataText("No revenue data available")
+            binding.revenueBarChart.invalidate()
+            return
+        }
+
+        val entries = ArrayList<BarEntry>()
+        val labels = ArrayList<String>()
+        
+        // Sort dates to ensure chronological order
+        val sortedDates = dailyRevenue.keys.sorted()
+        
+        sortedDates.forEachIndexed { index, date ->
+            entries.add(BarEntry(index.toFloat(), dailyRevenue[date]?.toFloat() ?: 0f))
+            // Extract month-day (e.g., 2024-01-13 -> 01-13)
+            labels.add(date.takeLast(5))
+        }
+
+        val dataSet = BarDataSet(entries, "Daily Revenue")
+        dataSet.color = ContextCompat.getColor(this, R.color.admin_primary)
+        dataSet.valueTextColor = ContextCompat.getColor(this, R.color.white)
+        dataSet.valueTextSize = 10f
+
+        val barData = BarData(dataSet)
+        binding.revenueBarChart.data = barData
+        
+        // Chart Styling
+        binding.revenueBarChart.apply {
+            description.isEnabled = false
+            legend.isEnabled = false
+            setDrawGridBackground(false)
+            setDrawBarShadow(false)
+            setTouchEnabled(true)
+            setPinchZoom(true)
+            animateY(1000)
+            
+            xAxis.apply {
+                valueFormatter = IndexAxisValueFormatter(labels)
+                position = XAxis.XAxisPosition.BOTTOM
+                textColor = ContextCompat.getColor(this@AdminDashboardActivity, R.color.white)
+                setDrawGridLines(false)
+                granularity = 1f
+            }
+            
+            axisLeft.apply {
+                textColor = ContextCompat.getColor(this@AdminDashboardActivity, R.color.white)
+                setDrawGridLines(true)
+                gridColor = Color.argb(40, 255, 255, 255)
+            }
+            
+            axisRight.isEnabled = false
+        }
+        
+        binding.revenueBarChart.invalidate()
     }
 
     private fun bindRoleChip(chip: Chip, role: RoleDTO?) {
@@ -161,12 +235,10 @@ class AdminDashboardActivity : BaseAdminActivity() {
         super.onResume()
         // Refresh dashboard data when returning to screen
         adminViewModel.loadDashboardData()
-        adminViewModel.startPollingStats()
     }
 
     override fun onPause() {
         super.onPause()
-        adminViewModel.stopPollingStats()
     }
 
     private fun setupGlassEffects() {
@@ -175,6 +247,9 @@ class AdminDashboardActivity : BaseAdminActivity() {
         binding.totalOrdersBlur.setupGlassEffect(20f)
         binding.totalProductsBlur.setupGlassEffect(20f)
         binding.totalRolesBlur.setupGlassEffect(20f)
+        binding.totalRevenueBlur.setupGlassEffect(20f)
+        binding.avgOrderBlur.setupGlassEffect(20f)
+        binding.revenueChartBlur.setupGlassEffect(20f)
         
         // Management cards
         binding.userManagementBlur.setupGlassEffect(20f)
