@@ -81,4 +81,9 @@
     
     <!-- Permissions Badge -->
     <color name="permissions_badge_bg">#0D6750A4</color>
+    <!-- Status Colors -->
+    <color name="status_pending">#F59E0B</color>
+    <color name="status_ready">#3B82F6</color>
+    <color name="status_completed">#10B981</color>
+    <color name="status_cancelled">#EF4444</color>
 </resources>
