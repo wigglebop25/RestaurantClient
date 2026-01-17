@@ -10,6 +10,9 @@ import com.restaurantclient.data.repository.OrderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import com.restaurantclient.data.repository.UserRepository
+import com.restaurantclient.data.network.WebSocketManager
+import com.restaurantclient.data.network.WebSocketEvent
+import com.restaurantclient.BuildConfig
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -18,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class OrderManagementViewModel @Inject constructor(
     private val orderRepository: OrderRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val webSocketManager: WebSocketManager
 ) : ViewModel() {
 
     private val _allOrders = MutableLiveData<List<AdminOrderUIModel>>()
@@ -109,10 +113,23 @@ class OrderManagementViewModel @Inject constructor(
     fun startPollingOrders() {
         if (pollingJob?.isActive == true) return
         
+        // Connect to WebSocket
+        webSocketManager.connect(BuildConfig.BASE_URL)
+
         pollingJob = viewModelScope.launch {
-            while (true) {
-                loadOrders(forceRefresh = true, showLoading = false)
-                delay(5000)
+            // Initial load
+            loadOrders(forceRefresh = true, showLoading = false)
+
+            // Listen for WebSocket events
+            launch {
+                webSocketManager.events.collect { event ->
+                    if (event is WebSocketEvent.RefreshRequired) {
+                        // Double-fetch strategy
+                        loadOrders(forceRefresh = true, showLoading = false)
+                        delay(1000)
+                        loadOrders(forceRefresh = true, showLoading = false)
+                    }
+                }
             }
         }
     }
