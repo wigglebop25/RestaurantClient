@@ -1,4 +1,5 @@
 import java.util.Properties
+import java.net.URI
 
 plugins {
     alias(libs.plugins.android.application)
@@ -17,6 +18,53 @@ val envProperties = Properties().apply {
 val apiBaseUrl = envProperties.getProperty("API_BASE_URL")
     ?: System.getenv("API_BASE_URL")
     ?: error("API_BASE_URL is not configured. Add it to .env/.env or as an environment variable.")
+
+val sslCertificate = envProperties.getProperty("SSL_CERTIFICATE")
+    ?: System.getenv("SSL_CERTIFICATE")
+    ?: ""
+
+// Parse domain from URL
+val apiDomain = URI(apiBaseUrl.trim().replace("\"", "")).host ?: "localhost"
+
+// Generate Security Files Task
+tasks.register("generateSecurityFiles") {
+    doLast {
+        // 1. Generate server_cert.crt
+        if (sslCertificate.isNotEmpty()) {
+            val certFile = file("src/main/res/raw/server_cert.crt")
+            certFile.parentFile.mkdirs()
+            // Replace literal \n with actual newlines if needed, or handle based on how it's stored
+            val formattedCert = sslCertificate.replace("\\n", "\n").replace("\"", "")
+            certFile.writeText(formattedCert)
+            println("Generated server_cert.crt")
+        } else {
+            println("WARNING: SSL_CERTIFICATE not found in .env. App may fail to connect.")
+        }
+
+        // 2. Generate network_security_config.xml
+        val securityConfigContent = """
+            <?xml version="1.0" encoding="utf-8"?>
+            <network-security-config>
+                <domain-config>
+                    <domain includeSubdomains="true">$apiDomain</domain>
+                    <trust-anchors>
+                        <certificates src="@raw/server_cert"/>
+                    </trust-anchors>
+                </domain-config>
+            </network-security-config>
+        """.trimIndent()
+        
+        val configFile = file("src/main/res/xml/network_security_config.xml")
+        configFile.parentFile.mkdirs()
+        configFile.writeText(securityConfigContent)
+        println("Generated network_security_config.xml with domain: $apiDomain")
+    }
+}
+
+// Hook into build process
+tasks.named("preBuild") {
+    dependsOn("generateSecurityFiles")
+}
 
 val buildConfigBaseUrl = apiBaseUrl.trim().replace("\"", "\\\"")
 val debugForceAdminRole = (project.findProperty("forceAdminRole") as? String)?.equals("true", ignoreCase = true) ?: false
@@ -116,6 +164,9 @@ dependencies {
     
     // Lottie for smooth animations
     implementation(libs.lottie)
+    
+    // MPAndroidChart for analytics graphs
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     
     // SwipeRefreshLayout
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
