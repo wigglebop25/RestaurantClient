@@ -41,12 +41,13 @@ class AuthViewModel @Inject constructor(
             android.util.Log.d("AuthViewModel", "Attempting login for username: ${loginDto.username}")
             val result = userRepository.login(loginDto)
             if (result is Result.Success) {
-                android.util.Log.d("AuthViewModel", "Login successful!")
-                android.util.Log.d("AuthViewModel", "Response token: ${result.data.token}")
-                android.util.Log.d("AuthViewModel", "Response message: ${result.data.message}")
-                android.util.Log.d("AuthViewModel", "Response user: ${result.data.user}")
-                
-                tokenManager.saveToken(result.data.token)
+                // Login successful
+                val token = result.data.token
+                if (token != null) {
+                    tokenManager.saveToken(token)
+                } else {
+                    android.util.Log.e("AuthViewModel", "Login succeeded but token is null!")
+                }
                 
                 // Check if backend returned user information
                 if (result.data.user != null) {
@@ -76,38 +77,54 @@ class AuthViewModel @Inject constructor(
                         android.util.Log.w("AuthViewModel", "   - Role name: '${user.roleDetails?.name}'")
                     }
                 } else {
-                    // Backend only returned token, save username and determine role later
-                    android.util.Log.w("AuthViewModel", "❌ Backend didn't return user info, will fetch manually")
+                    // Backend only returned token, save username
+                    android.util.Log.w("AuthViewModel", "❌ Backend didn't return user info object")
                     tokenManager.saveUsername(loginDto.username)
 
-                    val userId = tokenManager.getUserId()
-                    if (userId != null) {
-                        android.util.Log.d("AuthViewModel", "Fetching user details for user ID: $userId")
-                        val userResult = userRepository.getUserById(userId)
-                        if (userResult is Result.Success) {
-                            val user = userResult.data
-                            android.util.Log.d("AuthViewModel", "✅ Successfully fetched user details")
-                            android.util.Log.d("AuthViewModel", "Username: ${user.username}, Role: ${user.roleDetails?.name}")
+                    // Check if we already extracted a valid role from the token
+                    val tokenRole = tokenManager.getUserRole()
+                    if (tokenRole != null) {
+                        android.util.Log.d("AuthViewModel", "✅ Using valid role extracted from token: $tokenRole")
+                        
+                        currentUser = UserDTO(
+                            userId = tokenManager.getUserId(),
+                            username = loginDto.username,
+                            roleDetails = null, // Role is managed via TokenManager
+                            roles = null,
+                            createdAt = null,
+                            updatedAt = null
+                        )
+                        // No need to fetch user details or probe admin endpoint
+                    } else {
+                        val userId = tokenManager.getUserId()
+                        if (userId != null) {
+                            android.util.Log.d("AuthViewModel", "Fetching user details for user ID: $userId")
+                            val userResult = userRepository.getUserById(userId)
+                            if (userResult is Result.Success) {
+                                val user = userResult.data
+                                android.util.Log.d("AuthViewModel", "✅ Successfully fetched user details")
+                                android.util.Log.d("AuthViewModel", "Username: ${user.username}, Role: ${user.roleDetails?.name}")
 
-                            currentUser = user
-                            tokenManager.saveUsername(user.username)
-                            user.roleDetails?.let { roleDetails ->
-                                tokenManager.saveUserRole(roleDetails.name) // Use the name from RoleDetailsDTO
-                                android.util.Log.d("AuthViewModel", "✅ SAVED ROLE: ${roleDetails.name} for user: ${user.username}")
-                            } ?: run {
-                                android.util.Log.w("AuthViewModel", "⚠️ Fetched user but role details are null!")
-                                // Fallback to old logic if role name is missing
+                                currentUser = user
+                                tokenManager.saveUsername(user.username)
+                                user.roleDetails?.let { roleDetails ->
+                                    tokenManager.saveUserRole(roleDetails.name) // Use the name from RoleDetailsDTO
+                                    android.util.Log.d("AuthViewModel", "✅ SAVED ROLE: ${roleDetails.name} for user: ${user.username}")
+                                } ?: run {
+                                    android.util.Log.w("AuthViewModel", "⚠️ Fetched user but role details are null!")
+                                    // Fallback to old logic if role name is missing
+                                    determineUserRole(loginDto.username)
+                                }
+                            } else {
+                                android.util.Log.e("AuthViewModel", "❌ Failed to fetch user details, falling back to role determination.")
+                                // Fallback to old logic
                                 determineUserRole(loginDto.username)
                             }
                         } else {
-                            android.util.Log.e("AuthViewModel", "❌ Failed to fetch user details, falling back to role determination.")
+                            android.util.Log.e("AuthViewModel", "❌ Could not get user ID from token, falling back to role determination.")
                             // Fallback to old logic
                             determineUserRole(loginDto.username)
                         }
-                    } else {
-                        android.util.Log.e("AuthViewModel", "❌ Could not get user ID from token, falling back to role determination.")
-                        // Fallback to old logic
-                        determineUserRole(loginDto.username)
                     }
                 }
             } else {
@@ -123,7 +140,12 @@ class AuthViewModel @Inject constructor(
             val result = userRepository.register(newUserDto)
             if (result is Result.Success) {
                 android.util.Log.d("AuthViewModel", "Registration successful, saving token")
-                tokenManager.saveToken(result.data.token)
+                val token = result.data.token
+                if (token != null) {
+                    tokenManager.saveToken(token)
+                } else {
+                    android.util.Log.e("AuthViewModel", "Registration succeeded but token is null!")
+                }
                 
                 // Check if backend returned user information  
                 if (result.data.user != null) {
@@ -175,7 +197,12 @@ class AuthViewModel @Inject constructor(
         authViewModelScope.launch {
             val result = userRepository.refreshToken()
             if (result is Result.Success) {
-                tokenManager.saveToken(result.data.token)
+                val token = result.data.token
+                if (token != null) {
+                    tokenManager.saveToken(token)
+                } else {
+                    android.util.Log.w("AuthViewModel", "Refresh succeeded but token is null")
+                }
                 
                 // Try to update user info if token refresh includes user data
                 result.data.user?.let { user ->
@@ -194,7 +221,6 @@ class AuthViewModel @Inject constructor(
     }
 
     fun isLoggedIn(): Boolean {
-        val hasToken = tokenManager.getToken() != null
         val isTokenValid = tokenManager.isTokenValid()
         val hasUsername = tokenManager.getUsername() != null
         
@@ -289,53 +315,51 @@ class AuthViewModel @Inject constructor(
     }
 
     // Fallback method to determine user role by testing admin endpoints
-    private fun determineUserRole(username: String) {
-        authViewModelScope.launch {
-            android.util.Log.d("AuthViewModel", "🔍 Testing admin access for user: $username")
+    private suspend fun determineUserRole(username: String) {
+        android.util.Log.d("AuthViewModel", "🔍 Testing admin access for user: $username")
+        
+        try {
+            // Try to access admin endpoint to determine if user is admin
+            android.util.Log.d("AuthViewModel", "Making request to admin/users endpoint...")
+            val result = userRepository.getAllUsers()
             
-            try {
-                // Try to access admin endpoint to determine if user is admin
-                android.util.Log.d("AuthViewModel", "Making request to admin/users endpoint...")
-                val result = userRepository.getAllUsers()
-                
-                android.util.Log.d("AuthViewModel", "Admin endpoint result: $result")
-                
-                val isAdmin = result is Result.Success
-                val determinedRole = if (isAdmin) RoleDTO.Admin else RoleDTO.Customer
-                
-                android.util.Log.d("AuthViewModel", "🎯 DETERMINED ROLE for $username: $determinedRole (admin access: $isAdmin)")
-                
-                // Store determined role
-                tokenManager.saveUserRole(determinedRole)
-                
-                // Update current user object
-                currentUser = currentUser?.copy(roleDetails = null, roles = null) ?: UserDTO(
-                    userId = null,
-                    username = username,
-                    roleDetails = null, // Role stored via TokenManager
-                    roles = null,
-                    createdAt = null,
-                    updatedAt = null
-                )
-                
-                android.util.Log.d("AuthViewModel", "✅ Role determination complete. Final role: $determinedRole")
-                
-            } catch (e: Exception) {
-                android.util.Log.e("AuthViewModel", "❌ Failed to determine user role for $username, defaulting to Customer", e)
-                android.util.Log.e("AuthViewModel", "Error details: ${e.message}")
-                
-                // Default to customer if can't determine
-                val defaultRole = RoleDTO.Customer
-                tokenManager.saveUserRole(defaultRole)
-                currentUser = currentUser?.copy(roleDetails = null, roles = null) ?: UserDTO(
-                    userId = null,
-                    username = username,
-                    roleDetails = null, // Role stored via TokenManager
-                    roles = null,
-                    createdAt = null,
-                    updatedAt = null
-                )
-            }
+            android.util.Log.d("AuthViewModel", "Admin endpoint result: $result")
+            
+            val isAdmin = result is Result.Success
+            val determinedRole = if (isAdmin) RoleDTO.Admin else RoleDTO.Customer
+            
+            android.util.Log.d("AuthViewModel", "🎯 DETERMINED ROLE for $username: $determinedRole (admin access: $isAdmin)")
+            
+            // Store determined role
+            tokenManager.saveUserRole(determinedRole)
+            
+            // Update current user object
+            currentUser = currentUser?.copy(roleDetails = null, roles = null) ?: UserDTO(
+                userId = null,
+                username = username,
+                roleDetails = null, // Role stored via TokenManager
+                roles = null,
+                createdAt = null,
+                updatedAt = null
+            )
+            
+            android.util.Log.d("AuthViewModel", "✅ Role determination complete. Final role: $determinedRole")
+            
+        } catch (e: Exception) {
+            android.util.Log.e("AuthViewModel", "❌ Failed to determine user role for $username, defaulting to Customer", e)
+            android.util.Log.e("AuthViewModel", "Error details: ${e.message}")
+            
+            // Default to customer if can't determine
+            val defaultRole = RoleDTO.Customer
+            tokenManager.saveUserRole(defaultRole)
+            currentUser = currentUser?.copy(roleDetails = null, roles = null) ?: UserDTO(
+                userId = null,
+                username = username,
+                roleDetails = null, // Role stored via TokenManager
+                roles = null,
+                createdAt = null,
+                updatedAt = null
+            )
         }
     }
 }
