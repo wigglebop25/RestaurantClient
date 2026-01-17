@@ -44,11 +44,11 @@ class ProductViewModel @Inject constructor(
     }
 
     fun createProduct(name: String, description: String, price: String, imageUrl: String) {
-        mutateProduct { productRepository.createProduct(ProductRequest(name, description, price, imageUrl)) }
+        mutateProduct { productRepository.createProduct(ProductRequest(name, description, price, imageUrl, emptyList())) }
     }
 
     fun updateProduct(productId: Int, name: String, description: String, price: String, imageUrl: String) {
-        mutateProduct { productRepository.updateProduct(productId, ProductRequest(name, description, price, imageUrl)) }
+        mutateProduct { productRepository.updateProduct(productId, ProductRequest(name, description, price, imageUrl, emptyList())) }
     }
 
     fun deleteProduct(productId: Int) {
