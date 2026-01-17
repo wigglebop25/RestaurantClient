@@ -32,17 +32,10 @@ class OrderListAdapter(private val onClick: (OrderResponse) -> Unit) :
             binding.orderId.text = "Order #${order.order_id}"
             binding.orderStatus.text = order.status ?: "Pending"
             binding.orderDate.text = DateTimeUtils.formatIsoDate(order.created_at)
-            binding.orderItemCount.text = "${order.quantity} items"
-            binding.orderTotal.text = formatTotal(order.total_amount)
-        }
-
-        private fun formatTotal(total: String): String {
-            return runCatching {
-                val amount = BigDecimal(total)
-                NumberFormat.getCurrencyInstance().format(amount)
-            }.getOrElse {
-                "\$${total}"
-            }
+            
+            val totalQuantity = order.products?.sumOf { it.quantity } ?: 0
+            binding.orderItemCount.text = "$totalQuantity items"
+            binding.orderTotal.text = NumberFormat.getCurrencyInstance().format(order.total_amount)
         }
     }
 
