@@ -1,5 +1,7 @@
 package com.restaurantclient.util
 
+import com.google.gson.Gson
+import com.restaurantclient.data.dto.ErrorResponse
 import retrofit2.HttpException
 import java.io.IOException
 import java.net.SocketTimeoutException
@@ -10,18 +12,23 @@ object ErrorUtils {
     fun getHumanFriendlyErrorMessage(exception: Exception): String {
         return when (exception) {
             is HttpException -> {
-                when (exception.code()) {
-                    400 -> "Invalid request. Please check your information and try again."
-                    401 -> "Authentication failed. Please check your credentials."
-                    403 -> "You don't have permission to perform this action."
-                    404 -> {
-                        val url = exception.response()?.raw()?.request?.url
-                        "Resource not found at: $url. Please check your API_BASE_URL configuration."
+                try {
+                    val errorBody = exception.response()?.errorBody()?.string()
+                    if (!errorBody.isNullOrBlank()) {
+                        val errorResponse = Gson().fromJson(errorBody, ErrorResponse::class.java)
+                        val error = errorResponse.error.replaceFirstChar { it.uppercase() }
+                        val details = errorResponse.details
+                        
+                        if (!details.isNullOrBlank()) {
+                            "$error: $details"
+                        } else {
+                            error
+                        }
+                    } else {
+                        getDefaultHttpErrorMessage(exception.code())
                     }
-                    409 -> "There's a conflict with the current state of the resource. It might already exist."
-                    500 -> "The server is having some trouble. Please try again later."
-                    503 -> "Service is temporarily unavailable. Our team is working on it."
-                    else -> "Something went wrong on our end (Error ${exception.code()})."
+                } catch (e: Exception) {
+                    getDefaultHttpErrorMessage(exception.code())
                 }
             }
             is UnknownHostException -> "No internet connection. Please check your network."
@@ -39,6 +46,21 @@ object ErrorUtils {
                     else -> "An unexpected error occurred. Please try again."
                 }
             }
+        }
+    }
+
+    private fun getDefaultHttpErrorMessage(code: Int): String {
+        return when (code) {
+            400 -> "Invalid request. Please check your information and try again."
+            401 -> "Authentication failed. Please check your credentials."
+            403 -> "You don't have permission to perform this action."
+            404 -> "The requested resource was not found. Please check your connection or contact support."
+            409 -> "There's a conflict with the current state of the resource. It might already exist."
+            422 -> "Validation failed. Please check your input."
+            429 -> "Too many requests. Please slow down."
+            500 -> "The server is having some trouble. Please try again later."
+            503 -> "Service is temporarily unavailable. Our team is working on it."
+            else -> "Something went wrong on our end (Error $code)."
         }
     }
 }
