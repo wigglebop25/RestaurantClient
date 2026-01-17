@@ -17,15 +17,25 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import com.restaurantclient.util.AnalyticsUtils
+import com.restaurantclient.util.DashboardAnalytics
+import com.restaurantclient.data.network.WebSocketManager
+import com.restaurantclient.data.network.WebSocketEvent
+import com.restaurantclient.BuildConfig
+
 @HiltViewModel
 class CasherDashboardViewModel @Inject constructor(
     private val orderRepository: OrderRepository,
     private val userRepository: UserRepository,
-    private val productRepository: ProductRepository
+    private val productRepository: ProductRepository,
+    private val webSocketManager: WebSocketManager
 ) : ViewModel() {
 
     private val _dashboardStats = MutableLiveData<Result<DashboardSummaryDTO>>()
     val dashboardStats: LiveData<Result<DashboardSummaryDTO>> = _dashboardStats
+
+    private val _analytics = MutableLiveData<DashboardAnalytics>()
+    val analytics: LiveData<DashboardAnalytics> = _analytics
 
     private val _currentUser = MutableLiveData<Result<UserDTO>>()
     val currentUser: LiveData<Result<UserDTO>> = _currentUser
@@ -33,7 +43,18 @@ class CasherDashboardViewModel @Inject constructor(
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> = _loading
 
-    private var pollingJob: Job? = null
+    init {
+        // Start WebSocket connection for live updates
+        webSocketManager.connect(BuildConfig.BASE_URL)
+        
+        viewModelScope.launch {
+            webSocketManager.events.collect { event ->
+                if (event is WebSocketEvent.RefreshRequired) {
+                    refreshStats()
+                }
+            }
+        }
+    }
 
     fun loadDashboardData() {
         viewModelScope.launch {
@@ -44,43 +65,9 @@ class CasherDashboardViewModel @Inject constructor(
         }
     }
 
-    fun startPollingStats() {
-        if (pollingJob?.isActive == true) return
-        
-        pollingJob = viewModelScope.launch {
-            while (true) {
-                loadStats()
-                delay(5000)
-            }
-        }
-    }
-
-    fun stopPollingStats() {
-        pollingJob?.cancel()
-        pollingJob = null
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        stopPollingStats()
-    }
-
     private suspend fun loadStats() {
         try {
-            val result = orderRepository.getDashboardSummary()
-            if (result is Result.Success) {
-                _dashboardStats.value = result
-            } else {
-                // Fallback: Fetch orders and products manually
-                loadFallbackStats()
-            }
-        } catch (e: Exception) {
-            loadFallbackStats()
-        }
-    }
-
-    private suspend fun loadFallbackStats() {
-        try {
+            // We need full order list for revenue analytics
             val ordersDeferred = viewModelScope.async { orderRepository.getAllOrders(forceRefresh = true) }
             val productsDeferred = viewModelScope.async { productRepository.getAllProducts(forceRefresh = true) }
 
@@ -90,22 +77,37 @@ class CasherDashboardViewModel @Inject constructor(
             if (ordersResult is Result.Success && productsResult is Result.Success) {
                 val orders = ordersResult.data
                 val products = productsResult.data
+                
+                // Calculate detailed analytics
+                val calculatedAnalytics = AnalyticsUtils.calculateStats(orders)
+                _analytics.value = calculatedAnalytics
 
+                // Update legacy summary DTO
                 val summary = DashboardSummaryDTO(
-                    userCount = 0, // Unknown
+                    userCount = 0, 
                     productCount = products.size,
                     orderCount = orders.size,
-                    pendingOrders = orders.count { it.status.equals("Pending", true) },
-                    completedOrders = orders.count { it.status.equals("Completed", true) },
-                    cancelledOrders = orders.count { it.status.equals("Cancelled", true) }
+                    pendingOrders = calculatedAnalytics.pendingOrders,
+                    completedOrders = calculatedAnalytics.completedOrders,
+                    cancelledOrders = calculatedAnalytics.cancelledOrders
                 )
                 _dashboardStats.value = Result.Success(summary)
             } else {
-                _dashboardStats.value = Result.Error(Exception("Failed to load stats (API and fallback)"))
+                // Try basic summary endpoint as fallback if full data fetch fails
+                val result = orderRepository.getDashboardSummary()
+                if (result is Result.Success) {
+                     _dashboardStats.value = result
+                } else {
+                    _dashboardStats.value = Result.Error(Exception("Failed to load stats"))
+                }
             }
         } catch (e: Exception) {
             _dashboardStats.value = Result.Error(e)
         }
+    }
+
+    private suspend fun loadFallbackStats() {
+         // merged into loadStats for better analytics support
     }
 
     private suspend fun loadCurrentUser() {
