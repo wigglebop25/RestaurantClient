@@ -65,6 +65,8 @@
     <!-- Itadaki Brand Colors (Red UI Theme) -->
     <color name="itadaki_red">#E63946</color>
     <color name="itadaki_crimson">#9B1C1C</color>
+    <color name="itadaki_green">#10B981</color>
+    <color name="itadaki_blue">#3B82F6</color>
     <color name="itadaki_white">#F1FAEE</color>
     <color name="itadaki_charcoal">#1D3557</color>
     <color name="itadaki_overlay">#80000000</color>
