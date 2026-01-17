@@ -56,7 +56,7 @@ class CasherOrderAdapter(
             val order = uiModel.order
             binding.orderIdText.text = "Order #${order.order_id}"
             
-            val amount = order.total_amount.toDoubleOrNull() ?: 0.0
+            val amount = order.total_amount
             binding.orderAmountText.text = java.text.NumberFormat.getCurrencyInstance().format(amount)
             
             binding.orderMetaText.text = buildMetaText(uiModel)
@@ -94,6 +94,10 @@ class CasherOrderAdapter(
 
         override fun areContentsTheSame(oldItem: CasherOrderUIModel, newItem: CasherOrderUIModel): Boolean =
             oldItem == newItem
+    }
+
+    override fun submitList(list: List<CasherOrderUIModel>?) {
+        super.submitList(list?.toList())
     }
 }
 
