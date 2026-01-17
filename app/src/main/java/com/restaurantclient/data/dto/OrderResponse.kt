@@ -5,10 +5,10 @@ import java.io.Serializable
 data class OrderResponse(
     val order_id: Int,
     val user_id: Int,
-    val product_id: Int,
-    val quantity: Int,
-    val total_amount: String, // BigDecimal serialized as String
+    val user: UserDTO?,
+    val total_amount: Double, // JSON shows number, could be Double
     val status: String?,
+    val products: List<OrderProductResponse>?,
     val created_at: String?,
     val updated_at: String?
 ) : Serializable
