@@ -9,7 +9,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 
 @RunWith(RobolectricTestRunner::class)
 class TokenManagerTest {
@@ -55,7 +54,7 @@ class TokenManagerTest {
 
     @Test
     fun `saveToken correctly extracts Admin role from roles array`() {
-        val jwtPayload = "{\"sub\":1, \"iat\":12345, \"exp\":22345, \"roles\":[2]}" // Admin role ID is 2
+        val jwtPayload = "{\"sub\":1, \"iat\":12345, \"exp\":22345, \"roles\":[1]}" // Admin role ID is 1
         val jwt = createJwt(jwtPayload)
         tokenManager.saveToken(jwt)
         assert(tokenManager.getUserRole() == RoleDTO.Admin)
@@ -63,7 +62,7 @@ class TokenManagerTest {
 
     @Test
     fun `saveToken correctly extracts Customer role from roles array`() {
-        val jwtPayload = "{\"sub\":1, \"iat\":12345, \"exp\":22345, \"roles\":[1]}" // Customer role ID is 1
+        val jwtPayload = "{\"sub\":1, \"iat\":12345, \"exp\":22345, \"roles\":[2]}" // Customer role ID is 2
         val jwt = createJwt(jwtPayload)
         tokenManager.saveToken(jwt)
         assert(tokenManager.getUserRole() == RoleDTO.Customer)
