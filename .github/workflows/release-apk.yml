@@ -41,7 +41,8 @@ jobs:
           name: Latest Build
           body: "Automatic build from the latest push to main branch."
           draft: false
-          prerelease: false
+          prerelease: true
+          make_latest: false
           files: app/build/outputs/apk/debug/RestaurantClient-debug.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
