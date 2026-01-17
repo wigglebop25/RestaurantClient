@@ -56,15 +56,13 @@ tasks.register("generateSecurityFiles") {
             """.trimIndent()
         }
 
-        val securityConfigContent = """
-            <?xml version="1.0" encoding="utf-8"?>
-            <network-security-config>
-                <domain-config>
-                    <domain includeSubdomains="true">$apiDomain</domain>
-                    $trustAnchors
-                </domain-config>
-            </network-security-config>
-        """.trimIndent()
+        val securityConfigContent = """<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config>
+        <domain includeSubdomains="true">$apiDomain</domain>
+        $trustAnchors
+    </domain-config>
+</network-security-config>"""
         
         val configFile = file("src/main/res/xml/network_security_config.xml")
         configFile.parentFile.mkdirs()
