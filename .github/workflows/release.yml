@@ -52,7 +52,7 @@ jobs:
           echo "APK file verified: $(ls -lh app/build/outputs/apk/debug/RestaurantClient-${{ steps.version.outputs.VERSION }}-debug.apk)"
       
       - name: Create Release and Upload APK
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           name: Restaurant Client ${{ steps.version.outputs.VERSION }}
           body: |
@@ -77,3 +77,4 @@ jobs:
             app/build/outputs/apk/debug/RestaurantClient-${{ steps.version.outputs.VERSION }}-debug.apk
           draft: false
           prerelease: false
+          make_latest: true
