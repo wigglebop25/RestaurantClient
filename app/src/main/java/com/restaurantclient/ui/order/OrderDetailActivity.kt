@@ -85,8 +85,11 @@ class OrderDetailActivity : AppCompatActivity() {
     private fun renderOrder(order: OrderResponse) {
         binding.orderNumberValue.text = "#${order.order_id}"
         binding.orderStatusChip.text = order.status ?: getString(R.string.order_detail_unknown_value)
-        binding.orderQuantityValue.text = order.quantity.toString()
-        binding.orderTotalValue.text = formatCurrency(order.total_amount)
+
+        val totalQuantity = order.products?.sumOf { it.quantity } ?: 0
+        binding.orderQuantityValue.text = totalQuantity.toString()
+        
+        binding.orderTotalValue.text = NumberFormat.getCurrencyInstance().format(order.total_amount)
         binding.orderPlacedValue.text = DateTimeUtils.formatIsoDate(order.created_at)
         binding.orderUpdatedValue.text = DateTimeUtils.formatIsoDate(order.updated_at)
         
@@ -96,18 +99,6 @@ class OrderDetailActivity : AppCompatActivity() {
 
     private fun updateStatusChipStyle(status: String?) {
         // Optional: color coding based on status
-    }
-
-    private fun formatCurrency(value: String?): String {
-        if (value.isNullOrBlank()) {
-            return getString(R.string.order_detail_unknown_value)
-        }
-        return runCatching {
-            val amount = BigDecimal(value)
-            NumberFormat.getCurrencyInstance().format(amount)
-        }.getOrElse {
-            "\$${value}"
-        }
     }
 
     private fun formatTimestamp(value: String?): String {
