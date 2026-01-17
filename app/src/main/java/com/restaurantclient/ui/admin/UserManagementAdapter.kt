@@ -47,9 +47,11 @@ class UserManagementAdapter(
             // Display role with permissions
             val role = user.roleDetails
             if (role != null) {
-                val permissions = role.permissions ?: emptyList()
-                if (permissions.isNotEmpty()) {
-                    binding.roleBadge.text = "${role.name} (${permissions.size} perms: ${permissions.joinToString(", ")})"
+                // Format permissions list (comma-separated string from API)
+                val permissionsList = role.permissions?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() } ?: emptyList()
+
+                if (permissionsList.isNotEmpty()) {
+                    binding.roleBadge.text = "${role.name} (${permissionsList.size} perms: ${permissionsList.joinToString(", ")})"
                 } else {
                     binding.roleBadge.text = role.name
                 }
