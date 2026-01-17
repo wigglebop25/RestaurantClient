@@ -53,7 +53,7 @@ class OrderManagementAdapter(
             val order = uiModel.order
             binding.orderIdText.text = "Order #${order.order_id}"
             
-            val amount = order.total_amount.toDoubleOrNull() ?: 0.0
+            val amount = order.total_amount
             binding.orderAmountText.text = java.text.NumberFormat.getCurrencyInstance().format(amount)
             
             binding.orderMetaText.text = buildMetaText(uiModel)
@@ -87,5 +87,9 @@ class OrderManagementAdapter(
 
         override fun areContentsTheSame(oldItem: AdminOrderUIModel, newItem: AdminOrderUIModel): Boolean =
             oldItem == newItem
+    }
+
+    override fun submitList(list: List<AdminOrderUIModel>?) {
+        super.submitList(list?.toList())
     }
 }
