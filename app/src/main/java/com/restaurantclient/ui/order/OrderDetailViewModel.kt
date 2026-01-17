@@ -7,6 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.restaurantclient.data.Result
 import com.restaurantclient.data.dto.OrderResponse
 import com.restaurantclient.data.repository.OrderRepository
+import com.restaurantclient.data.network.WebSocketManager
+import com.restaurantclient.data.network.WebSocketEvent
+import com.restaurantclient.BuildConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -15,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OrderDetailViewModel @Inject constructor(
-    private val orderRepository: OrderRepository
+    private val orderRepository: OrderRepository,
+    private val webSocketManager: WebSocketManager
 ) : ViewModel() {
 
     private val _order = MutableLiveData<Result<OrderResponse>>()
@@ -32,10 +36,26 @@ class OrderDetailViewModel @Inject constructor(
     fun startPolling(orderId: Int) {
         if (pollingJob?.isActive == true) return
         
+        // Connect to WebSocket
+        webSocketManager.connect(BuildConfig.BASE_URL)
+
         pollingJob = viewModelScope.launch {
+            // Initial fetch
+            fetchOrder(orderId)
+
+            // Listen for WebSocket events
+            launch {
+                webSocketManager.events.collect { event ->
+                    if (event is WebSocketEvent.RefreshRequired) {
+                        fetchOrder(orderId)
+                    }
+                }
+            }
+
+            // Fallback polling loop
             while (true) {
-                fetchOrder(orderId)
                 delay(5000)
+                fetchOrder(orderId)
             }
         }
     }
