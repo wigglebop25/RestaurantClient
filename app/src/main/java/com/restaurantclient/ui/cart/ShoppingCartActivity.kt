@@ -53,7 +53,7 @@ class ShoppingCartActivity : AppCompatActivity() {
     
     private fun setupGlassUI() {
         // Setup glass effect for floating cart summary
-        binding.cartSummaryBlur?.let { blurView ->
+        binding.cartSummaryBlur.let { blurView ->
             val whiteOverlay = androidx.core.content.ContextCompat.getColor(this, R.color.white_glass_overlay)
             blurView.setOverlayColor(whiteOverlay)
             blurView.setupGlassEffect(20f)
