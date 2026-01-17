@@ -13,9 +13,7 @@ import com.restaurantclient.databinding.ActivityOrderDetailBinding
 import com.restaurantclient.util.DateTimeUtils
 import com.restaurantclient.util.ErrorUtils
 import dagger.hilt.android.AndroidEntryPoint
-import java.math.BigDecimal
 import java.text.NumberFormat
-import java.util.Locale
 
 @AndroidEntryPoint
 class OrderDetailActivity : AppCompatActivity() {
@@ -83,7 +81,7 @@ class OrderDetailActivity : AppCompatActivity() {
     }
 
     private fun renderOrder(order: OrderResponse) {
-        binding.orderNumberValue.text = "#${order.order_id}"
+        binding.orderNumberValue.text = getString(R.string.order_number_format, order.order_id)
         binding.orderStatusChip.text = order.status ?: getString(R.string.order_detail_unknown_value)
 
         val totalQuantity = order.products?.sumOf { it.quantity } ?: 0
@@ -106,12 +104,6 @@ class OrderDetailActivity : AppCompatActivity() {
             else -> getColor(R.color.status_pending)
         }
         binding.orderStatusChip.chipBackgroundColor = android.content.res.ColorStateList.valueOf(color)
-    }
-
-    private fun formatTimestamp(value: String?): String {
-        return DateTimeUtils.formatIsoDate(value).ifBlank {
-            getString(R.string.order_detail_unknown_value)
-        }
     }
 
     companion object {
