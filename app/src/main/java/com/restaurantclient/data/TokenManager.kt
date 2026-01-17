@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.util.Base64
 import android.util.Log
 import com.restaurantclient.data.dto.RoleDTO
+import org.json.JSONException
 import org.json.JSONObject
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -16,7 +17,7 @@ class TokenManager @Inject constructor(private val prefs: SharedPreferences) {
         // Try to extract and save username from token
         try {
             val payload = decodeJWTPayload(token)
-            Log.d("TokenManager", "JWT payload: $payload")
+            Log.d("TokenManager", "Full JWT Payload keys: ${payload.keys().asSequence().toList()}")
             
             // Try different possible username fields in JWT
             var username: String? = null
@@ -57,17 +58,26 @@ class TokenManager @Inject constructor(private val prefs: SharedPreferences) {
                         Log.d("TokenManager", "Found roles array in JWT: $rolesArray")
                         
                         if (rolesArray.length() > 0) {
-                            val roleId = rolesArray.getInt(0) // Get first role ID
-                            Log.d("TokenManager", "First role ID: $roleId")
+                            val firstRole = rolesArray.get(0)
+                            Log.d("TokenManager", "First role raw value: $firstRole")
                             
-                            // Convert role ID to role name based on your system
-                            val roleName = when (roleId) {
-                                2 -> "Admin"     // Your admin role ID is 2
-                                1 -> "Customer"  // Assuming customer role ID is 1
-                                5 -> "Casher"    // Casher role ID is 5
-                                else -> "Customer" // Default to customer
+                            val roleName = if (firstRole is Int) {
+                                when (firstRole) {
+                                    1 -> "Admin"
+                                    2 -> "Customer"
+                                    3 -> "Casher"
+                                    else -> "Customer"
+                                }
+                            } else {
+                                val roleStr = firstRole.toString()
+                                when {
+                                    roleStr.equals("Admin", ignoreCase = true) || roleStr.equals("ROLE_ADMIN", ignoreCase = true) -> "Admin"
+                                    roleStr.equals("Casher", ignoreCase = true) || roleStr.equals("ROLE_CASHER", ignoreCase = true) -> "Casher"
+                                    roleStr.equals("Customer", ignoreCase = true) || roleStr.equals("ROLE_CUSTOMER", ignoreCase = true) -> "Customer"
+                                    else -> "Customer" // Default to Customer for unknown strings to be safe
+                                }
                             }
-                            Log.d("TokenManager", "Converted role ID $roleId to: $roleName")
+                            Log.d("TokenManager", "Resolved role name: $roleName")
                             saveUserRole(roleName)
                         } else {
                             Log.d("TokenManager", "Roles array is empty, defaulting to Customer")
@@ -104,8 +114,16 @@ class TokenManager @Inject constructor(private val prefs: SharedPreferences) {
         val token = getToken() ?: return null
         return try {
             val payload = decodeJWTPayload(token)
-            if (payload.has("sub")) {
-                payload.getInt("sub")
+            if (payload.has("user_id")) {
+                payload.getInt("user_id")
+            } else if (payload.has("sub")) {
+                // Try to parse sub as int, if fails return null
+                try {
+                    payload.getInt("sub")
+                } catch (e: JSONException) {
+                    Log.w("TokenManager", "sub claim is not an integer", e)
+                    null
+                }
             } else {
                 null
             }
