@@ -168,6 +168,44 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:listitem="@layout/item_product" />
 
+    <!-- Empty State View -->
+    <LinearLayout
+        android:id="@+id/empty_state_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_product_placeholder"
+            app:tint="@color/food_text_secondary"
+            android:alpha="0.5" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="No products found"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/food_text_secondary" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Check back later for delicious items!"
+            android:textSize="14sp"
+            android:textColor="@color/food_text_secondary"
+            android:alpha="0.8" />
+
+    </LinearLayout>
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/progress_bar"
         android:layout_width="150dp"
