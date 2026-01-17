@@ -93,13 +93,13 @@ class ProductListActivity : AppCompatActivity() {
         refreshProducts()
     }
     
-    // Helper methods to access views from either binding (with explicit non-null assertion)
-    private fun getSearchInput() = (if (isAdminUser) adminBinding!!.searchInput else customerBinding!!.searchInput)!!
+    // Helper methods to access views from either binding
+    private fun getSearchInput() = (if (isAdminUser) adminBinding!!.searchInput else customerBinding!!.searchInput)
     private fun getFilterButton(): android.view.View? = (if (isAdminUser) adminBinding!!.root.findViewById<android.view.View>(R.id.admin_filter_button) else customerBinding!!.root.findViewById<android.view.View>(R.id.customer_filter_button))
     private fun getProfileImage(): android.view.View? = (if (isAdminUser) adminBinding!!.root.findViewById<android.view.View>(R.id.admin_profile_image) else customerBinding!!.root.findViewById<android.view.View>(R.id.customer_profile_image))
-    private fun getProductsRecyclerView() = (if (isAdminUser) adminBinding!!.productsRecyclerView else customerBinding!!.productsRecyclerView)!!
-    private fun getProgressBar() = (if (isAdminUser) adminBinding!!.progressBar else customerBinding!!.progressBar)!!
-    private fun getCategoryChipGroup() = (if (isAdminUser) adminBinding!!.categoryChipGroup else customerBinding!!.categoryChipGroup)!!
+    private fun getProductsRecyclerView() = (if (isAdminUser) adminBinding!!.productsRecyclerView else customerBinding!!.productsRecyclerView)
+    private fun getProgressBar() = (if (isAdminUser) adminBinding!!.progressBar else customerBinding!!.progressBar)
+    private fun getCategoryChipGroup() = (if (isAdminUser) adminBinding!!.categoryChipGroup else customerBinding!!.categoryChipGroup)
     
     private fun setupModernUi() {
         // Setup search functionality
@@ -182,7 +182,7 @@ class ProductListActivity : AppCompatActivity() {
             }
             
             // Setup sort button
-            adminBinding!!.adminSortButton?.setOnClickListener {
+            adminBinding!!.adminSortButton.setOnClickListener {
                 Toast.makeText(this, "Sort options coming soon", Toast.LENGTH_SHORT).show()
             }
         }
@@ -219,7 +219,7 @@ class ProductListActivity : AppCompatActivity() {
     private fun observeCartChanges() {
         if (!isAdminUser) {
             lifecycleScope.launch {
-                cartManager.cartItems.collectLatest { items ->
+                cartManager.cartItems.collectLatest { _ ->
                     val totalItems = cartManager.totalItems
                     updateCartBadge(totalItems)
                     updateFABBadge(totalItems)
@@ -420,10 +420,12 @@ class ProductListActivity : AppCompatActivity() {
                 is Result.Success -> {
                     allProducts = result.data
                     filterByCategory(selectedCategoryId, selectedCategoryName)
+                    updateEmptyState(allProducts.isEmpty())
                 }
                 is Result.Error -> {
                     val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
                     Toast.makeText(this, getString(R.string.product_list_error, message), Toast.LENGTH_LONG).show()
+                    updateEmptyState(true) // Show empty state on error
                 }
             }
         }
@@ -450,6 +452,7 @@ class ProductListActivity : AppCompatActivity() {
     private fun filterByCategory(categoryId: Int?, categoryNameFallback: String? = null) {
         if (categoryId == null && categoryNameFallback.isNullOrBlank()) {
             productListAdapter.submitList(allProducts)
+            updateEmptyState(allProducts.isEmpty())
             return
         }
 
@@ -465,6 +468,7 @@ class ProductListActivity : AppCompatActivity() {
 
         if (filteredProducts.isNotEmpty() || categoryId == null) {
             productListAdapter.submitList(filteredProducts)
+            updateEmptyState(filteredProducts.isEmpty())
             return
         }
 
@@ -473,6 +477,7 @@ class ProductListActivity : AppCompatActivity() {
             when (val result = productViewModel.getProductsByCategory(categoryId)) {
                 is Result.Success -> {
                     productListAdapter.submitList(result.data)
+                    updateEmptyState(result.data.isEmpty())
                 }
                 is Result.Error -> {
                     val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
@@ -482,6 +487,7 @@ class ProductListActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                     productListAdapter.submitList(allProducts)
+                    updateEmptyState(allProducts.isEmpty())
                 }
             }
             getProgressBar().isVisible = false
@@ -494,6 +500,23 @@ class ProductListActivity : AppCompatActivity() {
             product.description?.contains(query, ignoreCase = true) == true
         }
         productListAdapter.submitList(filteredProducts)
+        updateEmptyState(filteredProducts.isEmpty())
+    }
+    
+    private fun updateEmptyState(isEmpty: Boolean) {
+        if (!isAdminUser) {
+            val emptyView = customerBinding?.root?.findViewById<View>(R.id.empty_state_view)
+            val recyclerView = customerBinding?.productsRecyclerView
+            
+            if (isEmpty) {
+                emptyView?.visibility = View.VISIBLE
+                recyclerView?.visibility = View.GONE
+            } else {
+                emptyView?.visibility = View.GONE
+                recyclerView?.visibility = View.VISIBLE
+            }
+        }
+        // Admin UI empty state handling can be added here if needed
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
