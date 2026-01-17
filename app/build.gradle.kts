@@ -42,14 +42,26 @@ tasks.register("generateSecurityFiles") {
         }
 
         // 2. Generate network_security_config.xml
+        val trustAnchors = if (sslCertificate.isNotEmpty()) {
+            """
+            <trust-anchors>
+                <certificates src="@raw/server_cert"/>
+            </trust-anchors>
+            """.trimIndent()
+        } else {
+            """
+            <trust-anchors>
+                <certificates src="system"/>
+            </trust-anchors>
+            """.trimIndent()
+        }
+
         val securityConfigContent = """
             <?xml version="1.0" encoding="utf-8"?>
             <network-security-config>
                 <domain-config>
                     <domain includeSubdomains="true">$apiDomain</domain>
-                    <trust-anchors>
-                        <certificates src="@raw/server_cert"/>
-                    </trust-anchors>
+                    $trustAnchors
                 </domain-config>
             </network-security-config>
         """.trimIndent()
