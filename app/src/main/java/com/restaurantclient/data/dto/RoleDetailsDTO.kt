@@ -1,6 +1,7 @@
 package com.restaurantclient.data.dto
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class RoleDetailsDTO(
     @SerializedName("role_id")
@@ -13,14 +14,14 @@ data class RoleDetailsDTO(
     val description: String?,
     
     @SerializedName("permissions")
-    val permissions: List<String>?,
+    val permissions: String?, // Comma-separated string, e.g. "READ,WRITE"
     
     @SerializedName("created_at")
     val createdAt: String?,
     
     @SerializedName("updated_at")
     val updatedAt: String?
-) {
+) : Serializable {
     // Convert backend role to our app's RoleDTO
     fun toRoleDTO(): RoleDTO? {
         return when (name.uppercase()) {
