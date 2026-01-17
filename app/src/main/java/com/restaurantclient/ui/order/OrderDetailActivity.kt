@@ -98,7 +98,14 @@ class OrderDetailActivity : AppCompatActivity() {
     }
 
     private fun updateStatusChipStyle(status: String?) {
-        // Optional: color coding based on status
+        val color = when (status?.uppercase()) {
+            "PENDING" -> getColor(R.color.status_pending)
+            "READY" -> getColor(R.color.status_ready)
+            "COMPLETED" -> getColor(R.color.status_completed)
+            "CANCELLED" -> getColor(R.color.status_cancelled)
+            else -> getColor(R.color.status_pending)
+        }
+        binding.orderStatusChip.chipBackgroundColor = android.content.res.ColorStateList.valueOf(color)
     }
 
     private fun formatTimestamp(value: String?): String {
