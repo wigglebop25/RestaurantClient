@@ -20,13 +20,19 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
+import com.restaurantclient.util.AnalyticsUtils
+import com.restaurantclient.data.network.WebSocketManager
+import com.restaurantclient.data.network.WebSocketEvent
+import com.restaurantclient.BuildConfig
+
 @HiltViewModel
 class AdminDashboardViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val orderRepository: OrderRepository,
     private val productRepository: ProductRepository,
     private val roleRepository: RoleRepository,
-    private val dashboardRepository: DashboardRepository
+    private val dashboardRepository: DashboardRepository,
+    private val webSocketManager: WebSocketManager
 ) : ViewModel() {
 
     private val _dashboardStats = MutableLiveData<DashboardStats>()
@@ -45,7 +51,19 @@ class AdminDashboardViewModel @Inject constructor(
     val error: LiveData<String> = _error
     
     private var dashboardSummaryAvailable = true // Track if endpoint is available
-    private var pollingJob: Job? = null
+
+    init {
+        // Start WebSocket connection for live updates
+        webSocketManager.connect(BuildConfig.BASE_URL)
+        
+        viewModelScope.launch {
+            webSocketManager.events.collect { event ->
+                if (event is WebSocketEvent.RefreshRequired) {
+                    loadDashboardData(showLoading = false)
+                }
+            }
+        }
+    }
 
     fun loadDashboardData(showLoading: Boolean = true) {
         viewModelScope.launch {
@@ -62,15 +80,20 @@ class AdminDashboardViewModel @Inject constructor(
                     val users = usersResult.data
                     val rolesCount = if (rolesResult is Result.Success) rolesResult.data.size else 0
                     
+                    val analytics = AnalyticsUtils.calculateStats(ordersResult.data)
+                    
                     val stats = DashboardStats(
                         totalUsers = users.size,
                         totalOrders = ordersResult.data.size,
                         totalProducts = productsResult.data.size,
                         totalRoles = rolesCount,
                         newUsersToday = calculateNewUsersToday(users),
-                        pendingOrders = ordersResult.data.count { it.status?.equals("Pending", true) == true },
-                        completedOrders = ordersResult.data.count { it.status?.equals("Completed", true) == true },
-                        cancelledOrders = ordersResult.data.count { it.status?.equals("Cancelled", true) == true }
+                        pendingOrders = analytics.pendingOrders,
+                        completedOrders = analytics.completedOrders,
+                        cancelledOrders = analytics.cancelledOrders,
+                        totalRevenue = analytics.totalRevenue,
+                        averageOrderValue = analytics.averageOrderValue,
+                        dailyRevenue = analytics.dailyRevenue
                     )
                     _dashboardStats.value = stats
                     _recentUsers.value = users.takeLast(5).reversed()
@@ -81,26 +104,6 @@ class AdminDashboardViewModel @Inject constructor(
                 if (showLoading) _loading.value = false
             }
         }
-    }
-
-    fun startPollingStats() {
-        if (pollingJob?.isActive == true) return
-        pollingJob = viewModelScope.launch {
-            while (true) {
-                loadDashboardData(showLoading = false)
-                delay(5000)
-            }
-        }
-    }
-
-    fun stopPollingStats() {
-        pollingJob?.cancel()
-        pollingJob = null
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        stopPollingStats()
     }
 
     private fun calculateNewUsersToday(users: List<UserDTO>): Int {
@@ -131,6 +134,15 @@ class AdminDashboardViewModel @Inject constructor(
         roleRepository.clearCache()
         loadDashboardData()
     }
+    
+    override fun onCleared() {
+        super.onCleared()
+        // We might want to keep the connection alive if other screens use it, 
+        // but typically a ViewModel scoped connection should close.
+        // However, since WebSocketManager is Singleton, we shouldn't disconnect here 
+        // if we want to share the connection.
+        // For now, let's leave it open or handle disconnection in a broader scope.
+    }
 }
 
 data class DashboardStats(
@@ -141,5 +153,8 @@ data class DashboardStats(
     val newUsersToday: Int,
     val pendingOrders: Int = 0,
     val completedOrders: Int = 0,
-    val cancelledOrders: Int = 0
+    val cancelledOrders: Int = 0,
+    val totalRevenue: Double = 0.0,
+    val averageOrderValue: Double = 0.0,
+    val dailyRevenue: Map<String, Double> = emptyMap()
 )
