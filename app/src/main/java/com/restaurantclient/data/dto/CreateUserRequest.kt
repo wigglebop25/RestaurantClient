@@ -1,7 +1,10 @@
 package com.restaurantclient.data.dto
 
+import com.google.gson.annotations.SerializedName
+
 data class CreateUserRequest(
     val username: String,
     val password: String,
-    val role: String // "Admin" or "Customer"
+    @SerializedName("role_name")
+    val roleName: String
 )
