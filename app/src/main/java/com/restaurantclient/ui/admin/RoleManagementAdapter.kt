@@ -47,10 +47,11 @@ class RoleManagementAdapter(
             binding.roleNameText.text = role.name
             binding.roleDescriptionText.text = role.description ?: "No description"
             
-            // Format permissions list
-            val permissions = role.permissions ?: emptyList()
-            if (permissions.isNotEmpty()) {
-                binding.permissionsBadge.text = "${permissions.size} permissions: ${permissions.joinToString(", ")}"
+            // Format permissions list (comma-separated string from API)
+            val permissionsList = role.permissions?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() } ?: emptyList()
+
+            if (permissionsList.isNotEmpty()) {
+                binding.permissionsBadge.text = "${permissionsList.size} permissions: ${permissionsList.joinToString(", ")}"
                 binding.permissionsBadge.visibility = View.VISIBLE
             } else {
                 binding.permissionsBadge.text = "No permissions assigned"
@@ -71,7 +72,7 @@ class RoleManagementAdapter(
             }
 
             binding.removePermissionButton.setOnClickListener {
-                if (permissions.isNotEmpty()) {
+                if (permissionsList.isNotEmpty()) {
                     onRemovePermission(role)
                 } else {
                     Toast.makeText(binding.root.context, "No permissions to remove", Toast.LENGTH_SHORT).show()
@@ -80,7 +81,7 @@ class RoleManagementAdapter(
             
             // Allow clicking permissions badge as well
             binding.permissionsBadge.setOnClickListener {
-                if (permissions.isNotEmpty()) {
+                if (permissionsList.isNotEmpty()) {
                     onRemovePermission(role)
                 }
             }
