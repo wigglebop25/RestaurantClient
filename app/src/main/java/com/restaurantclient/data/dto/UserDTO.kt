@@ -1,6 +1,7 @@
 package com.restaurantclient.data.dto
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class UserDTO(
     @SerializedName("user_id")
@@ -20,7 +21,7 @@ data class UserDTO(
     
     @SerializedName("updated_at")
     val updatedAt: String?
-) {
+) : Serializable {
     // Computed property to get simple role from complex role object (backward compatibility)
     val role: RoleDTO?
         get() = roleDetails?.toRoleDTO() ?: roles?.firstOrNull()?.toRoleDTO()
