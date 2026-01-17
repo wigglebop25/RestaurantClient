@@ -23,11 +23,11 @@
 
 ### 📸 Screenshots
 
-<p align="center">
-  <img src="screenshots/Screenshot_20251222_100529.png" width="30%" alt="App Screenshot 1" />
-  <img src="screenshots/Screenshot_20251222_100647.png" width="30%" alt="App Screenshot 2" />
-  <img src="screenshots/Screenshot_20251222_100928.png" width="30%" alt="App Screenshot 3" />
-</p>
+<div align="center">
+  <img src="screenshots/Screenshot_20251222_100529.png" width="300" alt="App Screenshot 1" />
+  <img src="screenshots/Screenshot_20251222_100647.png" width="300" alt="App Screenshot 2" />
+  <img src="screenshots/Screenshot_20251222_100928.png" width="300" alt="App Screenshot 3" />
+</div>
 
 ---
 
