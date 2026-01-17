@@ -10,6 +10,14 @@ class AuthInterceptor @Inject constructor(private val tokenManager: TokenManager
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
+        val url = request.url.toString()
+        
+        // Skip adding Authorization header for WebSocket handshakes
+        // They should use the token query parameter instead as per backend requirements
+        if (url.contains("/ws") || url.startsWith("ws") || url.startsWith("wss")) {
+            return chain.proceed(request)
+        }
+
         val requestBuilder = request.newBuilder()
         
         tokenManager.getToken()?.let { token ->
