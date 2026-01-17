@@ -8,6 +8,9 @@ import com.restaurantclient.data.Result
 import com.restaurantclient.data.dto.CreateOrderRequest
 import com.restaurantclient.data.dto.OrderResponse
 import com.restaurantclient.data.repository.OrderRepository
+import com.restaurantclient.data.network.WebSocketEvent
+import com.restaurantclient.data.network.WebSocketManager
+import com.restaurantclient.BuildConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -16,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OrderViewModel @Inject constructor(
-    private val orderRepository: OrderRepository
+    private val orderRepository: OrderRepository,
+    private val webSocketManager: WebSocketManager
 ) : ViewModel() {
 
     private val _createOrderResult = MutableLiveData<Result<OrderResponse>>()
@@ -27,6 +31,12 @@ class OrderViewModel @Inject constructor(
     
     private var isCreatingOrder = false
     private var pollingJob: Job? = null
+
+    init {
+        // Removed empty init block as we handle collection in startPollingOrders
+    }
+
+    private var currentUsername: String? = null
 
     fun createOrder(createOrderRequest: CreateOrderRequest, username: String) { // Pass username to refresh orders
         if (isCreatingOrder) return
@@ -52,12 +62,31 @@ class OrderViewModel @Inject constructor(
     }
 
     fun startPollingOrders(username: String) {
+        currentUsername = username
+        
+        // Connect to WebSocket
+        webSocketManager.connect(BuildConfig.BASE_URL)
+        
+        // Start listening for WS events if not already done
         if (pollingJob?.isActive == true) return
         
         pollingJob = viewModelScope.launch {
-            while (true) {
-                fetchUserOrders(username, forceRefresh = true)
-                delay(5000) // Poll every 5 seconds
+            // Initial fetch
+            fetchUserOrders(username, forceRefresh = true)
+            
+            // Launch a separate coroutine for WebSocket events
+            launch {
+                webSocketManager.events.collect { event ->
+                    if (event is WebSocketEvent.RefreshRequired) {
+                        // Double-fetch strategy to handle backend race conditions
+                        // 1. Fetch immediately (optimistic)
+                        fetchUserOrders(username, forceRefresh = true)
+                        
+                        // 2. Fetch again after 1 second to catch eventual consistency updates
+                        delay(1000)
+                        fetchUserOrders(username, forceRefresh = true)
+                    }
+                }
             }
         }
     }
@@ -65,6 +94,7 @@ class OrderViewModel @Inject constructor(
     fun stopPollingOrders() {
         pollingJob?.cancel()
         pollingJob = null
+        webSocketManager.disconnect()
     }
 
     override fun onCleared() {
