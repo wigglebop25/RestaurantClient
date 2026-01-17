@@ -43,7 +43,7 @@ interface ApiService {
     @POST("api/v1/auth/login")
     suspend fun login(@Body loginDto: LoginDTO): Response<LoginResponse>
 
-    @GET("api/v1/auth/refresh")
+    @POST("api/v1/auth/refresh")
     suspend fun refreshToken(): Response<LoginResponse>
 
     // Products
@@ -64,13 +64,19 @@ interface ApiService {
 
     // Orders
     @POST("api/v1/orders")
-    suspend fun createOrder(@Body createOrderRequest: CreateOrderRequest): Response<ResponseBody>
+    suspend fun createOrder(@Body createOrderRequest: CreateOrderRequest): Response<OrderResponse>
 
     @GET("api/v1/orders/user/{username}")
-    suspend fun getUserOrders(@Path("username") username: String): Response<List<OrderResponse>>
+    suspend fun getUserOrders(@Path("username") username: String): Response<ResponseBody>
+
+    @GET("api/v1/orders/user/{id}")
+    suspend fun getUserOrdersById(@Path("id") userId: Int): Response<ResponseBody>
 
     @GET("api/v1/orders/{id}")
     suspend fun getOrderById(@Path("id") orderId: Int): Response<OrderResponse>
+
+    @GET("api/v1/orders")
+    suspend fun getMyOrders(): Response<ResponseBody>
 
     @GET("api/v1/orders")
     suspend fun getAllOrders(): Response<List<OrderResponse>>
