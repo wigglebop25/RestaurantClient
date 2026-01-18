@@ -14,9 +14,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import com.restaurantclient.data.network.WebSocketEvent
+import com.restaurantclient.data.network.WebSocketManager
+import com.restaurantclient.BuildConfig
+
 @HiltViewModel
 class RoleManagementViewModel @Inject constructor(
-    private val roleRepository: RoleRepository
+    private val roleRepository: RoleRepository,
+    private val webSocketManager: WebSocketManager
 ) : ViewModel() {
 
     private val _roles = MutableLiveData<Result<List<RoleDetailsDTO>>>()
@@ -53,10 +58,16 @@ class RoleManagementViewModel @Inject constructor(
     fun startPollingRoles() {
         if (pollingJob?.isActive == true) return
         
+        webSocketManager.connect(BuildConfig.BASE_URL)
+        
         pollingJob = viewModelScope.launch {
-            while (true) {
-                loadRoles(forceRefresh = true, showLoading = false)
-                delay(5000)
+            // Initial load
+            loadRoles(forceRefresh = true, showLoading = false)
+            
+            webSocketManager.events.collect { event ->
+                if (event is WebSocketEvent.RefreshRequired) {
+                    loadRoles(forceRefresh = true, showLoading = false)
+                }
             }
         }
     }
