@@ -57,11 +57,11 @@
 
         <!-- Casher Activities -->
         <activity
-            android:name=".ui.casher.CasherDashboardActivity"
-            android:theme="@style/Theme.RestaurantClient.Casher" />
+            android:name=".ui.cashier.CashierDashboardActivity"
+            android:theme="@style/Theme.RestaurantClient.Cashier" />
         <activity
-            android:name=".ui.casher.CasherOrderActivity"
-            android:theme="@style/Theme.RestaurantClient.Casher" />
+            android:name=".ui.cashier.CashierOrderActivity"
+            android:theme="@style/Theme.RestaurantClient.Cashier" />
 
     </application>
 
