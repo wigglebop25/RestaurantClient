@@ -16,6 +16,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 import android.graphics.Color
 
+import com.restaurantclient.ui.analytics.AnalyticsHistoryActivity
+
 @AndroidEntryPoint
 class CashierDashboardActivity : BaseCashierActivity() {
 
@@ -59,6 +61,11 @@ class CashierDashboardActivity : BaseCashierActivity() {
         binding.btnManageOrders.setOnClickListener {
             // Navigate to Order Queue
             startActivity(Intent(this, CashierOrderActivity::class.java))
+        }
+
+        // View History
+        binding.btnViewHistory.setOnClickListener {
+            startActivity(Intent(this, AnalyticsHistoryActivity::class.java))
         }
     }
 
