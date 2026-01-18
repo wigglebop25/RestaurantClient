@@ -14,11 +14,6 @@ import com.restaurantclient.databinding.ActivityCashierDashboardBinding
 import com.restaurantclient.ui.common.setupGlassEffect
 import dagger.hilt.android.AndroidEntryPoint
 
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.components.XAxis
 import android.graphics.Color
 
 @AndroidEntryPoint
@@ -126,41 +121,15 @@ class CashierDashboardActivity : BaseCashierActivity() {
     private fun updateRevenueChart(dailyRevenue: Map<String, Double>) {
         android.util.Log.d("CashierDashboard", "Updating revenue chart with ${dailyRevenue.size} entries: $dailyRevenue")
         
-        if (dailyRevenue.isEmpty()) {
-            binding.revenueBarChart.setNoDataText("No live data")
-            return
-        }
-
-        val entries = ArrayList<BarEntry>()
-        val labels = ArrayList<String>()
-        val sortedDates = dailyRevenue.keys.sorted().takeLast(7) // Show last 7 days
-
-        sortedDates.forEachIndexed { index, date ->
-            entries.add(BarEntry(index.toFloat(), dailyRevenue[date]?.toFloat() ?: 0f))
-            labels.add(date.takeLast(5))
-        }
-
-        val dataSet = BarDataSet(entries, "Revenue")
-        dataSet.color = ContextCompat.getColor(this, R.color.itadaki_crimson)
-        dataSet.valueTextColor = ContextCompat.getColor(this, R.color.itadaki_white)
-        
-        binding.revenueBarChart.data = BarData(dataSet)
-        binding.revenueBarChart.apply {
-            description.isEnabled = false
-            legend.isEnabled = false
-            animateY(800)
-            
-            xAxis.apply {
-                valueFormatter = IndexAxisValueFormatter(labels)
-                position = XAxis.XAxisPosition.BOTTOM
-                textColor = Color.WHITE
-                setDrawGridLines(false)
+        binding.revenueChartCompose.apply {
+            // Dispose previous composition if any to ensure fresh start (optional but good practice if managing lifecycle manually)
+            // setContent call automatically handles recomposition
+            setContent {
+                androidx.compose.material3.MaterialTheme {
+                    RevenueChart(dailyRevenue = dailyRevenue)
+                }
             }
-            
-            axisLeft.textColor = Color.WHITE
-            axisRight.isEnabled = false
         }
-        binding.revenueBarChart.invalidate()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
