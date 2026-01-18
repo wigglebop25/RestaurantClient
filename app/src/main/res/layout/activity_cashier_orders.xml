@@ -19,67 +19,30 @@
             android:id="@+id/toolbar"
             layout="@layout/cashier_toolbar" />
 
-        <!-- Filter Chips -->
-        <HorizontalScrollView
+        <!-- Filter Dropdown -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/filter_dropdown_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="none"
-            android:paddingHorizontal="16dp"
-            android:paddingBottom="12dp">
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="12dp"
+            android:paddingTop="10dp"
+            android:hint="@string/filter_orders_hint"
+            app:hintTextColor="@color/admin_text_secondary"
+            app:boxStrokeColor="@color/admin_text_secondary">
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/filter_chip_group"
-                android:layout_width="wrap_content"
+            <AutoCompleteTextView
+                android:id="@+id/filter_dropdown"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:singleLine="true"
-                app:singleSelection="true"
-                app:selectionRequired="true">
+                android:inputType="none"
+                android:background="@color/white"
+                android:text="All Orders"
+                android:textColor="@color/admin_text_primary"
+                tools:ignore="LabelFor"/>
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/filter_all"
-                    style="@style/Widget.RestaurantClient.CashierChoiceChip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="All Orders"
-                    android:checked="true"/>
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/filter_pending"
-                    style="@style/Widget.RestaurantClient.CashierChoiceChip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Pending" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/filter_accepted"
-                    style="@style/Widget.RestaurantClient.CashierChoiceChip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Accepted" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/filter_ready"
-                    style="@style/Widget.RestaurantClient.CashierChoiceChip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ready" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/filter_completed"
-                    style="@style/Widget.RestaurantClient.CashierChoiceChip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Completed" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/filter_cancelled"
-                    style="@style/Widget.RestaurantClient.CashierChoiceChip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Cancelled" />
-
-            </com.google.android.material.chip.ChipGroup>
-        </HorizontalScrollView>
+        </com.google.android.material.textfield.TextInputLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -117,14 +80,16 @@
                     android:layout_height="72dp"
                     android:src="@drawable/ic_orders"
                     app:tint="@color/admin_text_secondary"
-                    android:layout_marginBottom="12dp" />
+                    android:layout_marginBottom="12dp"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No orders found"
                     android:textAppearance="?attr/textAppearanceSubtitle1"
-                    android:textColor="@color/admin_text_secondary" />
+                    android:textColor="@color/admin_text_secondary"
+                    android:visibility="gone"/>
             </LinearLayout>
 
             <com.airbnb.lottie.LottieAnimationView
