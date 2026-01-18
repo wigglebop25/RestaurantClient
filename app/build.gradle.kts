@@ -121,6 +121,10 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.8"
     }
     
     testOptions {
@@ -139,6 +143,15 @@ android {
 }
 
 dependencies {
+
+    implementation("androidx.compose.material3:material3:1.2.0")
+    implementation("androidx.compose.ui:ui:1.6.0")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.6.0")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.6.0")
+    
+    // Custom Canvas implementation used instead of external libraries
+    // implementation("androidx.graphics:graphics-charts:1.0.0-alpha05")
+    // implementation("com.google.accompanist:accompanist-charts:0.33.2-alpha")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
