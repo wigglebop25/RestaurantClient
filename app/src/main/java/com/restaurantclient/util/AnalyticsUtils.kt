@@ -16,7 +16,58 @@ data class DashboardAnalytics(
     val dailyRevenue: Map<String, Double> = emptyMap()
 )
 
+data class DailyAnalyticsItem(
+    val date: String,
+    val revenue: Double,
+    val orderCount: Int
+)
+
 object AnalyticsUtils {
+
+    fun getDetailedDailyStats(orders: List<OrderResponse>): List<DailyAnalyticsItem> {
+        val statsMap = mutableMapOf<String, Pair<BigDecimal, Int>>()
+        // Format: "January 18, 2026 07:15 PM"
+        val inputFormat = SimpleDateFormat("MMMM dd, yyyy hh:mm a", Locale.US)
+        // Sortable format: "yyyy-MM-dd"
+        val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+
+        // Include COMPLETED, READY, PREPARING, and ACCEPTED orders
+        orders.filter { 
+            val status = it.status
+            status?.equals("completed", ignoreCase = true) == true || 
+            status?.equals("ready", ignoreCase = true) == true ||
+            status?.equals("preparing", ignoreCase = true) == true ||
+            status?.equals("accepted", ignoreCase = true) == true
+        }.forEach { order ->
+            val dateStr = try {
+                if (order.created_at != null) {
+                    val date = inputFormat.parse(order.created_at)
+                    if (date != null) {
+                        outputFormat.format(date)
+                    } else {
+                        "Unknown"
+                    }
+                } else {
+                    "Unknown"
+                }
+            } catch (e: Exception) {
+                order.created_at?.take(10) ?: "Unknown"
+            }
+            
+            val amount = try { BigDecimal(order.total_amount) } catch (e: Exception) { BigDecimal.ZERO }
+            
+            val current = statsMap.getOrDefault(dateStr, Pair(BigDecimal.ZERO, 0))
+            statsMap[dateStr] = Pair(current.first.add(amount), current.second + 1)
+        }
+
+        return statsMap.map { 
+            DailyAnalyticsItem(
+                date = it.key, 
+                revenue = it.value.first.toDouble(), 
+                orderCount = it.value.second
+            ) 
+        }.sortedByDescending { it.date }
+    }
 
     fun calculateStats(orders: List<OrderResponse>): DashboardAnalytics {
         var totalRevenue = BigDecimal.ZERO
@@ -57,17 +108,33 @@ object AnalyticsUtils {
 
     fun getDailyRevenue(orders: List<OrderResponse>): Map<String, Double> {
         val revenueMap = mutableMapOf<String, BigDecimal>()
+        // Format: "January 18, 2026 07:15 PM"
+        val inputFormat = SimpleDateFormat("MMMM dd, yyyy hh:mm a", Locale.US)
+        // Sortable format: "2026-01-18"
+        val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
-        // Include all non-cancelled orders for chart visibility
+        // Include COMPLETED, READY, PREPARING, and ACCEPTED orders for revenue calculation
         orders.filter { 
-            it.status?.equals("cancelled", ignoreCase = true) == false 
+            val status = it.status
+            status?.equals("completed", ignoreCase = true) == true || 
+            status?.equals("ready", ignoreCase = true) == true ||
+            status?.equals("preparing", ignoreCase = true) == true ||
+            status?.equals("accepted", ignoreCase = true) == true
         }.forEach { order ->
             val dateStr = try {
-                // Assuming created_at is ISO 8601 or similar. If it fails, we skip.
-                // Let's assume standard format for now, or just take the first 10 chars
-                order.created_at?.take(10) ?: "Unknown"
+                if (order.created_at != null) {
+                    val date = inputFormat.parse(order.created_at)
+                    if (date != null) {
+                        outputFormat.format(date)
+                    } else {
+                        "Unknown"
+                    }
+                } else {
+                    "Unknown"
+                }
             } catch (e: Exception) {
-                "Unknown"
+                // Fallback for unexpected formats
+                order.created_at?.take(10) ?: "Unknown"
             }
             
             val amount = try { BigDecimal(order.total_amount) } catch (e: Exception) { BigDecimal.ZERO }
