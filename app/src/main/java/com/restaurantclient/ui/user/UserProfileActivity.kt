@@ -74,14 +74,14 @@ class UserProfileActivity : AppCompatActivity() {
         binding.roleChip.text = when (userRole) {
             RoleDTO.Admin -> getString(R.string.role_admin_label)
             RoleDTO.Customer -> getString(R.string.role_customer_label)
-            RoleDTO.Casher -> "Cashier"
+            RoleDTO.Cashier -> "Cashier"
             else -> getString(R.string.profile_unknown_role)
         }
         binding.roleChip.isVisible = userRole != null
 
         when {
             authViewModel.isAdmin() -> setupAdminShortcuts()
-            authViewModel.isCasher() -> setupCasherShortcuts()
+            authViewModel.isCashier() -> setupCasherShortcuts()
             else -> setupCustomerShortcuts()
         }
     }
@@ -99,10 +99,10 @@ class UserProfileActivity : AppCompatActivity() {
         }
 
         binding.casherDashboardButton.setOnClickListener {
-            startActivity(Intent(this, com.restaurantclient.ui.casher.CasherDashboardActivity::class.java))
+            startActivity(Intent(this, com.restaurantclient.ui.cashier.CashierDashboardActivity::class.java))
         }
         binding.casherOrdersButton.setOnClickListener {
-            startActivity(Intent(this, com.restaurantclient.ui.casher.CasherOrderActivity::class.java))
+            startActivity(Intent(this, com.restaurantclient.ui.cashier.CashierOrderActivity::class.java))
         }
     }
 
