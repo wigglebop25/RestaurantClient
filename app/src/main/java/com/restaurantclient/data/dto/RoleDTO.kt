@@ -3,15 +3,14 @@ package com.restaurantclient.data.dto
 enum class RoleDTO {
     Admin,
     Customer,
-    Casher;
+    Cashier;
 
     companion object {
-        fun fromString(roleString: String?): RoleDTO? {
-            return when (roleString?.lowercase()?.trim()) {
+        fun fromString(role: String): RoleDTO? {
+            return when (role.lowercase()) {
                 "admin" -> Admin
                 "customer" -> Customer
-                "user" -> Customer // Sometimes backends use "user" instead of "customer"
-                "casher" -> Casher
+                "cashier", "casher" -> Cashier
                 else -> null
             }
         }
