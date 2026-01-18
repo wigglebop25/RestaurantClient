@@ -126,7 +126,7 @@ class MainActivity : AppCompatActivity() {
         
         Log.d("MainActivity", "🤖 Detection for '$username':")
         Log.d("MainActivity", "   - Is Likely Admin: $isLikelyAdmin")
-        Log.d("MainActivity", "   - Is Likely Casher: $isLikelyCasher")
+        Log.d("MainActivity", "   - Is Likely Cashier: $isLikelyCasher")
         
         when {
             isLikelyAdmin -> {
@@ -136,8 +136,8 @@ class MainActivity : AppCompatActivity() {
             }
             isLikelyCasher -> {
                 Log.d("MainActivity", "✅ Username suggests casher role")
-                authViewModel.setUserRole(RoleDTO.Casher)
-                goToCasherDashboard()
+                authViewModel.setUserRole(RoleDTO.Cashier)
+                goToCashierDashboard()
             }
             else -> {
                 Log.d("MainActivity", "👤 Assuming customer role")
@@ -183,9 +183,9 @@ class MainActivity : AppCompatActivity() {
                 Log.d("MainActivity", "User is admin, navigating to AdminDashboard")
                 goToAdminDashboard()
             }
-            authViewModel.isCasher() -> {
-                Log.d("MainActivity", "User is casher, navigating to CasherDashboard")
-                goToCasherDashboard()
+            authViewModel.isCashier() -> {
+                Log.d("MainActivity", "User is cashier, navigating to CashierDashboard")
+                goToCashierDashboard()
             }
             authViewModel.isCustomer() -> {
                 Log.d("MainActivity", "User is customer, navigating to ProductList")
@@ -204,8 +204,8 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun goToCasherDashboard() {
-        val intent = Intent(this, com.restaurantclient.ui.casher.CasherDashboardActivity::class.java)
+    private fun goToCashierDashboard() {
+        val intent = Intent(this, com.restaurantclient.ui.cashier.CashierDashboardActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
