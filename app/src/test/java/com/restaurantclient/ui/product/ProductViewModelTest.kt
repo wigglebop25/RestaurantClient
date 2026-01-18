@@ -4,8 +4,10 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.restaurantclient.data.Result
 import com.restaurantclient.data.dto.ProductResponse
 import com.restaurantclient.data.repository.ProductRepository
+import com.restaurantclient.data.network.WebSocketManager
 import com.restaurantclient.util.MainCoroutineRule // Added import
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -24,10 +26,13 @@ class ProductViewModelTest {
 
     private lateinit var productViewModel: ProductViewModel
     private val productRepository: ProductRepository = mock()
+    private val webSocketManager: WebSocketManager = mock()
 
     @Before
     fun setUp() {
-        productViewModel = ProductViewModel(productRepository)
+        // Mock WebSocket events flow to avoid NPE or stuck collection
+        whenever(webSocketManager.events).thenReturn(MutableSharedFlow())
+        productViewModel = ProductViewModel(productRepository, webSocketManager)
     }
 
     @Test
