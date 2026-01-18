@@ -81,7 +81,7 @@ interface ApiService {
     @GET("api/v1/orders")
     suspend fun getAllOrders(): Response<List<OrderResponse>>
 
-    @POST("api/v1/orders/{id}")
+    @PUT("api/v1/orders/{id}/status")
     suspend fun updateOrder(@Path("id") orderId: Int, @Body updateOrderRequest: UpdateOrderRequest): Response<ResponseBody>
 
     // Admin User Management
