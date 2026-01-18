@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_admin_glass_gradient"
-    tools:context=".ui.casher.CasherDashboardActivity">
+    tools:context=".ui.cashier.CashierDashboardActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -90,7 +90,18 @@
                         <androidx.compose.ui.platform.ComposeView
                             android:id="@+id/revenue_chart_compose"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_view_history"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:text="View Full History"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:textColor="@color/itadaki_white"
+                            app:rippleColor="@color/itadaki_white" />
 
                     </LinearLayout>
                 </FrameLayout>
