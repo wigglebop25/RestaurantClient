@@ -102,7 +102,8 @@ android {
             buildConfigField("String", "FORCE_ADMIN_USERNAME", "\"$debugForceAdminUsername\"")
         }
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
