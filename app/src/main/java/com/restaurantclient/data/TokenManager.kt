@@ -65,14 +65,14 @@ class TokenManager @Inject constructor(private val prefs: SharedPreferences) {
                                 when (firstRole) {
                                     1 -> "Admin"
                                     2 -> "Customer"
-                                    3 -> "Casher"
+                                    3 -> "Cashier"
                                     else -> "Customer"
                                 }
                             } else {
                                 val roleStr = firstRole.toString()
                                 when {
                                     roleStr.equals("Admin", ignoreCase = true) || roleStr.equals("ROLE_ADMIN", ignoreCase = true) -> "Admin"
-                                    roleStr.equals("Casher", ignoreCase = true) || roleStr.equals("ROLE_CASHER", ignoreCase = true) -> "Casher"
+                                    roleStr.equals("Casher", ignoreCase = true) || roleStr.equals("ROLE_CASHER", ignoreCase = true) || roleStr.equals("Cashier", ignoreCase = true) -> "Cashier"
                                     roleStr.equals("Customer", ignoreCase = true) || roleStr.equals("ROLE_CUSTOMER", ignoreCase = true) -> "Customer"
                                     else -> "Customer" // Default to Customer for unknown strings to be safe
                                 }
@@ -150,7 +150,7 @@ class TokenManager @Inject constructor(private val prefs: SharedPreferences) {
         val normalizedRole = when (role.lowercase()) {
             "admin" -> "Admin"
             "customer" -> "Customer"
-            "casher" -> "Casher"
+            "casher", "cashier" -> "Cashier"
             else -> role // Keep original if not recognized
         }
         Log.d("TokenManager", "Normalized role: $normalizedRole")
@@ -162,7 +162,7 @@ class TokenManager @Inject constructor(private val prefs: SharedPreferences) {
             val roleString = when (it) {
                 RoleDTO.Admin -> "Admin"
                 RoleDTO.Customer -> "Customer"
-                RoleDTO.Casher -> "Casher"
+                RoleDTO.Cashier -> "Cashier"
             }
             saveUserRole(roleString)
         }
@@ -174,7 +174,7 @@ class TokenManager @Inject constructor(private val prefs: SharedPreferences) {
         return when (roleString?.lowercase()) {
             "admin" -> RoleDTO.Admin
             "customer" -> RoleDTO.Customer
-            "casher" -> RoleDTO.Casher
+            "casher", "cashier" -> RoleDTO.Cashier
             else -> {
                 Log.w("TokenManager", "Unknown role: $roleString")
                 null
@@ -188,6 +188,10 @@ class TokenManager @Inject constructor(private val prefs: SharedPreferences) {
 
     fun isCustomer(): Boolean {
         return getUserRole() == RoleDTO.Customer
+    }
+
+    fun isCashier(): Boolean {
+        return getUserRole() == RoleDTO.Cashier
     }
 
     fun isTokenValid(): Boolean {
