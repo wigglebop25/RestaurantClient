@@ -61,7 +61,7 @@ class UserManagementAdapter(
                     user.isAdmin() -> {
                         binding.roleBadge.setBackgroundColor(binding.root.context.getColor(R.color.admin_primary))
                     }
-                    user.isCasher() -> {
+                    user.isCashier() -> {
                         binding.roleBadge.setBackgroundColor(binding.root.context.getColor(R.color.admin_accent))
                     }
                     else -> {
