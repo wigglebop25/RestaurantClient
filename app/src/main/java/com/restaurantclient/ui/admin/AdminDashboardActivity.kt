@@ -26,6 +26,8 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.components.XAxis
 import android.graphics.Color
 
+import com.restaurantclient.ui.analytics.AnalyticsHistoryActivity
+
 @AndroidEntryPoint
 class AdminDashboardActivity : BaseAdminActivity() {
 
@@ -84,6 +86,11 @@ class AdminDashboardActivity : BaseAdminActivity() {
         binding.viewReportsButton.setOnClickListener {
             showReportsPlaceholderDialog()
         }
+
+        // View History
+        binding.btnViewHistory.setOnClickListener {
+            startActivity(Intent(this, AnalyticsHistoryActivity::class.java))
+        }
     }
 
     private fun setupObservers() {
@@ -123,13 +130,23 @@ class AdminDashboardActivity : BaseAdminActivity() {
         val entries = ArrayList<BarEntry>()
         val labels = ArrayList<String>()
         
-        // Sort dates to ensure chronological order
+        // Sort dates to ensure chronological order (Keys are now yyyy-MM-dd, so string sort works)
         val sortedDates = dailyRevenue.keys.sorted()
         
-        sortedDates.forEachIndexed { index, date ->
-            entries.add(BarEntry(index.toFloat(), dailyRevenue[date]?.toFloat() ?: 0f))
-            // Extract month-day (e.g., 2024-01-13 -> 01-13)
-            labels.add(date.takeLast(5))
+        // Input: "2026-01-18", Output: "Jan 18"
+        val inputFormat = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US)
+        val outputFormat = java.text.SimpleDateFormat("MMM dd", java.util.Locale.US)
+        
+        sortedDates.forEachIndexed { index, dateStr ->
+            entries.add(BarEntry(index.toFloat(), dailyRevenue[dateStr]?.toFloat() ?: 0f))
+            
+            val label = try {
+                val date = inputFormat.parse(dateStr)
+                if (date != null) outputFormat.format(date) else dateStr
+            } catch (e: Exception) {
+                dateStr
+            }
+            labels.add(label)
         }
 
         val dataSet = BarDataSet(entries, "Daily Revenue")
@@ -147,7 +164,9 @@ class AdminDashboardActivity : BaseAdminActivity() {
             setDrawGridBackground(false)
             setDrawBarShadow(false)
             setTouchEnabled(true)
-            setPinchZoom(true)
+            setPinchZoom(false) // Disable pinch zoom to prefer scrolling
+            isDragEnabled = true // Enable scrolling
+            setScaleEnabled(false) // Disable general scaling to keep bar width consistent
             animateY(1000)
             
             xAxis.apply {
@@ -156,15 +175,23 @@ class AdminDashboardActivity : BaseAdminActivity() {
                 textColor = ContextCompat.getColor(this@AdminDashboardActivity, R.color.white)
                 setDrawGridLines(false)
                 granularity = 1f
+                isGranularityEnabled = true
+                labelCount = labels.size
             }
             
             axisLeft.apply {
                 textColor = ContextCompat.getColor(this@AdminDashboardActivity, R.color.white)
                 setDrawGridLines(true)
                 gridColor = Color.argb(40, 255, 255, 255)
+                axisMinimum = 0f
             }
             
             axisRight.isEnabled = false
+            
+            // Scalability: Show only 7 days at a time, scrollable
+            setVisibleXRangeMaximum(7f)
+            // Scroll to the end (latest date)
+            moveViewToX(entries.size.toFloat())
         }
         
         binding.revenueBarChart.invalidate()
