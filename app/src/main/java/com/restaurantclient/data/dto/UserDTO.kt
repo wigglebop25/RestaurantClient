@@ -34,7 +34,7 @@ data class UserDTO(
     fun isAdmin(): Boolean = role == RoleDTO.Admin || roles?.any { it.toRoleDTO() == RoleDTO.Admin } == true
     
     // Helper method to check if user is casher
-    fun isCasher(): Boolean = role == RoleDTO.Casher || roles?.any { it.toRoleDTO() == RoleDTO.Casher } == true
+    fun isCashier(): Boolean = role == RoleDTO.Cashier || roles?.any { it.toRoleDTO() == RoleDTO.Cashier } == true
     
     // Helper method to check if user is customer  
     fun isCustomer(): Boolean = role == RoleDTO.Customer || roles?.any { it.toRoleDTO() == RoleDTO.Customer } == true
