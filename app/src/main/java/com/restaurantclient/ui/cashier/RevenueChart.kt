@@ -34,7 +34,30 @@ fun RevenueChart(
     }
     
     val values = sortedData.map { it.value.toFloat() }
-    val labels = sortedData.map { it.key.takeLast(5) } // e.g. "01-18"
+    val labels = sortedData.map { 
+        val key = it.key
+        try {
+            // Check if key matches YYYY-MM-DD
+            if (key.matches(Regex("\\d{4}-\\d{2}-\\d{2}"))) {
+                val parts = key.split("-")
+                val monthNum = parts[1].toIntOrNull() ?: 1
+                val day = parts[2]
+                val months = listOf("", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+                val monthStr = months.getOrElse(monthNum) { "Jan" }
+                "$monthStr $day"
+            } else if (key.contains(" ")) {
+                // Fallback for "January 12" format if old data persists
+                val parts = key.split(" ")
+                val month = parts[0].take(3)
+                val day = parts[1]
+                "$month $day"
+            } else {
+                key.takeLast(5)
+            }
+        } catch (e: Exception) {
+            key.takeLast(5)
+        }
+    }
     
     val maxVal = values.maxOrNull() ?: 0f
     // Ensure we have some range even if max is 0
