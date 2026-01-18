@@ -53,14 +53,16 @@ class AuthViewModel @Inject constructor(
                 if (result.data.user != null) {
                     val user = result.data.user
                     // Backend returned full user info with role
-                    android.util.Log.d("AuthViewModel", "✅ Backend returned user info!")
-                    android.util.Log.d("AuthViewModel", "Raw user object: $user")
-                    android.util.Log.d("AuthViewModel", "User ID: ${user.userId}")
-                    android.util.Log.d("AuthViewModel", "Username: ${user.username}")
-                    android.util.Log.d("AuthViewModel", "Role Details (raw): ${user.roleDetails}")
-                    android.util.Log.d("AuthViewModel", "Role Details name: ${user.roleDetails?.name}")
-                    android.util.Log.d("AuthViewModel", "Computed Role: ${user.role}")
-                    android.util.Log.d("AuthViewModel", "Created At: ${user.createdAt}")
+                    if (com.restaurantclient.BuildConfig.DEBUG) {
+                        android.util.Log.d("AuthViewModel", "✅ Backend returned user info!")
+                        android.util.Log.d("AuthViewModel", "Raw user object: $user")
+                        android.util.Log.d("AuthViewModel", "User ID: ${user.userId}")
+                        android.util.Log.d("AuthViewModel", "Username: ${user.username}")
+                        android.util.Log.d("AuthViewModel", "Role Details (raw): ${user.roleDetails}")
+                        android.util.Log.d("AuthViewModel", "Role Details name: ${user.roleDetails?.name}")
+                        android.util.Log.d("AuthViewModel", "Computed Role: ${user.role}")
+                        android.util.Log.d("AuthViewModel", "Created At: ${user.createdAt}")
+                    }
                     
                     currentUser = user
                     tokenManager.saveUsername(user.username)
@@ -68,13 +70,17 @@ class AuthViewModel @Inject constructor(
                     // Handle role with better logging
                     if (user.role != null) {
                         tokenManager.saveUserRole(user.role)
-                        android.util.Log.d("AuthViewModel", "✅ SAVED ROLE: ${user.role} for user: ${user.username}")
-                        android.util.Log.d("AuthViewModel", "   - From backend role name: '${user.roleDetails?.name}'")
-                        android.util.Log.d("AuthViewModel", "   - Converted to: ${user.role}")
+                        if (com.restaurantclient.BuildConfig.DEBUG) {
+                            android.util.Log.d("AuthViewModel", "✅ SAVED ROLE: ${user.role} for user: ${user.username}")
+                            android.util.Log.d("AuthViewModel", "   - From backend role name: '${user.roleDetails?.name}'")
+                            android.util.Log.d("AuthViewModel", "   - Converted to: ${user.role}")
+                        }
                     } else {
                         android.util.Log.w("AuthViewModel", "⚠️ Backend returned user but role conversion failed!")
-                        android.util.Log.w("AuthViewModel", "   - Raw role details: ${user.roleDetails}")
-                        android.util.Log.w("AuthViewModel", "   - Role name: '${user.roleDetails?.name}'")
+                        if (com.restaurantclient.BuildConfig.DEBUG) {
+                            android.util.Log.w("AuthViewModel", "   - Raw role details: ${user.roleDetails}")
+                            android.util.Log.w("AuthViewModel", "   - Role name: '${user.roleDetails?.name}'")
+                        }
                     }
                 } else {
                     // Backend only returned token, save username
