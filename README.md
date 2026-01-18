@@ -32,7 +32,7 @@
 ---
 
 ### ✨ Key Features
-- 🔄 **Real-time Synchronization** - Instant order status updates via WebSockets with Double-Fetch resilience
+- 🔄 **Comprehensive Real-time Sync** - Instant updates for Orders, Products, Users, and Roles via WebSockets
 - 🎨 **Itadaki Brand Identity** - Warm cream backgrounds with deep red accents
 - 💎 **Glassmorphism UI** - Modern blur effects and frosted glass design
 - 🎬 **Animated Backgrounds** - GIF animations with smart caching
@@ -44,7 +44,7 @@
 ### 🔄 Real-time Synchronization
 
 The application features a robust real-time update system powered by **WebSockets**:
-- **Instant Notifications**: The app stays in constant communication with the backend, receiving immediate updates for every order status change.
+- **System-Wide Sync**: Instant updates across all modules including Order Status, Product Inventory, User Management, and Role Permissions.
 - **Double-Fetch Resilience**: Implements an optimistic immediate fetch followed by a secondary verification fetch to handle backend database consistency and ensure accuracy.
 - **Auto-Reconnection**: Intelligent WebSocket management that automatically restores connectivity after network drops.
 
@@ -58,8 +58,9 @@ The application features a robust real-time update system powered by **WebSocket
 - 📦 Order history tracking
 
 ### Administrator Features
-- 📊 Dashboard with real-time statistics
-- 👥 User management (CRUD operations)
+- 📊 Dashboard with real-time revenue charts
+- 📈 Detailed Sales History & Analytics
+- 👥 User management (CRUD operations) with live updates
 - 🍔 Product management with categories
 - 📋 Order tracking and management
 
