@@ -14,9 +14,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import com.restaurantclient.data.network.WebSocketEvent
+import com.restaurantclient.data.network.WebSocketManager
+import com.restaurantclient.BuildConfig
+
 @HiltViewModel
 class UserManagementViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val webSocketManager: WebSocketManager
 ) : ViewModel() {
 
     private val _users = MutableLiveData<Result<List<UserDTO>>>()
@@ -53,10 +58,17 @@ class UserManagementViewModel @Inject constructor(
     fun startPollingUsers() {
         if (pollingJob?.isActive == true) return
         
+        webSocketManager.connect(BuildConfig.BASE_URL)
+        
         pollingJob = viewModelScope.launch {
-            while (true) {
-                loadUsers(forceRefresh = true, showLoading = false)
-                delay(5000)
+            // Initial load
+            loadUsers(forceRefresh = true, showLoading = false)
+            
+            // Listen for WebSocket events
+            webSocketManager.events.collect { event ->
+                if (event is WebSocketEvent.RefreshRequired) {
+                    loadUsers(forceRefresh = true, showLoading = false)
+                }
             }
         }
     }
