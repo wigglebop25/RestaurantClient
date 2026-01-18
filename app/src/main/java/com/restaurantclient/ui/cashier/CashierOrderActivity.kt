@@ -66,17 +66,25 @@ class CashierOrderActivity : BaseCashierActivity() {
     }
 
     private fun setupFilters() {
-        binding.filterChipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
-            val selectedId = checkedIds.firstOrNull() ?: return@setOnCheckedStateChangeListener
-            val filter = when (selectedId) {
-                R.id.filter_pending -> "Pending"
-                R.id.filter_accepted -> "Accepted"
-                R.id.filter_ready -> "Ready"
-                R.id.filter_completed -> "Completed"
-                R.id.filter_cancelled -> "Cancelled"
-                else -> "ALL"
-            }
-            viewModel.setFilter(filter)
+        val filterOptions = listOf(
+            "All Orders",
+            "Pending",
+            "Accepted",
+            "Cooking",
+            "Ready",
+            "Completed",
+            "Cancelled"
+        )
+        val adapter = android.widget.ArrayAdapter(this, R.layout.item_dropdown_menu, filterOptions)
+        (binding.filterDropdown as? android.widget.AutoCompleteTextView)?.setAdapter(adapter)
+        
+        // Default selection
+        binding.filterDropdown.setText(filterOptions[0], false)
+
+        binding.filterDropdown.setOnItemClickListener { _, _, position, _ ->
+            val selectedFilter = filterOptions[position]
+            val filterKey = if (selectedFilter == "All Orders") "ALL" else selectedFilter
+            viewModel.setFilter(filterKey)
         }
     }
 
