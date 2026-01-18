@@ -12,9 +12,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import com.restaurantclient.data.network.WebSocketEvent
+import com.restaurantclient.data.network.WebSocketManager
+import com.restaurantclient.BuildConfig
+import kotlinx.coroutines.Job
+
 @HiltViewModel
 class ProductViewModel @Inject constructor(
-    private val productRepository: ProductRepository
+    private val productRepository: ProductRepository,
+    private val webSocketManager: WebSocketManager
 ) : ViewModel() {
 
     private val _products = MutableLiveData<Result<List<ProductResponse>>>()
@@ -28,11 +34,36 @@ class ProductViewModel @Inject constructor(
 
     private val _mutationLoading = MutableLiveData<Boolean>()
     val mutationLoading: LiveData<Boolean> = _mutationLoading
+    
+    private var monitoringJob: Job? = null
 
-    fun fetchProducts(forceRefresh: Boolean = false) {
+    init {
+        startMonitoringProducts()
+    }
+
+    fun fetchProducts(forceRefresh: Boolean = false, showLoading: Boolean = true) {
         viewModelScope.launch {
-            val result = productRepository.getAllProducts(forceRefresh)
-            _products.postValue(result)
+            if (showLoading) _mutationLoading.value = true // Reusing mutation loading for simplicity or add fetchLoading
+            try {
+                val result = productRepository.getAllProducts(forceRefresh)
+                _products.value = result // Use .value instead of .postValue for immediate updates in main thread
+            } finally {
+                if (showLoading) _mutationLoading.value = false
+            }
+        }
+    }
+    
+    private fun startMonitoringProducts() {
+        if (monitoringJob?.isActive == true) return
+        
+        webSocketManager.connect(BuildConfig.BASE_URL)
+        
+        monitoringJob = viewModelScope.launch {
+            webSocketManager.events.collect { event ->
+                if (event is WebSocketEvent.RefreshRequired) {
+                    fetchProducts(forceRefresh = true, showLoading = false)
+                }
+            }
         }
     }
 
