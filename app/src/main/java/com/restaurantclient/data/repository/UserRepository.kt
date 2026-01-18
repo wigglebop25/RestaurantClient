@@ -111,7 +111,7 @@ class UserRepository @Inject constructor(
             val roleString = when (role) {
                 RoleDTO.Admin -> "Admin"
                 RoleDTO.Customer -> "Customer"
-                RoleDTO.Casher -> "Casher"
+                RoleDTO.Cashier -> "Cashier"
             }
             val createUserRequest = CreateUserRequest(username, password, roleName = roleString)
             val response = apiService.createUser(createUserRequest)
@@ -167,9 +167,9 @@ class UserRepository @Inject constructor(
     suspend fun assignRole(username: String, role: RoleDTO): Result<Unit> {
         return try {
             val roleName = when (role) {
-                RoleDTO.Admin -> "ADMIN"
-                RoleDTO.Customer -> "CUSTOMER"
-                RoleDTO.Casher -> "CASHER"
+                RoleDTO.Admin -> "Admin"
+                RoleDTO.Customer -> "Customer"
+                RoleDTO.Cashier -> "Cashier"
             }
             val response = apiService.assignRole(AssignRoleRequest(username, roleName))
             if (response.isSuccessful) {
