@@ -34,11 +34,12 @@ class CashierOrderAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private val statusMap = mapOf(
-            binding.chipPending.id to "Pending",
-            binding.chipAccepted.id to "Accepted",
-            binding.chipReady.id to "Ready",
-            binding.chipCompleted.id to "Completed",
-            binding.chipCancelled.id to "Cancelled"
+            binding.chipPending.id to "PENDING",
+            binding.chipAccepted.id to "ACCEPTED",
+            binding.chipCooking.id to "COOKING",
+            binding.chipReady.id to "READY",
+            binding.chipCompleted.id to "COMPLETED",
+            binding.chipCancelled.id to "CANCELLED"
         )
 
         init {
