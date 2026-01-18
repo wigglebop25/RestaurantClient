@@ -119,12 +119,15 @@ class CashierDashboardViewModel @Inject constructor(
         }
     }
     
+    private var refreshJob: Job? = null
+
     // Helper to refresh just stats
     fun refreshStats() {
-        viewModelScope.launch {
-            _loading.value = true
+        // Debounce refresh calls to avoid 429 Too Many Requests
+        refreshJob?.cancel()
+        refreshJob = viewModelScope.launch {
+            delay(1000) // Wait for 1 second of silence
             loadStats()
-            _loading.value = false
         }
     }
 }
