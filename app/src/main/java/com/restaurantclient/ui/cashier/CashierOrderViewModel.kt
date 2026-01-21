@@ -39,11 +39,18 @@ class CashierOrderViewModel @Inject constructor(
     private var currentFilter: String = "ALL"
     private var pollingJob: Job? = null
 
-    fun loadOrders(forceRefresh: Boolean = false, showLoading: Boolean = true) {
+    private var currentSearchQuery: String? = null
+
+    fun loadOrders(forceRefresh: Boolean = false, showLoading: Boolean = true, query: String? = null) {
+        currentSearchQuery = query
         viewModelScope.launch {
             if (showLoading) _loading.value = true
             try {
-                val ordersResult = orderRepository.getAllOrders(forceRefresh)
+                // Pass search query to repository for server-side filtering
+                val ordersResult = orderRepository.getAllOrders(
+                    forceRefresh = forceRefresh,
+                    search = query
+                )
 
                 if (ordersResult is Result.Success) {
                     val ordersList = ordersResult.data
@@ -66,6 +73,10 @@ class CashierOrderViewModel @Inject constructor(
                 if (showLoading) _loading.value = false
             }
         }
+    }
+
+    fun searchOrders(query: String?) {
+        loadOrders(forceRefresh = true, showLoading = true, query = query)
     }
 
     fun setFilter(filter: String) {
@@ -94,8 +105,17 @@ class CashierOrderViewModel @Inject constructor(
             try {
                 val result = orderRepository.updateOrderStatus(orderId, newStatus)
                 _updateResult.value = result
-                orderRepository.clearCache() // Invalidate cache after update
-                loadOrders(true, showLoading = false) // Refresh orders silently
+                if (result is Result.Success) {
+                    // Update local list with the fresh order data from backend
+                    val updatedOrder = result.data
+                    val currentList = _allOrders.value?.toMutableList() ?: mutableListOf()
+                    val index = currentList.indexOfFirst { it.order.order_id == orderId }
+                    if (index != -1) {
+                        currentList[index] = currentList[index].copy(order = updatedOrder)
+                        _allOrders.value = currentList
+                        applyFilter()
+                    }
+                }
             } catch (e: Exception) {
                 _updateResult.value = Result.Error(e)
             }
