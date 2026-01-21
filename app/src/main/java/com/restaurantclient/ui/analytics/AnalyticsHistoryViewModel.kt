@@ -47,16 +47,14 @@ class AnalyticsHistoryViewModel @Inject constructor(
         viewModelScope.launch {
             if (showLoading) _loading.value = true
             try {
-                // For detailed history (Revenue + Count per day), we need the full order list
-                // because the lightweight dashboard endpoint only provides revenue sums.
+                // Fetch full order list to calculate detailed daily breakdown (Revenue + Count).
+                // The lightweight dashboard endpoint is insufficient as it lacks daily order counts.
                 val ordersResult = orderRepository.getAllOrders(forceRefresh = true)
                 
                 if (ordersResult is Result.Success) {
                     val stats = AnalyticsUtils.getDetailedDailyStats(ordersResult.data)
                     _history.value = stats
                 } else {
-                    // Try to use dashboard analytics as a partial fallback if order fetch fails?
-                    // No, because we can't invent the order counts. Just show error.
                     _error.value = "Failed to load history"
                 }
             } catch (e: Exception) {

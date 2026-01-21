@@ -20,7 +20,7 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideLoggingInterceptor(): HttpLoggingInterceptor {
-        // Temporarily enabling logging for Debug to diagnose order creation failure
+        // Enable detailed logging in Debug builds for network diagnostics
         val level = if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor.Level.BODY
         } else {

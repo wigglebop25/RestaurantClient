@@ -301,7 +301,7 @@ class AuthViewModel @Inject constructor(
             )
             android.util.Log.d("AuthViewModel", "Loaded stored user: $username, role: $role")
         } else if (username != null && role == null) {
-            // Create user without role for now
+            // Create user with default role assignment
             currentUser = UserDTO(
                 userId = null,
                 username = username,

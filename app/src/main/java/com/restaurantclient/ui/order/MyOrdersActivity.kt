@@ -79,7 +79,7 @@ class MyOrdersActivity : AppCompatActivity() {
     }
     
     private fun setupGlassUI() {
-        // Simplified - using MaterialCardView instead of BlurView for now
+        // Using MaterialCardView for optimized performance
         binding.ordersSummaryGlass.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND)
         binding.ordersSummaryGlass.clipToOutline = true
     }

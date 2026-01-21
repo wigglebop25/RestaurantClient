@@ -141,7 +141,7 @@ class CashierDashboardActivity : BaseCashierActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.admin_main_menu, menu) // Reuse admin menu for logout for now
+        menuInflater.inflate(R.menu.admin_main_menu, menu) // Reuse admin menu for shared logout functionality
         return true
     }
 

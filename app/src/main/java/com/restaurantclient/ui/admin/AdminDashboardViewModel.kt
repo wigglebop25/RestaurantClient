@@ -137,11 +137,7 @@ class AdminDashboardViewModel @Inject constructor(
     
     override fun onCleared() {
         super.onCleared()
-        // We might want to keep the connection alive if other screens use it, 
-        // but typically a ViewModel scoped connection should close.
-        // However, since WebSocketManager is Singleton, we shouldn't disconnect here 
-        // if we want to share the connection.
-        // For now, let's leave it open or handle disconnection in a broader scope.
+        // Connection logic managed by singleton WebSocketManager; explicit disconnection not required here.
     }
 }
 
