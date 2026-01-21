@@ -20,12 +20,8 @@ class MainActivity : AppCompatActivity() {
 
     private val loginLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
-            Log.d("MainActivity", "Login successful, determining role and navigating...")
-            // After successful login, the AuthViewModel has already processed the login
-            // and determined the role. We can now navigate based on role.
             determineUserRoleAndNavigate()
         } else {
-            // User cancelled login, so finish the app
             finish()
         }
     }
@@ -36,23 +32,17 @@ class MainActivity : AppCompatActivity() {
         // Observe refresh result to navigate with FRESH role data from backend
         authViewModel.refreshResult.observe(this) { result ->
             if (result is com.restaurantclient.data.Result.Success) {
-                Log.d("MainActivity", "Token refreshed, role updated. Navigating...")
-                authViewModel.loadStoredUserInfo() // Reload updated info from TokenManager
+                authViewModel.loadStoredUserInfo()
                 navigateBasedOnRole()
             } else {
                 Log.w("MainActivity", "Token refresh failed. Using cached role if available.")
-                // If refresh failed (e.g. network error), fall back to stored role
                 determineUserRoleAndNavigate() 
             }
         }
 
-        Log.d("MainActivity", "Checking authentication status...")
         if (authViewModel.isLoggedIn()) {
-            Log.d("MainActivity", "User is logged in, refreshing token to sync role...")
-            // Force a refresh to ensure we have the correct role from server
             authViewModel.refreshToken()
         } else {
-            Log.d("MainActivity", "User not logged in, launching LoginActivity")
             loginLauncher.launch(Intent(this, LoginActivity::class.java))
         }
     }
@@ -61,59 +51,45 @@ class MainActivity : AppCompatActivity() {
         authViewModel.loadStoredUserInfo()
         
         val storedRole = authViewModel.getUserRole()
-        Log.d("MainActivity", "🔍 Checking stored role: $storedRole")
         
         if (storedRole != null) {
-            // We have a stored role, use it immediately
-            Log.d("MainActivity", "✅ Found stored role: $storedRole")
             navigateBasedOnRole()
         } else {
             // No stored role - this means either:
             // 1. Backend didn't return user info and we need to determine role
             // 2. Role determination is in progress (async)
-            Log.d("MainActivity", "❌ No stored role found")
-            
-            // Wait a moment for async role determination to complete
             waitForRoleOrFallback()
         }
     }
     
     private fun waitForRoleOrFallback() {
-        Log.d("MainActivity", "⏳ Waiting for role determination...")
-        
         // Simple single check with short delay to allow async role determination
         android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
             val role = authViewModel.getUserRole()
-            Log.d("MainActivity", "🔍 Role check result: $role")
             
             if (role != null) {
-                Log.d("MainActivity", "🎯 Role found: $role")
                 navigateBasedOnRole()
             } else {
                 Log.w("MainActivity", "⚠️ No role found, using fallback detection")
                 determineRoleByAdminAccess()
             }
-        }, 1500) // Wait 1.5 seconds for async role determination
+        }, 1500)
     }
     
     private fun determineRoleByAdminAccess() {
         val username = authViewModel.getCurrentUser()?.username ?: ""
-        Log.d("MainActivity", "🔍 Determining role for username: '$username'")
         
         if (username.isBlank()) {
-            Log.w("MainActivity", "⚠️ Empty username, cannot determine role. Redirecting to Login.")
             loginLauncher.launch(Intent(this, LoginActivity::class.java))
             return
         }
         
         if (shouldForceAdminRole(username)) {
-            Log.w("MainActivity", "🧪 Debug override enabled - forcing admin role")
             authViewModel.setUserRole(RoleDTO.Admin)
             goToAdminDashboard()
             return
         }
         
-        // Smart admin/casher detection based on username patterns
         val isLikelyAdmin = username.contains("admin", ignoreCase = true) || 
                            username == "admin" || 
                            username.lowercase().startsWith("admin") ||
@@ -124,23 +100,16 @@ class MainActivity : AppCompatActivity() {
                             username.lowercase().startsWith("casher") ||
                             username.contains("cashier", ignoreCase = true)
         
-        Log.d("MainActivity", "🤖 Detection for '$username':")
-        Log.d("MainActivity", "   - Is Likely Admin: $isLikelyAdmin")
-        Log.d("MainActivity", "   - Is Likely Cashier: $isLikelyCasher")
-        
         when {
             isLikelyAdmin -> {
-                Log.d("MainActivity", "✅ Username suggests admin role")
                 authViewModel.setUserRole(RoleDTO.Admin)
                 goToAdminDashboard()
             }
             isLikelyCasher -> {
-                Log.d("MainActivity", "✅ Username suggests casher role")
                 authViewModel.setUserRole(RoleDTO.Cashier)
                 goToCashierDashboard()
             }
             else -> {
-                Log.d("MainActivity", "👤 Assuming customer role")
                 authViewModel.setUserRole(RoleDTO.Customer)
                 goToProductList()
             }
@@ -153,44 +122,25 @@ class MainActivity : AppCompatActivity() {
         
         val overrideUsername = BuildConfig.FORCE_ADMIN_USERNAME.trim()
         if (overrideUsername.isEmpty()) {
-            Log.w("MainActivity", "🧪 Debug override active with no username filter - granting admin access")
             return true
         }
         
-        val matches = overrideUsername.equals(username, ignoreCase = true)
-        if (!matches) {
-            Log.w(
-                "MainActivity",
-                "🧪 Debug override enabled but username '$username' does not match override '$overrideUsername'"
-            )
-        }
-        return matches
+        return overrideUsername.equals(username, ignoreCase = true)
     }
     
     private fun isLikelyFirstUser(username: String): Boolean {
-        // Simple heuristics for first user detection
-        return username.length < 10 && // Short usernames are often admin
-               !username.contains("user", ignoreCase = true) && // Not explicitly a user
-               !username.contains("customer", ignoreCase = true) // Not explicitly a customer
+        return username.length < 10 && 
+               !username.contains("user", ignoreCase = true) && 
+               !username.contains("customer", ignoreCase = true)
     }
 
     private fun navigateBasedOnRole() {
         val userRole = authViewModel.getUserRole()
-        Log.d("MainActivity", "User role: $userRole")
         
         when {
-            authViewModel.isAdmin() -> {
-                Log.d("MainActivity", "User is admin, navigating to AdminDashboard")
-                goToAdminDashboard()
-            }
-            authViewModel.isCashier() -> {
-                Log.d("MainActivity", "User is cashier, navigating to CashierDashboard")
-                goToCashierDashboard()
-            }
-            authViewModel.isCustomer() -> {
-                Log.d("MainActivity", "User is customer, navigating to ProductList")
-                goToProductList()
-            }
+            authViewModel.isAdmin() -> goToAdminDashboard()
+            authViewModel.isCashier() -> goToCashierDashboard()
+            authViewModel.isCustomer() -> goToProductList()
             else -> {
                 Log.w("MainActivity", "Unknown user role: $userRole, defaulting to ProductList")
                 goToProductList()
