@@ -67,38 +67,65 @@ class CashierDashboardViewModel @Inject constructor(
 
     private suspend fun loadStats() {
         try {
-            // We need full order list for revenue analytics
-            val ordersDeferred = viewModelScope.async { orderRepository.getAllOrders(forceRefresh = true) }
-            val productsDeferred = viewModelScope.async { productRepository.getAllProducts(forceRefresh = true) }
+            val analyticsResult = orderRepository.getDashboardAnalytics()
+            val productsResult = productRepository.getAllProducts(forceRefresh = true)
 
-            val ordersResult = ordersDeferred.await()
-            val productsResult = productsDeferred.await()
-
-            if (ordersResult is Result.Success && productsResult is Result.Success) {
-                val orders = ordersResult.data
+            if (analyticsResult is Result.Success && productsResult is Result.Success) {
+                val analyticsData = analyticsResult.data
                 val products = productsResult.data
                 
-                // Calculate detailed analytics
-                val calculatedAnalytics = AnalyticsUtils.calculateStats(orders)
-                _analytics.value = calculatedAnalytics
+                // Map backend DTO to UI model
+                val mappedAnalytics = DashboardAnalytics(
+                    totalRevenue = analyticsData.totalRevenue,
+                    totalOrders = analyticsData.totalOrders,
+                    pendingOrders = analyticsData.pendingCount,
+                    completedOrders = 0, // Not explicitly provided by analytics DTO but could be added
+                    cancelledOrders = 0,
+                    averageOrderValue = if (analyticsData.totalOrders > 0) analyticsData.totalRevenue / analyticsData.totalOrders else 0.0,
+                    dailyRevenue = analyticsData.dailyRevenue.associate { it.date to it.amount }
+                )
+                _analytics.value = mappedAnalytics
 
-                // Update legacy summary DTO
+                // Update legacy summary DTO for UI components that still use it
                 val summary = DashboardSummaryDTO(
                     userCount = 0, 
                     productCount = products.size,
-                    orderCount = orders.size,
-                    pendingOrders = calculatedAnalytics.pendingOrders,
-                    completedOrders = calculatedAnalytics.completedOrders,
-                    cancelledOrders = calculatedAnalytics.cancelledOrders
+                    orderCount = analyticsData.totalOrders,
+                    pendingOrders = analyticsData.pendingCount,
+                    completedOrders = 0,
+                    cancelledOrders = 0
                 )
                 _dashboardStats.value = Result.Success(summary)
             } else {
-                // Try basic summary endpoint as fallback if full data fetch fails
-                val result = orderRepository.getDashboardSummary()
-                if (result is Result.Success) {
-                     _dashboardStats.value = result
+                // Try basic summary endpoint as fallback
+                val summaryResult = orderRepository.getDashboardSummary()
+                if (summaryResult is Result.Success) {
+                     _dashboardStats.value = summaryResult
+                     _analytics.value = DashboardAnalytics(0.0, 0, 0, 0, 0, 0.0, emptyMap())
                 } else {
-                    _dashboardStats.value = Result.Error(Exception("Failed to load stats"))
+                    // Ultimate Fallback: Client-side calculation using getAllOrders
+                    // This is necessary if backend removes summary endpoints
+                    val ordersResult = orderRepository.getAllOrders(forceRefresh = true)
+                    if (ordersResult is Result.Success) {
+                        val orders = ordersResult.data
+                        val calculated = AnalyticsUtils.calculateStats(orders)
+                        
+                        _analytics.value = calculated
+                        
+                        val productCount = if (productsResult is Result.Success) productsResult.data.size else 0
+                        
+                        val summary = DashboardSummaryDTO(
+                            userCount = 0,
+                            productCount = productCount,
+                            orderCount = orders.size,
+                            pendingOrders = calculated.pendingOrders,
+                            completedOrders = calculated.completedOrders,
+                            cancelledOrders = calculated.cancelledOrders
+                        )
+                        _dashboardStats.value = Result.Success(summary)
+                    } else {
+                        _dashboardStats.value = Result.Error(Exception("Failed to load stats"))
+                    }
                 }
             }
         } catch (e: Exception) {
