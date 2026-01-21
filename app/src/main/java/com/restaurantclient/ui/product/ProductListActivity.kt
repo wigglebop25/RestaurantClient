@@ -23,10 +23,10 @@ import com.eightbitlab.com.blurview.RenderScriptBlur
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.restaurantclient.MainActivity
-import com.restaurantclient.data.dto.CategoryDTO
 import com.restaurantclient.R
 import com.restaurantclient.data.CartManager
 import com.restaurantclient.data.Result
+import com.restaurantclient.data.dto.CategoryDTO
 import com.restaurantclient.data.dto.ProductResponse
 import com.restaurantclient.databinding.ActivityProductListBinding
 import com.restaurantclient.databinding.ActivityProductListAdminBinding
@@ -36,8 +36,10 @@ import com.restaurantclient.ui.admin.OrderManagementActivity
 import com.restaurantclient.ui.admin.UserManagementActivity
 import com.restaurantclient.ui.auth.AuthViewModel
 import com.restaurantclient.ui.cart.ShoppingCartActivity
+import com.restaurantclient.ui.order.MyOrdersActivity
 import com.restaurantclient.ui.common.setupGlassEffect
 import com.restaurantclient.ui.user.UserProfileActivity
+import com.restaurantclient.util.ErrorUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -63,11 +65,6 @@ class ProductListActivity : AppCompatActivity() {
     private var allProducts: List<ProductResponse> = emptyList()
     private var selectedCategoryId: Int? = null // null means "All"
     private var selectedCategoryName: String? = null // used when API omits ID
-
-    companion object {
-        private const val BLUR_RADIUS = 20f
-        private const val BLUR_OVERLAY_ALPHA = 200
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,7 +107,7 @@ class ProductListActivity : AppCompatActivity() {
         }
 
         getFilterButton()?.setOnClickListener {
-            Toast.makeText(this, "Filter clicked", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.action_filter) + " clicked", Toast.LENGTH_SHORT).show()
         }
 
         getProfileImage()?.setOnClickListener {
@@ -233,7 +230,7 @@ class ProductListActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupDynamicCategoryChips(categories: List<com.restaurantclient.data.dto.CategoryDTO>) {
+    private fun setupDynamicCategoryChips(categories: List<CategoryDTO>) {
         getCategoryChipGroup().removeAllViews()
         
         val allChip = Chip(this).apply {
@@ -403,7 +400,7 @@ class ProductListActivity : AppCompatActivity() {
                     updateEmptyState(allProducts.isEmpty())
                 }
                 is Result.Error -> {
-                    val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
+                    val message = ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
                     Toast.makeText(this, getString(R.string.product_list_error, message), Toast.LENGTH_LONG).show()
                     updateEmptyState(true) // Show empty state on error
                 }
@@ -417,7 +414,7 @@ class ProductListActivity : AppCompatActivity() {
                     refreshProducts()
                 }
                 is Result.Error -> {
-                    val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
+                    val message = ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
                     Toast.makeText(this, getString(R.string.product_action_error, message), Toast.LENGTH_LONG).show()
                 }
             }
@@ -460,7 +457,7 @@ class ProductListActivity : AppCompatActivity() {
                     updateEmptyState(result.data.isEmpty())
                 }
                 is Result.Error -> {
-                    val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
+                    val message = ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
                     Toast.makeText(
                         this@ProductListActivity,
                         "Failed to load category products: $message",
@@ -524,19 +521,19 @@ class ProductListActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_cart -> {
-                startActivity(Intent(this, com.restaurantclient.ui.cart.ShoppingCartActivity::class.java))
+                startActivity(Intent(this, ShoppingCartActivity::class.java))
                 true
             }
             R.id.action_my_orders -> {
                 if (isAdminUser) {
                     startActivity(Intent(this, OrderManagementActivity::class.java))
                 } else {
-                    startActivity(Intent(this, com.restaurantclient.ui.order.MyOrdersActivity::class.java))
+                    startActivity(Intent(this, MyOrdersActivity::class.java))
                 }
                 true
             }
             R.id.action_profile -> {
-                startActivity(Intent(this, com.restaurantclient.ui.user.UserProfileActivity::class.java))
+                startActivity(Intent(this, UserProfileActivity::class.java))
                 true
             }
             R.id.action_logout -> {
@@ -565,18 +562,5 @@ class ProductListActivity : AppCompatActivity() {
 
     private fun updateLoadingState() {
         getProgressBar().isVisible = isFetchLoading || isMutationLoading
-    }
-
-    private fun configureBlur(blurView: BlurView, overlayColorRes: Int, radius: Float = 18f) {
-        val decorView = window.decorView
-        val rootView = decorView.findViewById<ViewGroup>(android.R.id.content)
-        val windowBackground = decorView.background
-        blurView.setupWith(rootView)
-            .setFrameClearDrawable(windowBackground)
-            .setBlurAlgorithm(RenderScriptBlur(this))
-            .setBlurRadius(radius)
-            .setHasFixedTransformationMatrix(true)
-        val overlay = ColorUtils.setAlphaComponent(ContextCompat.getColor(this, overlayColorRes), 200)
-        blurView.setOverlayColor(overlay)
     }
 }
