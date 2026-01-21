@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.restaurantclient.R
 import com.restaurantclient.data.CartItem
 import com.restaurantclient.databinding.ItemCartBinding
 import com.restaurantclient.util.ImageMapper
@@ -21,12 +22,13 @@ class CheckoutCartAdapter : ListAdapter<CartItem, CheckoutCartAdapter.CartViewHo
         holder.bind(getItem(position))
     }
 
-    inner class CartViewHolder(private val binding: ItemCartBinding) : RecyclerView.ViewHolder(binding.root) {
+    class CartViewHolder(private val binding: ItemCartBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(cartItem: CartItem) {
+            val context = binding.root.context
             binding.apply {
                 productName.text = cartItem.product.name
-                productPrice.text = "$${cartItem.product.price} x ${cartItem.quantity}"
+                productPrice.text = context.getString(R.string.cart_item_price_format, cartItem.product.price, cartItem.quantity)
                 quantityText.text = cartItem.quantity.toString()
                 
                 val imageResource = ImageMapper.getDrawableResourceOrPlaceholder(cartItem.product.product_image_uri)
@@ -37,7 +39,13 @@ class CheckoutCartAdapter : ListAdapter<CartItem, CheckoutCartAdapter.CartViewHo
                 incrementButton.visibility = View.GONE
                 
                 val itemTotal = cartItem.product.price.toDouble() * cartItem.quantity
-                productPrice.text = "$${String.format("%.2f", itemTotal)} (${cartItem.quantity} x $${cartItem.product.price})"
+                val formattedTotal = String.format(java.util.Locale.US, "%.2f", itemTotal)
+                productPrice.text = context.getString(
+                    R.string.checkout_item_total_format, 
+                    formattedTotal, 
+                    cartItem.quantity, 
+                    cartItem.product.price
+                )
             }
         }
     }
