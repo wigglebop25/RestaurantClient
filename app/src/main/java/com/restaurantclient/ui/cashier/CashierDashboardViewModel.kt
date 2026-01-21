@@ -78,11 +78,11 @@ class CashierDashboardViewModel @Inject constructor(
                 val mappedAnalytics = DashboardAnalytics(
                     totalRevenue = analyticsData.totalRevenue,
                     totalOrders = analyticsData.totalOrders,
-                    pendingOrders = analyticsData.pendingCount,
-                    completedOrders = 0, // Not explicitly provided by analytics DTO but could be added
-                    cancelledOrders = 0,
-                    averageOrderValue = if (analyticsData.totalOrders > 0) analyticsData.totalRevenue / analyticsData.totalOrders else 0.0,
-                    dailyRevenue = analyticsData.dailyRevenue.associate { it.date to it.amount }
+                    pendingOrders = analyticsData.pendingOrders,
+                    completedOrders = analyticsData.completedOrders,
+                    cancelledOrders = analyticsData.cancelledOrders,
+                    averageOrderValue = analyticsData.averageOrderValue,
+                    dailyRevenue = analyticsData.dailyRevenue
                 )
                 _analytics.value = mappedAnalytics
 
@@ -91,9 +91,9 @@ class CashierDashboardViewModel @Inject constructor(
                     userCount = 0, 
                     productCount = products.size,
                     orderCount = analyticsData.totalOrders,
-                    pendingOrders = analyticsData.pendingCount,
-                    completedOrders = 0,
-                    cancelledOrders = 0
+                    pendingOrders = analyticsData.pendingOrders,
+                    completedOrders = analyticsData.completedOrders,
+                    cancelledOrders = analyticsData.cancelledOrders
                 )
                 _dashboardStats.value = Result.Success(summary)
             } else {
