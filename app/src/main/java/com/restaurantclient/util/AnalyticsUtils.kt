@@ -32,7 +32,8 @@ object AnalyticsUtils {
         val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
         // Include COMPLETED, READY, PREPARING, and ACCEPTED orders
-        orders.filter { 
+        // Ensure unique orders to prevent double counting
+        orders.distinctBy { it.order_id }.filter { 
             val status = it.status
             status?.equals("completed", ignoreCase = true) == true || 
             status?.equals("ready", ignoreCase = true) == true ||
@@ -75,7 +76,8 @@ object AnalyticsUtils {
         var completed = 0
         var cancelled = 0
 
-        orders.forEach { order ->
+        // Ensure unique orders to prevent double counting
+        orders.distinctBy { it.order_id }.forEach { order ->
             val amount = try {
                 BigDecimal(order.total_amount)
             } catch (e: Exception) {
@@ -114,7 +116,8 @@ object AnalyticsUtils {
         val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
         // Include COMPLETED, READY, PREPARING, and ACCEPTED orders for revenue calculation
-        orders.filter { 
+        // Ensure unique orders
+        orders.distinctBy { it.order_id }.filter { 
             val status = it.status
             status?.equals("completed", ignoreCase = true) == true || 
             status?.equals("ready", ignoreCase = true) == true ||
