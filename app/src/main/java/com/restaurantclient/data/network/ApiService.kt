@@ -9,6 +9,7 @@ import com.restaurantclient.data.dto.CategoryProductRequest
 import com.restaurantclient.data.dto.CategoryRequest
 import com.restaurantclient.data.dto.CreateOrderRequest
 import com.restaurantclient.data.dto.CreateUserRequest
+import com.restaurantclient.data.dto.DashboardAnalyticsResponse
 import com.restaurantclient.data.dto.DashboardSummaryDTO
 import com.restaurantclient.data.dto.LoginDTO
 import com.restaurantclient.data.dto.LoginResponse
@@ -17,12 +18,13 @@ import com.restaurantclient.data.dto.OrderResponse
 import com.restaurantclient.data.dto.PermissionRequest
 import com.restaurantclient.data.dto.ProductRequest
 import com.restaurantclient.data.dto.ProductResponse
+import com.restaurantclient.data.dto.RefreshTokenRequest
 import com.restaurantclient.data.dto.RoleDetailsDTO
 import com.restaurantclient.data.dto.RoleDTO
 import com.restaurantclient.data.dto.RoleRequest
 import com.restaurantclient.data.dto.UpdateOrderRequest
 import com.restaurantclient.data.dto.UpdateUserRolesRequest
-import com.restaurantclient.data.dto.UpdateUserRequest // Added missing import
+import com.restaurantclient.data.dto.UpdateUserRequest
 import com.restaurantclient.data.dto.UserDTO
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -44,7 +46,7 @@ interface ApiService {
     suspend fun login(@Body loginDto: LoginDTO): Response<LoginResponse>
 
     @POST("api/v1/auth/refresh")
-    suspend fun refreshToken(): Response<LoginResponse>
+    suspend fun refreshToken(@Body request: RefreshTokenRequest): Response<LoginResponse>
 
     // Products
     @POST("api/v1/products")
@@ -79,10 +81,16 @@ interface ApiService {
     suspend fun getMyOrders(): Response<ResponseBody>
 
     @GET("api/v1/orders")
-    suspend fun getAllOrders(): Response<List<OrderResponse>>
+    suspend fun getAllOrders(
+        @Query("page") page: Int? = null,
+        @Query("limit") limit: Int? = null,
+        @Query("status") status: String? = null,
+        @Query("date") date: String? = null,
+        @Query("search") search: String? = null
+    ): Response<List<OrderResponse>>
 
     @PUT("api/v1/orders/{id}/status")
-    suspend fun updateOrder(@Path("id") orderId: Int, @Body updateOrderRequest: UpdateOrderRequest): Response<ResponseBody>
+    suspend fun updateOrder(@Path("id") orderId: Int, @Body updateOrderRequest: UpdateOrderRequest): Response<OrderResponse>
 
     // Admin User Management
     @GET("api/v1/users")
@@ -107,7 +115,7 @@ interface ApiService {
     suspend fun deleteUser(@Path("id") userId: Int): Response<Unit>
 
     // Get current user info
-    @GET("api/v1/user/me")
+    @GET("api/v1/users/me")
     suspend fun getCurrentUser(): Response<UserDTO>
 
     // Roles
@@ -189,4 +197,8 @@ interface ApiService {
     // Dashboard Summary
     @GET("api/v1/dashboard/summary")
     suspend fun getDashboardSummary(): Response<DashboardSummaryDTO>
+
+    // Analytics
+    @GET("api/v1/analytics/dashboard")
+    suspend fun getDashboardAnalytics(): Response<DashboardAnalyticsResponse>
 }
