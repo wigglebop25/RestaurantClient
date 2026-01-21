@@ -110,6 +110,10 @@
     <string name="total">Total</string>
     <string name="proceed_to_checkout">Proceed to Checkout</string>
     <string name="place_order">Place Order</string>
+    <string name="price_format">$%1$s</string>
+    <string name="cart_item_price_format">$%1$s x %2$d</string>
+    <string name="checkout_item_total_format">$%1$s (%2$d x $%3$s)</string>
+    <string name="action_filter">Filter</string>
     
     <!-- Cashier Dashboard Strings -->
     <string name="cashier_dashboard_title">Cashier Dashboard</string>
