@@ -75,7 +75,6 @@ class ProductListActivity : AppCompatActivity() {
         authViewModel.loadStoredUserInfo()
         isAdminUser = authViewModel.isAdmin()
         
-        // Inflate the appropriate layout based on user role
         if (isAdminUser) {
             adminBinding = ActivityProductListAdminBinding.inflate(layoutInflater)
             setContentView(adminBinding!!.root)
@@ -102,7 +101,6 @@ class ProductListActivity : AppCompatActivity() {
     private fun getCategoryChipGroup() = (if (isAdminUser) adminBinding!!.categoryChipGroup else customerBinding!!.categoryChipGroup)
     
     private fun setupModernUi() {
-        // Setup search functionality
         getSearchInput().setOnEditorActionListener { _, _, _ ->
             val query = getSearchInput().text.toString()
             if (query.isNotEmpty()) {
@@ -111,17 +109,14 @@ class ProductListActivity : AppCompatActivity() {
             true
         }
 
-        // Setup filter button
         getFilterButton()?.setOnClickListener {
             Toast.makeText(this, "Filter clicked", Toast.LENGTH_SHORT).show()
         }
 
-        // Setup profile image click
         getProfileImage()?.setOnClickListener {
             startActivity(Intent(this, UserProfileActivity::class.java))
         }
 
-        // Setup cart FAB for customer only
         if (!isAdminUser) {
             setupGlassFAB()
         }
@@ -131,17 +126,14 @@ class ProductListActivity : AppCompatActivity() {
         val fabBlur = customerBinding?.fabBlurContainer
         val fabClickable = customerBinding?.root?.findViewById<View>(R.id.fab_cart)
         
-        // Setup blur effect for FAB glass background with stronger blur
-        fabBlur?.setupGlassEffect(25f)  // Increased from 20f to 25f for more dominant effect
+        fabBlur?.setupGlassEffect(25f)
         fabBlur?.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND)
         fabBlur?.clipToOutline = true
         
-        // FAB click action
         fabClickable?.setOnClickListener {
             startActivity(Intent(this, ShoppingCartActivity::class.java))
         }
         
-        // Animate FAB on scroll
         setupFABScrollAnimation(fabBlur)
     }
     
@@ -154,14 +146,12 @@ class ProductListActivity : AppCompatActivity() {
         getProductsRecyclerView().addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 0) {
-                    // Scrolling down - hide FAB with animation
                     fabCartContainer.animate()
                         .translationY(fabCartContainer.height.toFloat() + 100f)
                         .alpha(0f)
                         .setDuration(200)
                         .start()
                 } else if (dy < 0) {
-                    // Scrolling up - show FAB with animation
                     fabCartContainer.animate()
                         .translationY(0f)
                         .alpha(1f)
@@ -174,23 +164,18 @@ class ProductListActivity : AppCompatActivity() {
 
     private fun setupAdminUi() {
         if (isAdminUser) {
-            // Setup Glass FAB for admin
             adminBinding!!.adminAddProductFabBlur.setupGlassEffect(25f)
             
             adminBinding!!.adminAddProductFab.setOnClickListener {
                 showProductEditor()
             }
             
-            // Setup sort button
             adminBinding!!.adminSortButton.setOnClickListener {
                 Toast.makeText(this, "Sort options coming soon", Toast.LENGTH_SHORT).show()
             }
         }
     }
     
-    private fun setupBottomNavGlass() {
-        // Only for customer UI if needed in future
-    }
 
     private fun setupRecyclerView() {
         productListAdapter = ProductListAdapter(
@@ -251,11 +236,10 @@ class ProductListActivity : AppCompatActivity() {
     private fun setupDynamicCategoryChips(categories: List<com.restaurantclient.data.dto.CategoryDTO>) {
         getCategoryChipGroup().removeAllViews()
         
-        // Add "All" chip first
         val allChip = Chip(this).apply {
             id = View.generateViewId()
             text = "All"
-            tag = null // null tag means "All" category
+            tag = null 
             isCheckable = true
             isChecked = true
             setChipBackgroundColorResource(R.color.food_primary_red)
@@ -264,12 +248,11 @@ class ProductListActivity : AppCompatActivity() {
         }
         getCategoryChipGroup().addView(allChip)
         
-        // Add category chips dynamically
         categories.forEach { category ->
             val chip = Chip(this).apply {
                 id = View.generateViewId()
                 text = category.name
-                tag = category // Keep reference for later lookup
+                tag = category
                 isCheckable = true
                 setChipBackgroundColorResource(R.color.food_light_gray)
                 setTextColor(getColor(R.color.food_dark_text))
@@ -279,9 +262,7 @@ class ProductListActivity : AppCompatActivity() {
             getCategoryChipGroup().addView(chip)
         }
         
-        // Update chip colors when selection changes
         getCategoryChipGroup().setOnCheckedStateChangeListener { group, checkedIds ->
-            // Reset all chips to default style
             for (i in 0 until group.childCount) {
                 val chip = group.getChildAt(i) as? Chip
                 chip?.apply {
@@ -294,7 +275,6 @@ class ProductListActivity : AppCompatActivity() {
                 }
             }
             
-            // Style the selected chip
             if (checkedIds.isNotEmpty()) {
                 val selectedChip = group.findViewById<Chip>(checkedIds[0])
                 selectedChip?.apply {
