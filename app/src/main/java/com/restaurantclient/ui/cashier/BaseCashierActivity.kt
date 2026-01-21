@@ -2,12 +2,12 @@ package com.restaurantclient.ui.cashier
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.restaurantclient.MainActivity
 import com.restaurantclient.ui.auth.AuthViewModel
+import com.restaurantclient.util.ToastManager
 import dagger.hilt.android.AndroidEntryPoint
 
 abstract class BaseCashierActivity : AppCompatActivity() {
@@ -33,7 +33,7 @@ abstract class BaseCashierActivity : AppCompatActivity() {
     private fun enforceCashierAccess() {
         authViewModel.loadStoredUserInfo()
         if (!authViewModel.isCashier()) {
-            Toast.makeText(this, "Cashier access required", Toast.LENGTH_LONG).show()
+            ToastManager.showToast(this, "Cashier access required", android.widget.Toast.LENGTH_LONG)
             val intent = Intent(this, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)

@@ -6,7 +6,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +16,7 @@ import com.restaurantclient.data.Result
 import com.restaurantclient.data.dto.RoleDetailsDTO
 import com.restaurantclient.databinding.ActivityRoleManagementBinding
 import com.restaurantclient.ui.common.setupGlassEffect
+import com.restaurantclient.util.ToastManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -128,7 +128,7 @@ class RoleManagementActivity : BaseAdminActivity() {
                     binding.progressBar.visibility = View.GONE
                     binding.swipeRefreshLayout.isRefreshing = false
                     val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
-                    Toast.makeText(this, "Failed to load roles: $message", Toast.LENGTH_LONG).show()
+                    ToastManager.showToast(this, "Failed to load roles: $message", android.widget.Toast.LENGTH_LONG)
                 }
             }
         }
@@ -136,12 +136,12 @@ class RoleManagementActivity : BaseAdminActivity() {
         roleManagementViewModel.createRoleResult.observe(this) { result ->
             when (result) {
                 is Result.Success -> {
-                    Toast.makeText(this, "Role created successfully", Toast.LENGTH_SHORT).show()
+                    ToastManager.showToast(this, "Role created successfully")
                     roleManagementViewModel.loadRoles()
                 }
                 is Result.Error -> {
                     val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
-                    Toast.makeText(this, "Failed to create role: $message", Toast.LENGTH_LONG).show()
+                    ToastManager.showToast(this, "Failed to create role: $message", android.widget.Toast.LENGTH_LONG)
                 }
             }
         }
@@ -149,12 +149,12 @@ class RoleManagementActivity : BaseAdminActivity() {
         roleManagementViewModel.updateRoleResult.observe(this) { result ->
             when (result) {
                 is Result.Success -> {
-                    Toast.makeText(this, "Role updated successfully", Toast.LENGTH_SHORT).show()
+                    ToastManager.showToast(this, "Role updated successfully")
                     roleManagementViewModel.loadRoles()
                 }
                 is Result.Error -> {
                     val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
-                    Toast.makeText(this, "Failed to update role: $message", Toast.LENGTH_LONG).show()
+                    ToastManager.showToast(this, "Failed to update role: $message", android.widget.Toast.LENGTH_LONG)
                 }
             }
         }
@@ -162,12 +162,12 @@ class RoleManagementActivity : BaseAdminActivity() {
         roleManagementViewModel.deleteRoleResult.observe(this) { result ->
             when (result) {
                 is Result.Success -> {
-                    Toast.makeText(this, "Role deleted successfully", Toast.LENGTH_SHORT).show()
+                    ToastManager.showToast(this, "Role deleted successfully")
                     roleManagementViewModel.loadRoles()
                 }
                 is Result.Error -> {
                     val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
-                    Toast.makeText(this, "Failed to delete role: $message", Toast.LENGTH_LONG).show()
+                    ToastManager.showToast(this, "Failed to delete role: $message", android.widget.Toast.LENGTH_LONG)
                 }
             }
         }
@@ -192,7 +192,7 @@ class RoleManagementActivity : BaseAdminActivity() {
                 if (name.isNotEmpty()) {
                     roleManagementViewModel.createRole(name, description)
                 } else {
-                    Toast.makeText(this, "Role name cannot be empty", Toast.LENGTH_SHORT).show()
+                    ToastManager.showToast(this, "Role name cannot be empty")
                 }
             }
             .setNegativeButton(android.R.string.cancel, null)
@@ -217,7 +217,7 @@ class RoleManagementActivity : BaseAdminActivity() {
                 if (name.isNotEmpty()) {
                     roleManagementViewModel.updateRole(role.roleId, name, description)
                 } else {
-                    Toast.makeText(this, "Role name cannot be empty", Toast.LENGTH_SHORT).show()
+                    ToastManager.showToast(this, "Role name cannot be empty")
                 }
             }
             .setNegativeButton(android.R.string.cancel, null)

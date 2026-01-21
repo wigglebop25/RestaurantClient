@@ -1,7 +1,6 @@
 package com.restaurantclient.ui.product
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -14,6 +13,7 @@ import com.restaurantclient.ui.common.setupGlassEffect
 import com.restaurantclient.util.DateTimeUtils
 import com.restaurantclient.util.ErrorUtils
 import com.restaurantclient.util.ImageMapper
+import com.restaurantclient.util.ToastManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.random.Random
@@ -36,7 +36,7 @@ class ProductDetailActivity : AppCompatActivity() {
 
         val productId = intent.getIntExtra(EXTRA_PRODUCT_ID, -1)
         if (productId == -1) {
-            Toast.makeText(this, "Product not found", Toast.LENGTH_SHORT).show()
+            ToastManager.showToast(this, "Product not found")
             finish()
             return
         }
@@ -125,7 +125,7 @@ class ProductDetailActivity : AppCompatActivity() {
                 }
                 is Result.Error -> {
                     val message = ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
-                    Toast.makeText(this, "Failed to fetch product details: $message", Toast.LENGTH_LONG).show()
+                    ToastManager.showToast(this, "Failed to fetch product details: $message", android.widget.Toast.LENGTH_LONG)
                 }
             }
         }

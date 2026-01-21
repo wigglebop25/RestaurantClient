@@ -6,6 +6,7 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.restaurantclient.databinding.ActivityAnalyticsHistoryBinding
+import com.restaurantclient.util.ToastManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -46,7 +47,7 @@ class AnalyticsHistoryActivity : AppCompatActivity() {
 
         viewModel.error.observe(this) { errorMsg ->
             if (errorMsg.isNotEmpty()) {
-                android.widget.Toast.makeText(this, errorMsg, android.widget.Toast.LENGTH_LONG).show()
+                ToastManager.showToast(this, errorMsg, android.widget.Toast.LENGTH_LONG)
             }
         }
     }

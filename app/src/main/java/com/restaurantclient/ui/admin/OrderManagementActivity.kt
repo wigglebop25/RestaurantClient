@@ -2,12 +2,12 @@ package com.restaurantclient.ui.admin
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.restaurantclient.R
 import com.restaurantclient.data.Result
 import com.restaurantclient.databinding.ActivityOrderManagementBinding
+import com.restaurantclient.util.ToastManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -91,7 +91,7 @@ class OrderManagementActivity : BaseAdminActivity() {
                     binding.progressBar.visibility = View.GONE
                     updateEmptyState(true)
                     val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
-                    Toast.makeText(this, getString(R.string.order_list_error, message), Toast.LENGTH_LONG).show()
+                    ToastManager.showToast(this, getString(R.string.order_list_error, message), android.widget.Toast.LENGTH_LONG)
                 }
             }
         }
@@ -99,12 +99,12 @@ class OrderManagementActivity : BaseAdminActivity() {
         viewModel.updateResult.observe(this) { result ->
             when (result) {
                 is Result.Success -> {
-                    Toast.makeText(this, getString(R.string.order_update_success), Toast.LENGTH_SHORT).show()
+                    ToastManager.showToast(this, getString(R.string.order_update_success))
                     viewModel.loadOrders()
                 }
                 is Result.Error -> {
                     val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
-                    Toast.makeText(this, getString(R.string.order_update_error, message), Toast.LENGTH_LONG).show()
+                    ToastManager.showToast(this, getString(R.string.order_update_error, message), android.widget.Toast.LENGTH_LONG)
                 }
             }
         }

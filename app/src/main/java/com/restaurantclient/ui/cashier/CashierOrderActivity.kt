@@ -2,7 +2,6 @@ package com.restaurantclient.ui.cashier
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
@@ -13,6 +12,7 @@ import com.restaurantclient.data.Result
 import com.restaurantclient.databinding.ActivityCashierOrdersBinding
 import com.restaurantclient.ui.cashier.CashierOrderAdapter
 import com.restaurantclient.ui.cashier.CashierOrderViewModel
+import com.restaurantclient.util.ToastManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -109,7 +109,7 @@ class CashierOrderActivity : BaseCashierActivity() {
                     if (adapter.currentList.isEmpty()) {
                         updateEmptyState(true)
                         val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
-                        Toast.makeText(this, "Failed to load orders: $message", Toast.LENGTH_SHORT).show()
+                        ToastManager.showToast(this, "Failed to load orders: $message")
                     }
                 }
             }
@@ -118,7 +118,7 @@ class CashierOrderActivity : BaseCashierActivity() {
         viewModel.updateResult.observe(this) { result ->
             when (result) {
                 is Result.Success -> {
-                    Toast.makeText(this, getString(R.string.order_update_success), Toast.LENGTH_SHORT).show()
+                    ToastManager.showToast(this, getString(R.string.order_update_success))
                 }
                 is Result.Error -> {
                     val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
@@ -127,7 +127,7 @@ class CashierOrderActivity : BaseCashierActivity() {
                     } else {
                         getString(R.string.order_update_error, message)
                     }
-                    Toast.makeText(this, finalMessage, Toast.LENGTH_LONG).show()
+                    ToastManager.showToast(this, finalMessage, android.widget.Toast.LENGTH_LONG)
                 }
             }
         }

@@ -2,7 +2,6 @@ package com.restaurantclient.ui.auth
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
@@ -13,6 +12,7 @@ import com.restaurantclient.data.dto.NewUserDTO
 import com.restaurantclient.databinding.ActivityLoginBinding
 import com.restaurantclient.ui.common.setupGlassEffect
 import com.restaurantclient.ui.intro.IntroductionActivity
+import com.restaurantclient.util.ToastManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -39,7 +39,7 @@ class LoginActivity : AppCompatActivity() {
             val password = binding.passwordEditText.text.toString()
             
             if (username.isBlank() || password.isBlank()) {
-                Toast.makeText(this, "Please enter both username and password", Toast.LENGTH_SHORT).show()
+                ToastManager.showToast(this, "Please enter both username and password")
                 return@setOnClickListener
             }
             
@@ -52,7 +52,7 @@ class LoginActivity : AppCompatActivity() {
             val password = binding.passwordEditText.text.toString()
             
             if (username.isBlank() || password.isBlank()) {
-                Toast.makeText(this, "Please enter both username and password", Toast.LENGTH_SHORT).show()
+                ToastManager.showToast(this, "Please enter both username and password")
                 return@setOnClickListener
             }
             
@@ -82,14 +82,14 @@ class LoginActivity : AppCompatActivity() {
             when (result) {
                 is Result.Success -> {
                     binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
+                    ToastManager.showToast(this, "Login Successful")
                     setResult(RESULT_OK)
                     finish()
                 }
                 is Result.Error -> {
                     binding.progressBar.visibility = View.GONE
                     val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
-                    Toast.makeText(this, "Login Failed: $message", Toast.LENGTH_LONG).show()
+                    ToastManager.showToast(this, "Login Failed: $message", android.widget.Toast.LENGTH_LONG)
                 }
             }
         }
@@ -98,7 +98,7 @@ class LoginActivity : AppCompatActivity() {
             when (result) {
                 is Result.Success -> {
                     binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this, "Registration Successful! You are now logged in.", Toast.LENGTH_SHORT).show()
+                    ToastManager.showToast(this, "Registration Successful! You are now logged in.")
                     setResult(RESULT_OK)
                     finish()
                 }
@@ -110,7 +110,7 @@ class LoginActivity : AppCompatActivity() {
                     } else {
                         "Registration Failed: $message"
                     }
-                    Toast.makeText(this, finalMessage, Toast.LENGTH_LONG).show()
+                    ToastManager.showToast(this, finalMessage, android.widget.Toast.LENGTH_LONG)
                 }
             }
         }

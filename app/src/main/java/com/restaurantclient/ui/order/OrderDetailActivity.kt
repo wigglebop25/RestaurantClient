@@ -3,7 +3,6 @@ package com.restaurantclient.ui.order
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.restaurantclient.R
@@ -12,6 +11,7 @@ import com.restaurantclient.data.dto.OrderResponse
 import com.restaurantclient.databinding.ActivityOrderDetailBinding
 import com.restaurantclient.util.DateTimeUtils
 import com.restaurantclient.util.ErrorUtils
+import com.restaurantclient.util.ToastManager
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.NumberFormat
 
@@ -31,7 +31,7 @@ class OrderDetailActivity : AppCompatActivity() {
 
         val initialOrder = intent.getSerializableExtra(EXTRA_ORDER, OrderResponse::class.java)
         if (initialOrder == null) {
-            Toast.makeText(this, R.string.order_detail_error_missing, Toast.LENGTH_LONG).show()
+            ToastManager.showToast(this, R.string.order_detail_error_missing, android.widget.Toast.LENGTH_LONG)
             finish()
             return
         }

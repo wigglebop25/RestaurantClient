@@ -5,7 +5,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import com.eightbitlab.com.blurview.RenderScriptBlur
@@ -14,6 +13,7 @@ import com.restaurantclient.data.Result
 import com.restaurantclient.data.dto.RoleDTO
 import com.restaurantclient.databinding.ActivityCreateUserBinding
 import com.restaurantclient.ui.common.setupGlassEffect
+import com.restaurantclient.util.ToastManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -62,14 +62,14 @@ class CreateUserActivity : BaseAdminActivity() {
             when (result) {
                 is Result.Success -> {
                     binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this, "User created successfully!", Toast.LENGTH_SHORT).show()
+                    ToastManager.showToast(this, "User created successfully!")
                     setResult(RESULT_OK)
                     finish()
                 }
                 is Result.Error -> {
                     binding.progressBar.visibility = View.GONE
                     val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
-                    Toast.makeText(this, "Failed to create user: $message", Toast.LENGTH_LONG).show()
+                    ToastManager.showToast(this, "Failed to create user: $message", android.widget.Toast.LENGTH_LONG)
                 }
             }
         }

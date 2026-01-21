@@ -12,6 +12,7 @@ import com.restaurantclient.R
 import com.restaurantclient.data.Result
 import com.restaurantclient.databinding.ActivityCashierDashboardBinding
 import com.restaurantclient.ui.common.setupGlassEffect
+import com.restaurantclient.util.ToastManager
 import dagger.hilt.android.AndroidEntryPoint
 
 import android.graphics.Color
@@ -85,7 +86,7 @@ class CashierDashboardActivity : BaseCashierActivity() {
                 }
                 is Result.Error -> {
                     val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
-                    android.widget.Toast.makeText(this, "Failed to load stats: $message", android.widget.Toast.LENGTH_LONG).show()
+                    ToastManager.showToast(this, "Failed to load stats: $message", android.widget.Toast.LENGTH_LONG)
                     binding.statPendingCount.text = "-"
                     binding.statTotalOrdersCount.text = "-"
                 }

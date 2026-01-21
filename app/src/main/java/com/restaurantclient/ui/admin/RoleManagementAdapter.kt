@@ -3,7 +3,6 @@ package com.restaurantclient.ui.admin
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -12,6 +11,7 @@ import com.restaurantclient.R
 import com.restaurantclient.data.dto.RoleDetailsDTO
 import com.restaurantclient.databinding.ItemRoleBinding
 import com.restaurantclient.ui.common.setupGlassEffect
+import com.restaurantclient.util.ToastManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class RoleManagementAdapter(
@@ -75,7 +75,7 @@ class RoleManagementAdapter(
                 if (permissionsList.isNotEmpty()) {
                     onRemovePermission(role)
                 } else {
-                    Toast.makeText(binding.root.context, "No permissions to remove", Toast.LENGTH_SHORT).show()
+                    ToastManager.showToast(binding.root.context, "No permissions to remove")
                 }
             }
             

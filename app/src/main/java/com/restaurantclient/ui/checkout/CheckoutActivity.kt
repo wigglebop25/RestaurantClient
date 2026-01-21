@@ -3,7 +3,6 @@ package com.restaurantclient.ui.checkout
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -19,6 +18,7 @@ import com.restaurantclient.ui.order.MyOrdersActivity
 import com.restaurantclient.ui.order.OrderConfirmationActivity
 import com.restaurantclient.ui.order.OrderViewModel
 import com.restaurantclient.data.TokenManager
+import com.restaurantclient.util.ToastManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -96,7 +96,7 @@ class CheckoutActivity : AppCompatActivity() {
             if (cartManager.totalItems > 0) {
                 placeOrder()
             } else {
-                Toast.makeText(this, "Cart is empty", Toast.LENGTH_SHORT).show()
+                ToastManager.showToast(this, "Cart is empty")
                 finish()
             }
         }
@@ -109,7 +109,7 @@ class CheckoutActivity : AppCompatActivity() {
             
             when (result) {
                 is Result.Success -> {
-                    Toast.makeText(this, "Order placed successfully!", Toast.LENGTH_SHORT).show()
+                    ToastManager.showToast(this, "Order placed successfully!")
                     val orderTotal = "$${String.format(java.util.Locale.US, "%.2f", cartManager.totalAmount)}"
                     cartManager.clearCart() // Clear cart after successful order
                     
@@ -124,7 +124,7 @@ class CheckoutActivity : AppCompatActivity() {
                 }
                 is Result.Error -> {
                     val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
-                    Toast.makeText(this, "Failed to place order: $message", Toast.LENGTH_LONG).show()
+                    ToastManager.showToast(this, "Failed to place order: $message", android.widget.Toast.LENGTH_LONG)
                 }
             }
         }
@@ -138,7 +138,7 @@ class CheckoutActivity : AppCompatActivity() {
                 
                 // If cart becomes empty while in checkout, go back
                 if (items.isEmpty()) {
-                    Toast.makeText(this@CheckoutActivity, "Cart is empty", Toast.LENGTH_SHORT).show()
+                    ToastManager.showToast(this@CheckoutActivity, "Cart is empty")
                     finish()
                 }
             }
@@ -162,7 +162,7 @@ class CheckoutActivity : AppCompatActivity() {
         if (username != null) {
             orderViewModel.createOrder(orderRequest, username)
         } else {
-            Toast.makeText(this, "User not logged in, please login to place and order", Toast.LENGTH_LONG).show()
+            ToastManager.showToast(this, "User not logged in, please login to place and order", android.widget.Toast.LENGTH_LONG)
             isOrderBeingPlaced = false
             binding.placeOrderButton.isEnabled = true
         }

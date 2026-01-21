@@ -2,7 +2,6 @@ package com.restaurantclient.ui.user
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -17,6 +16,7 @@ import com.restaurantclient.ui.admin.OrderManagementActivity
 import com.restaurantclient.ui.admin.UserManagementActivity
 import com.restaurantclient.ui.auth.AuthViewModel
 import com.restaurantclient.ui.common.setupGlassEffect
+import com.restaurantclient.util.ToastManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -43,7 +43,7 @@ class UserProfileActivity : AppCompatActivity() {
         currentUserId?.let { userId ->
             userProfileViewModel.loadUserProfile(userId)
         } ?: run {
-            Toast.makeText(this, "User ID not found, cannot load profile.", Toast.LENGTH_LONG).show()
+            ToastManager.showToast(this, "User ID not found, cannot load profile.", android.widget.Toast.LENGTH_LONG)
             finish()
         }
     }
@@ -168,7 +168,7 @@ class UserProfileActivity : AppCompatActivity() {
                 }
                 is Result.Error -> {
                     val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
-                    Toast.makeText(this, "Failed to load user profile: $message", Toast.LENGTH_LONG).show()
+                    ToastManager.showToast(this, "Failed to load user profile: $message", android.widget.Toast.LENGTH_LONG)
                 }
             }
         }

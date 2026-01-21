@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.restaurantclient.R
 import com.restaurantclient.data.Result
 import com.restaurantclient.data.TokenManager
 import com.restaurantclient.databinding.ActivityMyOrdersBinding
+import com.restaurantclient.util.ToastManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -56,7 +56,7 @@ class MyOrdersActivity : AppCompatActivity() {
             orderViewModel.fetchUserOrders(username)
         } else {
             Log.e("MyOrdersActivity", "No username found, user not logged in properly")
-            Toast.makeText(this, "Please login again", Toast.LENGTH_SHORT).show()
+            ToastManager.showToast(this, "Please login again")
             
             // Redirect to MainActivity which will handle login
             val intent = android.content.Intent(this, com.restaurantclient.MainActivity::class.java)
@@ -95,7 +95,7 @@ class MyOrdersActivity : AppCompatActivity() {
                 is Result.Error -> {
                     binding.progressBar.visibility = View.GONE
                     val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
-                    Toast.makeText(this, "Failed to fetch orders: $message", Toast.LENGTH_LONG).show()
+                    ToastManager.showToast(this, "Failed to fetch orders: $message", android.widget.Toast.LENGTH_LONG)
                 }
             }
         }

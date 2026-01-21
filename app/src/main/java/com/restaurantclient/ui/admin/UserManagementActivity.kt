@@ -6,7 +6,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -20,6 +19,7 @@ import com.restaurantclient.data.dto.RoleDTO
 import com.restaurantclient.data.dto.UserDTO
 import com.restaurantclient.databinding.ActivityUserManagementBinding
 import com.restaurantclient.ui.common.setupGlassEffect
+import com.restaurantclient.util.ToastManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -121,7 +121,7 @@ class UserManagementActivity : BaseAdminActivity() {
                     binding.progressBar.visibility = View.GONE
                     binding.swipeRefreshLayout.isRefreshing = false
                     val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
-                    Toast.makeText(this, "Failed to load users: $message", Toast.LENGTH_LONG).show()
+                    ToastManager.showToast(this, "Failed to load users: $message", android.widget.Toast.LENGTH_LONG)
                 }
             }
         }
@@ -129,12 +129,12 @@ class UserManagementActivity : BaseAdminActivity() {
         userManagementViewModel.deleteUserResult.observe(this) { result ->
             when (result) {
                 is Result.Success -> {
-                    Toast.makeText(this, "User deleted successfully", Toast.LENGTH_SHORT).show()
+                    ToastManager.showToast(this, "User deleted successfully")
                     userManagementViewModel.loadUsers(true) // Refresh list
                 }
                 is Result.Error -> {
                     val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
-                    Toast.makeText(this, "Failed to delete user: $message", Toast.LENGTH_LONG).show()
+                    ToastManager.showToast(this, "Failed to delete user: $message", android.widget.Toast.LENGTH_LONG)
                 }
             }
         }
@@ -142,12 +142,12 @@ class UserManagementActivity : BaseAdminActivity() {
         userManagementViewModel.updateUserResult.observe(this) { result ->
             when (result) {
                 is Result.Success -> {
-                    Toast.makeText(this, getString(R.string.edit_user_success), Toast.LENGTH_SHORT).show()
+                    ToastManager.showToast(this, getString(R.string.edit_user_success))
                     userManagementViewModel.loadUsers(true)
                 }
                 is Result.Error -> {
                     val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
-                    Toast.makeText(this, getString(R.string.edit_user_error, message), Toast.LENGTH_LONG).show()
+                    ToastManager.showToast(this, getString(R.string.edit_user_error, message), android.widget.Toast.LENGTH_LONG)
                 }
             }
         }
@@ -155,12 +155,12 @@ class UserManagementActivity : BaseAdminActivity() {
         userManagementViewModel.updateRolesResult.observe(this) { result ->
             when (result) {
                 is Result.Success -> {
-                    Toast.makeText(this, "User roles updated successfully", Toast.LENGTH_SHORT).show()
+                    ToastManager.showToast(this, "User roles updated successfully")
                     userManagementViewModel.loadUsers(true)
                 }
                 is Result.Error -> {
                     val message = com.restaurantclient.util.ErrorUtils.getHumanFriendlyErrorMessage(result.exception)
-                    Toast.makeText(this, "Failed to update roles: $message", Toast.LENGTH_LONG).show()
+                    ToastManager.showToast(this, "Failed to update roles: $message", android.widget.Toast.LENGTH_LONG)
                 }
             }
         }

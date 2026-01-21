@@ -3,13 +3,13 @@ package com.restaurantclient.ui.admin
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import com.restaurantclient.MainActivity
 import com.restaurantclient.ui.auth.AuthViewModel
+import com.restaurantclient.util.ToastManager
 
 abstract class BaseAdminActivity : AppCompatActivity() {
 
@@ -38,7 +38,7 @@ abstract class BaseAdminActivity : AppCompatActivity() {
     private fun enforceAdminAccess() {
         authViewModel.loadStoredUserInfo()
         if (!authViewModel.isAdmin()) {
-            Toast.makeText(this, "Admin access required", Toast.LENGTH_LONG).show()
+            ToastManager.showToast(this, "Admin access required", android.widget.Toast.LENGTH_LONG)
             val intent = Intent(this, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
