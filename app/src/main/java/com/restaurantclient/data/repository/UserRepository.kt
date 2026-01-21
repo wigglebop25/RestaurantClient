@@ -54,8 +54,9 @@ class UserRepository @Inject constructor(
     }
 
     suspend fun refreshToken(): Result<LoginResponse> {
+        val refreshToken = tokenManager.getRefreshToken() ?: return Result.Error(Exception("No refresh token available"))
         return try {
-            val response = apiService.refreshToken()
+            val response = apiService.refreshToken(com.restaurantclient.data.dto.RefreshTokenRequest(refreshToken))
             if (response.isSuccessful) {
                 Result.Success(response.body()!!)
             } else {
