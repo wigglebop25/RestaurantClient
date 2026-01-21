@@ -4,6 +4,8 @@ import android.util.Log
 import com.restaurantclient.data.Result
 import com.restaurantclient.data.TokenManager
 import com.restaurantclient.data.dto.CreateOrderRequest
+import com.restaurantclient.data.dto.DashboardAnalyticsResponse
+import com.restaurantclient.data.dto.DashboardSummaryDTO
 import com.restaurantclient.data.dto.OrderResponse
 import com.restaurantclient.data.dto.UpdateOrderRequest
 import com.restaurantclient.data.network.ApiService
@@ -27,7 +29,7 @@ class OrderRepository @Inject constructor(
         return try {
             val response = apiService.createOrder(createOrderRequest)
             if (response.isSuccessful) {
-                clearCache() // Invalidate cache after creating new order
+                clearCache() 
                 Result.Success(response.body()!!)
             } else {
                 Result.Error(Exception("Failed to create order: ${response.code()}"))
@@ -46,7 +48,6 @@ class OrderRepository @Inject constructor(
         return try {
             Log.d("OrderRepository", "Fetching orders for username: $username (forceRefresh: $forceRefresh)")
             
-            // Helper to parse ResponseBody
             fun parseBody(responseBody: okhttp3.ResponseBody?): List<OrderResponse> {
                 val json = responseBody?.string()
                 if (json.isNullOrEmpty()) return emptyList()
@@ -60,10 +61,8 @@ class OrderRepository @Inject constructor(
                 }
             }
 
-            // 1. Try standard getMyOrders() (uses JWT)
             var response = apiService.getMyOrders()
             
-            // 2. Fallback to username if getMyOrders fails or returns nothing relevant
             if (!response.isSuccessful || response.code() == 403 || response.code() == 404) {
                 Log.w("OrderRepository", "getMyOrders failed, falling back to username-based endpoint")
                 val userResponse = apiService.getUserOrders(username)
@@ -104,24 +103,28 @@ class OrderRepository @Inject constructor(
         }
     }
 
-    suspend fun getAllOrders(forceRefresh: Boolean = false): Result<List<OrderResponse>> {
-        if (cachedAllOrders != null && !forceRefresh) {
+    suspend fun getAllOrders(
+        forceRefresh: Boolean = false,
+        page: Int? = null,
+        limit: Int? = null,
+        status: String? = null,
+        date: String? = null,
+        search: String? = null
+    ): Result<List<OrderResponse>> {
+        if (cachedAllOrders != null && !forceRefresh && page == null && limit == null && status == null && date == null && search == null) {
             Log.d("OrderRepository", "Returning cached all orders.")
             return Result.Success(cachedAllOrders!!)
         }
 
         return try {
             Log.d("OrderRepository", "Fetching all orders (forceRefresh: $forceRefresh)")
-            val response = apiService.getAllOrders()
+            val response = apiService.getAllOrders(page, limit, status, date, search)
             if (response.isSuccessful) {
                 val newOrders = response.body() ?: emptyList()
-                if (newOrders != cachedAllOrders) {
+                if (page == null && limit == null && status == null && date == null && search == null) {
                     cachedAllOrders = newOrders
-                    Log.d("OrderRepository", "Successfully fetched and updated ${newOrders.size} all orders in cache")
-                } else {
-                    Log.d("OrderRepository", "Successfully fetched all orders, but data is same as cache. Not updating cache.")
                 }
-                Result.Success(cachedAllOrders!!)
+                Result.Success(newOrders)
             } else {
                 Result.Error(Exception("Failed to fetch orders: ${response.code()}"))
             }
@@ -133,19 +136,9 @@ class OrderRepository @Inject constructor(
     suspend fun updateOrderStatus(orderId: Int, status: String): Result<OrderResponse> {
         return try {
             val response = apiService.updateOrder(orderId, UpdateOrderRequest(status))
-            if (response.isSuccessful) {
-                // Return dummy response since backend returns "Order status updated" text
-                val dummyResponse = OrderResponse(
-                    order_id = orderId,
-                    user_id = 0,
-                    user = null,
-                    total_amount = 0.0,
-                    status = status,
-                    products = emptyList(),
-                    created_at = null,
-                    updated_at = null
-                )
-                Result.Success(dummyResponse)
+            if (response.isSuccessful && response.body() != null) {
+                clearCache()
+                Result.Success(response.body()!!)
             } else {
                 Result.Error(Exception("Failed to update order: ${response.code()}"))
             }
@@ -167,13 +160,26 @@ class OrderRepository @Inject constructor(
         }
     }
 
-    suspend fun getDashboardSummary(): Result<com.restaurantclient.data.dto.DashboardSummaryDTO> {
+    suspend fun getDashboardSummary(): Result<DashboardSummaryDTO> {
         return try {
             val response = apiService.getDashboardSummary()
             if (response.isSuccessful) {
                 Result.Success(response.body()!!)
             } else {
                 Result.Error(Exception("Failed to get dashboard summary: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun getDashboardAnalytics(): Result<DashboardAnalyticsResponse> {
+        return try {
+            val response = apiService.getDashboardAnalytics()
+            if (response.isSuccessful) {
+                Result.Success(response.body()!!)
+            } else {
+                Result.Error(Exception("Failed to get dashboard analytics: ${response.code()}"))
             }
         } catch (e: Exception) {
             Result.Error(e)
