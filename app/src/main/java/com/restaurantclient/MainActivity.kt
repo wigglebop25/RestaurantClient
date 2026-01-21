@@ -6,10 +6,12 @@ import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.restaurantclient.data.Result
 import com.restaurantclient.data.dto.RoleDTO
 import com.restaurantclient.ui.admin.AdminDashboardActivity
 import com.restaurantclient.ui.auth.AuthViewModel
 import com.restaurantclient.ui.auth.LoginActivity
+import com.restaurantclient.ui.cashier.CashierDashboardActivity
 import com.restaurantclient.ui.product.ProductListActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -31,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         
         // Observe refresh result to navigate with FRESH role data from backend
         authViewModel.refreshResult.observe(this) { result ->
-            if (result is com.restaurantclient.data.Result.Success) {
+            if (result is Result.Success) {
                 authViewModel.loadStoredUserInfo()
                 navigateBasedOnRole()
             } else {
@@ -155,7 +157,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun goToCashierDashboard() {
-        val intent = Intent(this, com.restaurantclient.ui.cashier.CashierDashboardActivity::class.java)
+        val intent = Intent(this, CashierDashboardActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
