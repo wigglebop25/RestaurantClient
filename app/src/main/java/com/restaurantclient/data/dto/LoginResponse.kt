@@ -1,7 +1,12 @@
 package com.restaurantclient.data.dto
 
+import com.google.gson.annotations.SerializedName
+
 data class LoginResponse(
+    @SerializedName("token", alternate = ["access_token"])
     val token: String?,
-    val message: String,
-    val user: UserDTO? = null  // Make user optional in case backend doesn't return it
+    @SerializedName("refresh_token")
+    val refreshToken: String? = null,
+    val message: String? = null,
+    val user: UserDTO? = null
 )
