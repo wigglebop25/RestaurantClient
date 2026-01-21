@@ -29,16 +29,13 @@ class CheckoutCartAdapter : ListAdapter<CartItem, CheckoutCartAdapter.CartViewHo
                 productPrice.text = "$${cartItem.product.price} x ${cartItem.quantity}"
                 quantityText.text = cartItem.quantity.toString()
                 
-                // Load product image from local resources
                 val imageResource = ImageMapper.getDrawableResourceOrPlaceholder(cartItem.product.product_image_uri)
                 productImage.setImageResource(imageResource)
                 
-                // Hide controls in checkout mode
                 removeButton.visibility = View.GONE
                 decrementButton.visibility = View.GONE
                 incrementButton.visibility = View.GONE
                 
-                // Show total for this item
                 val itemTotal = cartItem.product.price.toDouble() * cartItem.quantity
                 productPrice.text = "$${String.format("%.2f", itemTotal)} (${cartItem.quantity} x $${cartItem.product.price})"
             }
