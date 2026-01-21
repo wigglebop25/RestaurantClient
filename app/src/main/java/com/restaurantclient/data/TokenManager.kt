@@ -12,8 +12,11 @@ import javax.inject.Singleton
 @Singleton
 class TokenManager @Inject constructor(private val prefs: SharedPreferences) {
 
-    fun saveToken(token: String) {
+    fun saveToken(token: String, refreshToken: String? = null) {
         prefs.edit().putString(TOKEN_KEY, token).apply()
+        refreshToken?.let {
+            prefs.edit().putString(REFRESH_TOKEN_KEY, it).apply()
+        }
         // Try to extract and save username from token
         try {
             val payload = decodeJWTPayload(token)
@@ -100,8 +103,17 @@ class TokenManager @Inject constructor(private val prefs: SharedPreferences) {
         return prefs.getString(TOKEN_KEY, null)
     }
 
+    fun getRefreshToken(): String? {
+        return prefs.getString(REFRESH_TOKEN_KEY, null)
+    }
+
     fun deleteToken() {
-        prefs.edit().remove(TOKEN_KEY).remove(USERNAME_KEY).remove(ROLE_KEY).apply()
+        prefs.edit()
+            .remove(TOKEN_KEY)
+            .remove(REFRESH_TOKEN_KEY)
+            .remove(USERNAME_KEY)
+            .remove(ROLE_KEY)
+            .apply()
     }
 
     fun getUsername(): String? {
@@ -245,6 +257,7 @@ class TokenManager @Inject constructor(private val prefs: SharedPreferences) {
 
     companion object {
         private const val TOKEN_KEY = "auth_token"
+        private const val REFRESH_TOKEN_KEY = "refresh_token"
         private const val USERNAME_KEY = "username"
         private const val ROLE_KEY = "user_role"
     }
