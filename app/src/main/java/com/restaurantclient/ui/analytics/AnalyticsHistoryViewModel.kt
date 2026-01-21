@@ -47,12 +47,21 @@ class AnalyticsHistoryViewModel @Inject constructor(
         viewModelScope.launch {
             if (showLoading) _loading.value = true
             try {
-                val result = orderRepository.getAllOrders(forceRefresh = true)
+                val result = orderRepository.getDashboardAnalytics()
                 if (result is Result.Success) {
-                    val stats = AnalyticsUtils.getDetailedDailyStats(result.data)
+                    val stats = result.data.dailyRevenue.map { 
+                        DailyAnalyticsItem(it.date, it.amount, it.orderCount)
+                    }.sortedByDescending { it.date }
                     _history.value = stats
                 } else {
-                    _error.value = "Failed to load orders"
+                    // Fallback to client-side calculation
+                    val ordersResult = orderRepository.getAllOrders(forceRefresh = true)
+                    if (ordersResult is Result.Success) {
+                        val stats = AnalyticsUtils.getDetailedDailyStats(ordersResult.data)
+                        _history.value = stats
+                    } else {
+                        _error.value = "Failed to load history"
+                    }
                 }
             } catch (e: Exception) {
                 _error.value = e.message ?: "Unknown error"
