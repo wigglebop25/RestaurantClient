@@ -33,11 +33,9 @@ class CartManager @Inject constructor() {
         val existingItemIndex = currentItems.indexOfFirst { it.product.product_id == product.product_id }
         
         if (existingItemIndex != -1) {
-            // Update existing item
             val existingItem = currentItems[existingItemIndex]
             currentItems[existingItemIndex] = existingItem.copy(quantity = existingItem.quantity + quantity)
         } else {
-            // Add new item
             currentItems.add(CartItem(product, quantity))
         }
         
