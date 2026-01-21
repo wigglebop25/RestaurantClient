@@ -43,8 +43,9 @@ class AuthViewModel @Inject constructor(
             if (result is Result.Success) {
                 // Login successful
                 val token = result.data.token
+                val refreshToken = result.data.refreshToken
                 if (token != null) {
-                    tokenManager.saveToken(token)
+                    tokenManager.saveToken(token, refreshToken)
                 } else {
                     android.util.Log.e("AuthViewModel", "Login succeeded but token is null!")
                 }
@@ -147,8 +148,9 @@ class AuthViewModel @Inject constructor(
             if (result is Result.Success) {
                 android.util.Log.d("AuthViewModel", "Registration successful, saving token")
                 val token = result.data.token
+                val refreshToken = result.data.refreshToken
                 if (token != null) {
-                    tokenManager.saveToken(token)
+                    tokenManager.saveToken(token, refreshToken)
                 } else {
                     android.util.Log.e("AuthViewModel", "Registration succeeded but token is null!")
                 }
@@ -204,8 +206,9 @@ class AuthViewModel @Inject constructor(
             val result = userRepository.refreshToken()
             if (result is Result.Success) {
                 val token = result.data.token
+                val refreshToken = result.data.refreshToken
                 if (token != null) {
-                    tokenManager.saveToken(token)
+                    tokenManager.saveToken(token, refreshToken)
                 } else {
                     android.util.Log.w("AuthViewModel", "Refresh succeeded but token is null")
                 }
