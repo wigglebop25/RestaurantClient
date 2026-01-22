@@ -93,7 +93,7 @@ class CheckoutActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             
-            if (cartManager.totalItems > 0) {
+            if (cartManager.uniqueItemCount > 0) {
                 placeOrder()
             } else {
                 ToastManager.showToast(this, "Cart is empty")
