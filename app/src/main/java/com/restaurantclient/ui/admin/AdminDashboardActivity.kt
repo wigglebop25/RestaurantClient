@@ -154,6 +154,8 @@ class AdminDashboardActivity : BaseAdminActivity() {
         dataSet.valueTextColor = ContextCompat.getColor(this, R.color.white)
         dataSet.valueTextSize = 10f
 
+        val maxVal = entries.maxOfOrNull { it.y } ?: 0f
+
         val barData = BarData(dataSet)
         binding.revenueBarChart.data = barData
         
@@ -184,6 +186,12 @@ class AdminDashboardActivity : BaseAdminActivity() {
                 setDrawGridLines(true)
                 gridColor = Color.argb(40, 255, 255, 255)
                 axisMinimum = 0f
+                // Force a Y-axis range if all values are 0 to prevent a flat/empty looking chart
+                if (maxVal == 0f) {
+                    axisMaximum = 100f
+                } else {
+                    resetAxisMaximum() // Let it auto-scale otherwise
+                }
             }
             
             axisRight.isEnabled = false
