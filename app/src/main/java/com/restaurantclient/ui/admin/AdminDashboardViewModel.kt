@@ -14,6 +14,7 @@ import com.restaurantclient.data.repository.RoleRepository
 import com.restaurantclient.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -71,12 +72,21 @@ class AdminDashboardViewModel @Inject constructor(
             
             try {
                 // 1. Fetch advanced analytics from the new backend endpoint
-                val analyticsResult = orderRepository.getDashboardAnalytics()
-                
                 // 2. Fetch basic entity lists for other dashboard needs
-                val usersResult = userRepository.getAllUsers(forceRefresh = true)
-                val productsResult = productRepository.getAllProducts(forceRefresh = true)
-                val rolesResult = roleRepository.getAllRoles(forceRefresh = true)
+                // We fetch orders explicitly to calculate daily revenue locally because the backend endpoint 
+                // currently returns zero values for daily revenue despite having orders.
+                
+                val analyticsDeferred = async { orderRepository.getDashboardAnalytics() }
+                val usersDeferred = async { userRepository.getAllUsers(forceRefresh = true) }
+                val productsDeferred = async { productRepository.getAllProducts(forceRefresh = true) }
+                val rolesDeferred = async { roleRepository.getAllRoles(forceRefresh = true) }
+                val ordersDeferred = async { orderRepository.getAllOrders(forceRefresh = true) }
+                
+                val analyticsResult = analyticsDeferred.await()
+                val usersResult = usersDeferred.await()
+                val productsResult = productsDeferred.await()
+                val rolesResult = rolesDeferred.await()
+                val ordersResult = ordersDeferred.await()
 
                 if (analyticsResult is Result.Success && usersResult is Result.Success && 
                     productsResult is Result.Success) {
@@ -84,6 +94,29 @@ class AdminDashboardViewModel @Inject constructor(
                     val analyticsData = analyticsResult.data
                     val users = usersResult.data
                     val rolesCount = if (rolesResult is Result.Success) rolesResult.data.size else 0
+                    
+                    // Get daily revenue map from server (handles map and trend list formats)
+                    // Normalize keys to yyyy-MM-dd to match local calculation and prevent duplicates
+                    val serverDailyRevenueRaw = analyticsData.consolidatedDailyRevenue
+                    val serverDailyRevenue = serverDailyRevenueRaw.mapKeys { (key, _) ->
+                        if (key.length >= 10) key.substring(0, 10) else key
+                    }
+                    
+                    // Override server's daily revenue with local calculation if possible
+                    val dailyRevenue = if (ordersResult is Result.Success) {
+                        val localDailyRevenue = AnalyticsUtils.getDailyRevenue(ordersResult.data)
+                        val merged = serverDailyRevenue.toMutableMap()
+                        
+                        // Overlay local data where server is missing it or reports 0
+                        localDailyRevenue.forEach { (date, revenue) ->
+                            if (merged[date] == null || merged[date] == 0.0) {
+                                merged[date] = revenue
+                            }
+                        }
+                        merged
+                    } else {
+                        serverDailyRevenue
+                    }
                     
                     // Use server-side calculated stats which are accurate despite pagination
                     val stats = DashboardStats(
@@ -97,7 +130,7 @@ class AdminDashboardViewModel @Inject constructor(
                         cancelledOrders = analyticsData.cancelledOrders,
                         totalRevenue = analyticsData.totalRevenue,
                         averageOrderValue = analyticsData.averageOrderValue,
-                        dailyRevenue = analyticsData.dailyRevenue
+                        dailyRevenue = dailyRevenue
                     )
                     
                     _dashboardStats.value = stats
