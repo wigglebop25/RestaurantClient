@@ -100,6 +100,9 @@
         <FrameLayout
             android:layout_width="56dp"
             android:layout_height="56dp"
+            android:background="@drawable/glass_fab_border"
+            android:outlineProvider="background"
+            android:clipToOutline="true"
             android:elevation="8dp">
 
             <!-- LAYER 1: Blur Background -->
