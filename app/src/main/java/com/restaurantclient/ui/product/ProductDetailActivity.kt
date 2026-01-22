@@ -48,11 +48,9 @@ class ProductDetailActivity : AppCompatActivity() {
         }
 
         setupGlassUI()
-        setupGlassFAB()
         setupQuantityControls()
         setupObservers()
         setupClickListeners()
-        observeCartChanges()
         productViewModel.fetchProductDetails(productId)
     }
     
@@ -61,27 +59,6 @@ class ProductDetailActivity : AppCompatActivity() {
         binding.productInfoGlass.setupGlassEffect(25f)
         binding.productInfoGlass.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND)
         binding.productInfoGlass.clipToOutline = true
-    }
-
-    private fun setupGlassFAB() {
-        binding.fabBlurContainer.setupGlassEffect(25f)
-        binding.fabCart.setOnClickListener {
-            startActivity(Intent(this, ShoppingCartActivity::class.java))
-        }
-    }
-
-    private fun observeCartChanges() {
-        lifecycleScope.launch {
-            cartManager.cartItems.collectLatest { _ ->
-                val itemCount = cartManager.uniqueItemCount
-                if (itemCount > 0) {
-                    binding.cartBadge.text = itemCount.toString()
-                    binding.cartBadge.visibility = View.VISIBLE
-                } else {
-                    binding.cartBadge.visibility = View.GONE
-                }
-            }
-        }
     }
 
     private fun setupQuantityControls() {
