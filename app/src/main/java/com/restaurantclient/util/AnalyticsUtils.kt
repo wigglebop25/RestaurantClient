@@ -110,40 +110,52 @@ object AnalyticsUtils {
 
     fun getDailyRevenue(orders: List<OrderResponse>): Map<String, Double> {
         val revenueMap = mutableMapOf<String, BigDecimal>()
-        // Format: "January 18, 2026 07:15 PM"
-        val inputFormat = SimpleDateFormat("MMMM dd, yyyy hh:mm a", Locale.US)
-        // Sortable format: "2026-01-18"
+        
+        // Define possible input formats from backend
+        val formats = listOf(
+            SimpleDateFormat("MMMM dd, yyyy hh:mm a", Locale.US),
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US),
+            SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        )
+        
         val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
         // Include COMPLETED, READY, PREPARING, and ACCEPTED orders for revenue calculation
-        // Ensure unique orders
         orders.distinctBy { it.order_id }.filter { 
-            val status = it.status
-            status?.equals("completed", ignoreCase = true) == true || 
-            status?.equals("ready", ignoreCase = true) == true ||
-            status?.equals("preparing", ignoreCase = true) == true ||
-            status?.equals("accepted", ignoreCase = true) == true
+            val status = it.status?.lowercase() ?: ""
+            status == "completed" || status == "ready" || status == "preparing" || 
+            status == "accepted" || status == "cooking"
         }.forEach { order ->
-            val dateStr = try {
-                if (order.created_at != null) {
-                    val date = inputFormat.parse(order.created_at)
-                    if (date != null) {
-                        outputFormat.format(date)
-                    } else {
-                        "Unknown"
+            var dateObj: Date? = null
+            
+            if (order.created_at != null) {
+                for (format in formats) {
+                    try {
+                        dateObj = format.parse(order.created_at)
+                        if (dateObj != null) break
+                    } catch (e: Exception) {
+                        // try next format
                     }
+                }
+            }
+            
+            val dateStr = if (dateObj != null) {
+                outputFormat.format(dateObj)
+            } else {
+                // Fallback: try to extract YYYY-MM-DD from string
+                val raw = order.created_at ?: ""
+                if (raw.length >= 10 && raw[4] == '-' && raw[7] == '-') {
+                    raw.substring(0, 10)
                 } else {
                     "Unknown"
                 }
-            } catch (e: Exception) {
-                // Fallback for unexpected formats
-                order.created_at?.take(10) ?: "Unknown"
             }
             
-            val amount = try { BigDecimal(order.total_amount) } catch (e: Exception) { BigDecimal.ZERO }
-            
-            val current = revenueMap.getOrDefault(dateStr, BigDecimal.ZERO)
-            revenueMap[dateStr] = current.add(amount)
+            if (dateStr != "Unknown") {
+                val amount = try { BigDecimal(order.total_amount) } catch (e: Exception) { BigDecimal.ZERO }
+                val current = revenueMap.getOrDefault(dateStr, BigDecimal.ZERO)
+                revenueMap[dateStr] = current.add(amount)
+            }
         }
 
         return revenueMap.mapValues { it.value.toDouble() }
