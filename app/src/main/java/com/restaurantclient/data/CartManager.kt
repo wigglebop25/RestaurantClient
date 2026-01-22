@@ -27,6 +27,9 @@ class CartManager @Inject constructor() {
     
     val totalItems: Int
         get() = _cartItems.value.sumOf { it.quantity }
+
+    val uniqueItemCount: Int
+        get() = _cartItems.value.size
     
     fun addToCart(product: ProductResponse, quantity: Int = 1) {
         val currentItems = _cartItems.value.toMutableList()
