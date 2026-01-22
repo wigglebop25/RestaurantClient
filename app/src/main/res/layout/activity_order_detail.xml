@@ -37,28 +37,32 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
-                android:orientation="vertical"
                 android:padding="24dp">
 
                 <TextView
                     android:id="@+id/order_detail_heading"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/order_detail_overview_title"
-                    android:textAppearance="@style/TextAppearance.Material3.TitleLarge" />
+                    android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/order_detail_subheading"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/order_detail_overview_subtitle"
                     android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-                    android:textColor="@color/brand_on_surface_variant" />
+                    android:textColor="@color/brand_on_surface_variant"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/order_detail_heading" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/order_status_chip"
@@ -67,18 +71,62 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="@string/order_detail_status_label"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/order_detail_subheading"
                     tools:text="Processing" />
 
                 <com.google.android.material.divider.MaterialDivider
-                    android:layout_width="match_parent"
+                    android:id="@+id/divider_top"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="16dp" />
+                    android:layout_marginVertical="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/order_status_chip" />
+
+                <TextView
+                    android:id="@+id/order_items_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/order_detail_items_label"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/divider_top" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_order_items"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:scrollbars="vertical"
+                    app:layout_constrainedHeight="true"
+                    app:layout_constraintHeight_max="300dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/order_items_label"
+                    tools:listitem="@layout/item_order_detail_product" />
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:id="@+id/divider_middle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rv_order_items" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:id="@+id/row_number"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/divider_middle">
 
                     <TextView
                         android:layout_width="0dp"
@@ -97,11 +145,15 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:id="@+id/row_quantity"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/row_number">
 
                     <TextView
                         android:layout_width="0dp"
@@ -120,11 +172,15 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:id="@+id/row_total"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/row_quantity">
 
                     <TextView
                         android:layout_width="0dp"
@@ -143,15 +199,24 @@
                 </LinearLayout>
 
                 <com.google.android.material.divider.MaterialDivider
-                    android:layout_width="match_parent"
+                    android:id="@+id/divider_bottom"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="16dp" />
+                    android:layout_marginVertical="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/row_total" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:id="@+id/row_placed"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/divider_bottom">
 
                     <TextView
                         android:layout_width="0dp"
@@ -170,11 +235,15 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:id="@+id/row_updated"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/row_placed">
 
                     <TextView
                         android:layout_width="0dp"
@@ -192,7 +261,7 @@
                         tools:text="Dec 11, 2025 • 9:12 AM" />
                 </LinearLayout>
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </FrameLayout>
 
     </androidx.core.widget.NestedScrollView>
