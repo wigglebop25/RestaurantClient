@@ -70,39 +70,91 @@ class AdminDashboardViewModel @Inject constructor(
             if (showLoading) _loading.value = true
             
             try {
-                // Fetch basic stats from repositories directly for most accurate live data
+                // 1. Fetch advanced analytics from the new backend endpoint
+                val analyticsResult = orderRepository.getDashboardAnalytics()
+                
+                // 2. Fetch basic entity lists for other dashboard needs
                 val usersResult = userRepository.getAllUsers(forceRefresh = true)
-                val ordersResult = orderRepository.getAllOrders(forceRefresh = true)
                 val productsResult = productRepository.getAllProducts(forceRefresh = true)
                 val rolesResult = roleRepository.getAllRoles(forceRefresh = true)
 
-                if (usersResult is Result.Success && ordersResult is Result.Success && productsResult is Result.Success) {
+                if (analyticsResult is Result.Success && usersResult is Result.Success && 
+                    productsResult is Result.Success) {
+                    
+                    val analyticsData = analyticsResult.data
                     val users = usersResult.data
                     val rolesCount = if (rolesResult is Result.Success) rolesResult.data.size else 0
                     
-                    val analytics = AnalyticsUtils.calculateStats(ordersResult.data)
-                    
+                    // Use server-side calculated stats which are accurate despite pagination
                     val stats = DashboardStats(
                         totalUsers = users.size,
-                        totalOrders = ordersResult.data.size,
+                        totalOrders = analyticsData.totalOrders,
                         totalProducts = productsResult.data.size,
                         totalRoles = rolesCount,
                         newUsersToday = calculateNewUsersToday(users),
-                        pendingOrders = analytics.pendingOrders,
-                        completedOrders = analytics.completedOrders,
-                        cancelledOrders = analytics.cancelledOrders,
-                        totalRevenue = analytics.totalRevenue,
-                        averageOrderValue = analytics.averageOrderValue,
-                        dailyRevenue = analytics.dailyRevenue
+                        pendingOrders = analyticsData.pendingOrders,
+                        completedOrders = analyticsData.completedOrders,
+                        cancelledOrders = analyticsData.cancelledOrders,
+                        totalRevenue = analyticsData.totalRevenue,
+                        averageOrderValue = analyticsData.averageOrderValue,
+                        dailyRevenue = analyticsData.dailyRevenue
                     )
+                    
                     _dashboardStats.value = stats
                     _recentUsers.value = users.takeLast(5).reversed()
+                    
+                    // Maintain summary DTO for legacy observers
+                    _dashboardSummary.value = DashboardSummaryDTO(
+                        userCount = users.size,
+                        productCount = productsResult.data.size,
+                        orderCount = analyticsData.totalOrders,
+                        pendingOrders = analyticsData.pendingOrders,
+                        completedOrders = analyticsData.completedOrders,
+                        cancelledOrders = analyticsData.cancelledOrders
+                    )
+                } else if (analyticsResult is Result.Error) {
+                    android.util.Log.w("AdminDashboardVM", "New analytics endpoint failed, falling back to local calculation")
+                    loadDashboardDataFallback()
                 }
             } catch (e: Exception) {
                 android.util.Log.e("AdminDashboardVM", "Error loading data", e)
+                _error.value = e.message ?: "Unknown error"
             } finally {
                 if (showLoading) _loading.value = false
             }
+        }
+    }
+
+    private suspend fun loadDashboardDataFallback() {
+        try {
+            val usersResult = userRepository.getAllUsers(forceRefresh = true)
+            val ordersResult = orderRepository.getAllOrders(forceRefresh = true)
+            val productsResult = productRepository.getAllProducts(forceRefresh = true)
+            val rolesResult = roleRepository.getAllRoles(forceRefresh = true)
+
+            if (usersResult is Result.Success && ordersResult is Result.Success && productsResult is Result.Success) {
+                val users = usersResult.data
+                val rolesCount = if (rolesResult is Result.Success) rolesResult.data.size else 0
+                val analytics = AnalyticsUtils.calculateStats(ordersResult.data)
+                
+                val stats = DashboardStats(
+                    totalUsers = users.size,
+                    totalOrders = ordersResult.data.size,
+                    totalProducts = productsResult.data.size,
+                    totalRoles = rolesCount,
+                    newUsersToday = calculateNewUsersToday(users),
+                    pendingOrders = analytics.pendingOrders,
+                    completedOrders = analytics.completedOrders,
+                    cancelledOrders = analytics.cancelledOrders,
+                    totalRevenue = analytics.totalRevenue,
+                    averageOrderValue = analytics.averageOrderValue,
+                    dailyRevenue = analytics.dailyRevenue
+                )
+                _dashboardStats.value = stats
+                _recentUsers.value = users.takeLast(5).reversed()
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("AdminDashboardVM", "Fallback loading failed", e)
         }
     }
 
