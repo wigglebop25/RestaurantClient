@@ -88,6 +88,20 @@ class ProductListActivity : AppCompatActivity() {
         observeCategories()
         refreshProducts()
     }
+
+    override fun onResume() {
+        super.onResume()
+        refreshFABVisibility()
+    }
+
+    private fun refreshFABVisibility() {
+        if (!isAdminUser) {
+            val fabCartContainer = customerBinding?.root?.findViewById<View>(R.id.fab_cart_container)
+            fabCartContainer?.animate()?.cancel()
+            fabCartContainer?.translationY = 0f
+            fabCartContainer?.alpha = 1f
+        }
+    }
     
     // Helper methods to access views from either binding
     private fun getSearchInput() = (if (isAdminUser) adminBinding!!.searchInput else customerBinding!!.searchInput)
@@ -141,6 +155,17 @@ class ProductListActivity : AppCompatActivity() {
         fabCartContainer ?: return
         
         getProductsRecyclerView().addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    fabCartContainer.animate()
+                        .translationY(0f)
+                        .alpha(1f)
+                        .setDuration(200)
+                        .start()
+                }
+            }
+
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 0) {
                     fabCartContainer.animate()
@@ -202,9 +227,9 @@ class ProductListActivity : AppCompatActivity() {
         if (!isAdminUser) {
             lifecycleScope.launch {
                 cartManager.cartItems.collectLatest { _ ->
-                    val totalItems = cartManager.totalItems
-                    updateCartBadge(totalItems)
-                    updateFABBadge(totalItems)
+                    val uniqueItems = cartManager.uniqueItemCount
+                    updateCartBadge(uniqueItems)
+                    updateFABBadge(uniqueItems)
                 }
             }
         }
@@ -503,7 +528,7 @@ class ProductListActivity : AppCompatActivity() {
         } else {
             menuInflater.inflate(R.menu.customer_main_menu, menu)
             cartBadgeMenuItem = menu.findItem(R.id.action_cart)
-            updateCartBadge(cartManager.totalItems)
+            updateCartBadge(cartManager.uniqueItemCount)
         }
         return true
     }
