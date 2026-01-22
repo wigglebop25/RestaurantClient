@@ -1,20 +1,26 @@
 package com.restaurantclient.ui.product
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.restaurantclient.R
 import com.restaurantclient.data.CartManager
 import com.restaurantclient.data.Result
 import com.restaurantclient.databinding.ActivityProductDetailBinding
 import com.restaurantclient.databinding.DialogSuccessBinding
+import com.restaurantclient.ui.cart.ShoppingCartActivity
 import com.restaurantclient.ui.common.setupGlassEffect
 import com.restaurantclient.util.DateTimeUtils
 import com.restaurantclient.util.ErrorUtils
 import com.restaurantclient.util.ImageMapper
 import com.restaurantclient.util.ToastManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -42,9 +48,11 @@ class ProductDetailActivity : AppCompatActivity() {
         }
 
         setupGlassUI()
+        setupGlassFAB()
         setupQuantityControls()
         setupObservers()
         setupClickListeners()
+        observeCartChanges()
         productViewModel.fetchProductDetails(productId)
     }
     
@@ -53,6 +61,27 @@ class ProductDetailActivity : AppCompatActivity() {
         binding.productInfoGlass.setupGlassEffect(25f)
         binding.productInfoGlass.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND)
         binding.productInfoGlass.clipToOutline = true
+    }
+
+    private fun setupGlassFAB() {
+        binding.fabBlurContainer.setupGlassEffect(25f)
+        binding.fabCart.setOnClickListener {
+            startActivity(Intent(this, ShoppingCartActivity::class.java))
+        }
+    }
+
+    private fun observeCartChanges() {
+        lifecycleScope.launch {
+            cartManager.cartItems.collectLatest { _ ->
+                val itemCount = cartManager.uniqueItemCount
+                if (itemCount > 0) {
+                    binding.cartBadge.text = itemCount.toString()
+                    binding.cartBadge.visibility = View.VISIBLE
+                } else {
+                    binding.cartBadge.visibility = View.GONE
+                }
+            }
+        }
     }
 
     private fun setupQuantityControls() {
