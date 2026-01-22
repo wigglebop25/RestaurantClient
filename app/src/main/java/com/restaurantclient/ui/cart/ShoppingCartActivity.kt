@@ -75,7 +75,7 @@ class ShoppingCartActivity : AppCompatActivity() {
 
     private fun setupClickListeners() {
         binding.checkoutButton.setOnClickListener {
-            if (cartManager.totalItems > 0) {
+            if (cartManager.uniqueItemCount > 0) {
                 startActivity(Intent(this, CheckoutActivity::class.java))
             }
         }
@@ -100,7 +100,7 @@ class ShoppingCartActivity : AppCompatActivity() {
         } else {
             binding.cartRecyclerView.visibility = View.VISIBLE
             binding.checkoutButton.isEnabled = true
-            binding.checkoutButton.text = "Proceed to Checkout (${cartManager.totalItems} items)"
+            binding.checkoutButton.text = "Proceed to Checkout (${cartManager.uniqueItemCount} items)"
         }
     }
 
