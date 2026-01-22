@@ -59,6 +59,7 @@
     <string name="order_detail_status_label">Status</string>
     <string name="order_detail_quantity_label">Quantity</string>
     <string name="order_detail_total_label">Total</string>
+    <string name="order_detail_items_label">Items</string>
     <string name="order_detail_created_label">Placed</string>
     <string name="order_detail_updated_label">Last updated</string>
     <string name="order_detail_unknown_value">Unknown</string>
