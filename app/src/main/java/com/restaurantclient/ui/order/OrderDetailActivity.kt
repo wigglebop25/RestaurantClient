@@ -9,8 +9,10 @@ import com.restaurantclient.R
 import com.restaurantclient.data.Result
 import com.restaurantclient.data.dto.OrderResponse
 import com.restaurantclient.databinding.ActivityOrderDetailBinding
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.restaurantclient.util.DateTimeUtils
 import com.restaurantclient.util.ErrorUtils
+import com.restaurantclient.util.ImageMapper
 import com.restaurantclient.util.ToastManager
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.NumberFormat
@@ -20,6 +22,7 @@ class OrderDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityOrderDetailBinding
     private val viewModel: OrderDetailViewModel by viewModels()
+    private val adapter = OrderDetailAdapter()
     private var orderId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +31,7 @@ class OrderDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupToolbar()
+        setupRecyclerView()
 
         val initialOrder = intent.getSerializableExtra(EXTRA_ORDER, OrderResponse::class.java)
         if (initialOrder == null) {
@@ -64,6 +68,13 @@ class OrderDetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupRecyclerView() {
+        binding.rvOrderItems.apply {
+            layoutManager = LinearLayoutManager(this@OrderDetailActivity)
+            adapter = this@OrderDetailActivity.adapter
+        }
+    }
+
     private fun setupObservers() {
         viewModel.order.observe(this) { result: Result<OrderResponse> ->
             when (result) {
@@ -87,10 +98,18 @@ class OrderDetailActivity : AppCompatActivity() {
         val totalQuantity = order.products?.sumOf { it.quantity } ?: 0
         binding.orderQuantityValue.text = totalQuantity.toString()
         
-        binding.orderTotalValue.text = NumberFormat.getCurrencyInstance().format(order.total_amount)
+        val currencyFormat = NumberFormat.getCurrencyInstance()
+        
+        // Calculate Total strictly from items to avoid showing hidden backend fees
+        val calculatedTotal = order.products?.sumOf { it.line_total } ?: 0.0
+        
+        binding.orderTotalValue.text = currencyFormat.format(calculatedTotal)
         binding.orderPlacedValue.text = DateTimeUtils.formatIsoDate(order.created_at)
         binding.orderUpdatedValue.text = DateTimeUtils.formatIsoDate(order.updated_at)
         
+        // Populate Order Items
+        adapter.submitList(order.products)
+
         // Update chip style based on status if needed
         updateStatusChipStyle(order.status)
     }
