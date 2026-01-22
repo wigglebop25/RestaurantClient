@@ -56,7 +56,7 @@ object NotificationHelper {
             }
         } catch (e: SecurityException) {
             // Handle missing permission for Android 13+
-            e.printStackTrace()
+            android.util.Log.e("NotificationHelper", "Notification permission not granted", e)
         }
     }
 }
