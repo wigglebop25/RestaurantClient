@@ -98,9 +98,9 @@ fun RevenueChart(
             
             // Y-Axis Label
             val label = if (value >= 1000) {
-                "${(value / 1000).toInt()}k"
+                "$${(value / 1000).toInt()}k"
             } else {
-                value.toInt().toString()
+                "$${value.toInt()}"
             }
             
             val measuredText = textMeasurer.measure(
@@ -113,6 +113,22 @@ fun RevenueChart(
                 topLeft = Offset(
                     x = startPadding - measuredText.size.width - 5.dp.toPx(), 
                     y = y - measuredText.size.height / 2
+                )
+            )
+        }
+
+        // Check if all values are zero
+        val isAllZero = values.all { it == 0f }
+        if (isAllZero) {
+            val noDataText = textMeasurer.measure(
+                text = "No revenue recorded",
+                style = TextStyle(color = Color.White.copy(alpha = 0.5f), fontSize = 14.sp)
+            )
+            drawText(
+                textLayoutResult = noDataText,
+                topLeft = Offset(
+                    x = startPadding + (graphWidth - noDataText.size.width) / 2,
+                    y = topPadding + (graphHeight - noDataText.size.height) / 2
                 )
             )
         }
@@ -199,7 +215,7 @@ fun RevenueChart(
             
             // Value label above point
             val valueText = textMeasurer.measure(
-                text = values[index].toInt().toString(),
+                text = "$${values[index].toInt()}",
                 style = TextStyle(color = Color.White, fontSize = 12.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
             )
             
