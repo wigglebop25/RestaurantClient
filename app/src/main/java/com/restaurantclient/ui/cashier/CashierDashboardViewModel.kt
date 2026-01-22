@@ -67,12 +67,44 @@ class CashierDashboardViewModel @Inject constructor(
 
     private suspend fun loadStats() {
         try {
-            val analyticsResult = orderRepository.getDashboardAnalytics()
-            val productsResult = productRepository.getAllProducts(forceRefresh = true)
+            // Fetch all necessary data in parallel
+            // We fetch orders to calculate daily revenue locally because the backend endpoint 
+            // sometimes returns zero values for daily revenue despite having orders.
+            val analyticsDeferred = viewModelScope.async { orderRepository.getDashboardAnalytics() }
+            val productsDeferred = viewModelScope.async { productRepository.getAllProducts(forceRefresh = true) }
+            val ordersDeferred = viewModelScope.async { orderRepository.getAllOrders(forceRefresh = true) }
+
+            val analyticsResult = analyticsDeferred.await()
+            val productsResult = productsDeferred.await()
+            val ordersResult = ordersDeferred.await()
 
             if (analyticsResult is Result.Success && productsResult is Result.Success) {
                 val analyticsData = analyticsResult.data
                 val products = productsResult.data
+                
+                // Get the daily revenue map from server (handles both map and trend list formats)
+                // Normalize keys to yyyy-MM-dd to match local calculation and prevent duplicates
+                val serverDailyRevenueRaw = analyticsData.consolidatedDailyRevenue
+                val serverDailyRevenue = serverDailyRevenueRaw.mapKeys { (key, _) ->
+                    if (key.length >= 10) key.substring(0, 10) else key
+                }
+                
+                // Calculate daily revenue locally from the full orders list to fix backend bugs
+                val finalDailyRevenue = if (ordersResult is Result.Success) {
+                    val localDailyRevenue = AnalyticsUtils.getDailyRevenue(ordersResult.data)
+                    val merged = serverDailyRevenue.toMutableMap()
+                    
+                    // Overlay local data onto server data where server is missing data or reports 0
+                    localDailyRevenue.forEach { (date, revenue) ->
+                        // Since keys are now normalized, this will correctly overwrite/merge
+                        if (merged[date] == null || merged[date] == 0.0) {
+                            merged[date] = revenue
+                        }
+                    }
+                    merged
+                } else {
+                    serverDailyRevenue
+                }
                 
                 // Map backend DTO to UI model
                 val mappedAnalytics = DashboardAnalytics(
@@ -82,7 +114,7 @@ class CashierDashboardViewModel @Inject constructor(
                     completedOrders = analyticsData.completedOrders,
                     cancelledOrders = analyticsData.cancelledOrders,
                     averageOrderValue = analyticsData.averageOrderValue,
-                    dailyRevenue = analyticsData.dailyRevenue
+                    dailyRevenue = finalDailyRevenue
                 )
                 _analytics.value = mappedAnalytics
 
@@ -96,37 +128,27 @@ class CashierDashboardViewModel @Inject constructor(
                     cancelledOrders = analyticsData.cancelledOrders
                 )
                 _dashboardStats.value = Result.Success(summary)
+            } else if (ordersResult is Result.Success) {
+                // Fallback: Client-side calculation using getAllOrders
+                val orders = ordersResult.data
+                val calculated = AnalyticsUtils.calculateStats(orders)
+                
+                _analytics.value = calculated
+                
+                val productCount = if (productsResult is Result.Success) productsResult.data.size else 0
+                
+                val summary = DashboardSummaryDTO(
+                    userCount = 0,
+                    productCount = productCount,
+                    orderCount = orders.size,
+                    pendingOrders = calculated.pendingOrders,
+                    completedOrders = calculated.completedOrders,
+                    cancelledOrders = calculated.cancelledOrders
+                )
+                _dashboardStats.value = Result.Success(summary)
             } else {
-                // Try basic summary endpoint as fallback
-                val summaryResult = orderRepository.getDashboardSummary()
-                if (summaryResult is Result.Success) {
-                     _dashboardStats.value = summaryResult
-                     _analytics.value = DashboardAnalytics(0.0, 0, 0, 0, 0, 0.0, emptyMap())
-                } else {
-                    // Ultimate Fallback: Client-side calculation using getAllOrders
-                    // This is necessary if backend removes summary endpoints
-                    val ordersResult = orderRepository.getAllOrders(forceRefresh = true)
-                    if (ordersResult is Result.Success) {
-                        val orders = ordersResult.data
-                        val calculated = AnalyticsUtils.calculateStats(orders)
-                        
-                        _analytics.value = calculated
-                        
-                        val productCount = if (productsResult is Result.Success) productsResult.data.size else 0
-                        
-                        val summary = DashboardSummaryDTO(
-                            userCount = 0,
-                            productCount = productCount,
-                            orderCount = orders.size,
-                            pendingOrders = calculated.pendingOrders,
-                            completedOrders = calculated.completedOrders,
-                            cancelledOrders = calculated.cancelledOrders
-                        )
-                        _dashboardStats.value = Result.Success(summary)
-                    } else {
-                        _dashboardStats.value = Result.Error(Exception("Failed to load stats"))
-                    }
-                }
+                // Ultimate fallback if everything fails
+                _dashboardStats.value = Result.Error(Exception("Failed to load stats"))
             }
         } catch (e: Exception) {
             _dashboardStats.value = Result.Error(e)
